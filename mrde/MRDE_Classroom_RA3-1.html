@@ -6,6 +6,7 @@
 <title>MRDE Classroom · Cuaderno Digital de Aprendizaje · RA 3.1</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{
   --verde:#0A7E45;
@@ -298,11 +299,9 @@ textarea:disabled,input:disabled,select:disabled{background:#EDF2F6;color:#5A6B7
     <div class="progress-label"><span>Avance del cuaderno</span><span id="progPct">0%</span></div>
     <div class="progress-bar"><div class="progress-fill" id="progFill"></div></div>
     <div style="display:flex;gap:8px;margin-top:10px">
-      <button class="btn ghost" style="padding:5px 10px;font-size:11.5px;flex:1;justify-content:center" onclick="exportarAvance()" title="Descarga tu avance">⬇ Respaldo</button>
-      <button class="btn ghost" style="padding:5px 10px;font-size:11.5px;flex:1;justify-content:center" onclick="document.getElementById('impFile').click()" title="Carga un respaldo">⬆ Restaurar</button>
-      <input type="file" id="impFile" accept=".json,application/json" style="display:none" onchange="importarAvance(this.files[0]);this.value=''">
+      <button class="btn ghost" style="padding:5px 10px;font-size:11.5px;flex:1;justify-content:center" onclick="exportarAvance()" title="Descarga copia local de tu avance">⬇ Respaldo local</button>
     </div>
-    <div style="font-size:10.5px;color:var(--gris);margin-top:6px;line-height:1.4">Tu avance se guarda en ESTA computadora. Descarga respaldo antes de cambiar de equipo.</div>
+    <div style="font-size:10.5px;color:var(--gris);margin-top:6px;line-height:1.4">Tu avance se guarda automáticamente en la nube. El respaldo es por si cambias de dispositivo sin conexión.</div>
   </div>
 
   <nav class="toc" id="toc">
@@ -1013,36 +1012,116 @@ SW1# <span class="kw">show interfaces FastEthernet0/1 switchport</span></pre>
    MRDE Classroom · RA 3.1 · VLANs y Troncales
    CONALEP Extensión Nuevo Progreso
    Ing. Santiago Martínez González
+   — Supabase Edition —
 =================================================== */
 
-const LS_KEY   = 'MRDE_RA3_1_v1';
-const CUADERNO = 'MRDE-RA3-1';
-const CLAVE_DOCENTE = 'MRED2526INDEX';  /* clave del docente para liberar intentos */
-const FORMSUBMIT_ENDPOINT = 'https://formsubmit.co/ajax/profesantiagomtzglez@gmail.com';
+const CUADERNO       = 'mrde31';
+const CLAVE_DOCENTE  = 'MRED2526INDEX';
+const SB_URL         = 'https://cmhnuuxgwrpkhutylnzs.supabase.co';
+const SB_KEY         = 'sb_publishable_8A2VQZa5N2NBP1li532sJQ_AACo-3_v';
 
-/* ---------- Estado ---------- */
+let sb = null;
+let currentUser = null;   // usuario Supabase
+let perfil = null;        // fila de la tabla perfiles
+
+/* ---------- Estado en memoria (sin localStorage) ---------- */
 let state = {
-  alumno: null,         // { nombre, grupo, turno, correo, matricula }
-  respuestas: {},       // { campo: valor }
-  entregas: {},         // { act1: { pts, max, fb, fecha }, … }
-  guardadas: {},        // { act1: bool }
+  respuestas: {},
+  entregas:   {},
+  guardadas:  {},
   evaluacion: null,
-  enviado: null
+  enviado:    null
 };
 
-/* ---------- Persistencia local ---------- */
-function persist(){
-  try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }catch(e){}
-}
-function cargar(){
-  try{
-    const raw = localStorage.getItem(LS_KEY);
-    if(raw){ const s = JSON.parse(raw); Object.assign(state, s); }
-  }catch(e){}
+/* ── Inicializar cliente Supabase ── */
+function initSB(){
+  if(sb) return sb;
+  sb = window.supabase.createClient(SB_URL, SB_KEY);
+  return sb;
 }
 
-/* ---------- Autenticación local ---------- */
+/* ══════════════════════════════════════════════════
+   CAPA DE PERSISTENCIA — todo va a Supabase
+══════════════════════════════════════════════════ */
+
+/* Guarda el estado completo en la tabla avances */
+async function persist(){
+  if(!currentUser) return;
+  try{
+    await sb.from('avances').upsert({
+      user_id:  currentUser.id,
+      cuaderno: CUADERNO,
+      estado:   {
+        respuestas: state.respuestas,
+        guardadas:  state.guardadas,
+        evaluacion: state.evaluacion,
+        enviado:    state.enviado
+      }
+    }, { onConflict: 'user_id,cuaderno' });
+  }catch(e){ console.warn('persist error', e); }
+}
+
+/* Guarda una entrega en la tabla entregas */
+async function persistEntrega(act, datos){
+  if(!currentUser) return;
+  try{
+    await sb.from('entregas').upsert({
+      user_id:    currentUser.id,
+      cuaderno:   CUADERNO,
+      actividad:  act,
+      pts:        datos.pts,
+      max:        datos.max,
+      fb:         datos.fb,
+      fecha:      datos.fecha,
+      respuestas: datos.respuestas || {}
+    }, { onConflict: 'user_id,cuaderno,actividad' });
+  }catch(e){ console.warn('persistEntrega error', e); }
+}
+
+/* Marca el cuaderno como enviado en la tabla envios */
+async function persistEnvio(folio, total){
+  if(!currentUser) return;
+  try{
+    await sb.from('envios').upsert({
+      user_id:  currentUser.id,
+      cuaderno: CUADERNO,
+      folio:    folio,
+      total:    total,
+      fecha:    new Date().toISOString()
+    }, { onConflict: 'user_id,cuaderno' });
+  }catch(e){ console.warn('persistEnvio error', e); }
+}
+
+/* Carga estado + entregas + envío desde Supabase */
+async function cargarDesdeNube(){
+  if(!currentUser) return;
+  const [avRow, entRows, envRow] = await Promise.all([
+    sb.from('avances').select('estado').eq('user_id', currentUser.id).eq('cuaderno', CUADERNO).single(),
+    sb.from('entregas').select('*').eq('user_id', currentUser.id).eq('cuaderno', CUADERNO),
+    sb.from('envios').select('*').eq('user_id', currentUser.id).eq('cuaderno', CUADERNO).maybeSingle()
+  ]);
+  if(avRow.data?.estado){
+    const est = avRow.data.estado;
+    state.respuestas = est.respuestas || {};
+    state.guardadas  = est.guardadas  || {};
+    state.evaluacion = est.evaluacion || null;
+    state.enviado    = est.enviado    || null;
+  }
+  state.entregas = {};
+  (entRows.data||[]).forEach(e=>{
+    state.entregas[e.actividad] = { pts:e.pts, max:e.max, fb:e.fb, fecha:e.fecha, respuestas:e.respuestas||{} };
+  });
+  if(envRow.data){
+    state.enviado = { folio:envRow.data.folio, fecha:new Date(envRow.data.fecha).toLocaleString('es-MX'), total:envRow.data.total };
+  }
+}
+
+/* ══════════════════════════════════════════════════
+   AUTENTICACIÓN — Supabase Auth + tabla perfiles
+══════════════════════════════════════════════════ */
+
 let modoRegistro = false;
+
 function toggleModoUI(){
   modoRegistro = !modoRegistro;
   document.getElementById('camposRegistro').style.display = modoRegistro ? '' : 'none';
@@ -1052,43 +1131,84 @@ function toggleModoUI(){
     : 'Entra con tu correo institucional y tu matrícula.';
   document.getElementById('toggleModo').textContent = modoRegistro ? 'Ya tengo cuenta' : 'Crear mi cuenta';
 }
-function autenticar(){
-  const err = document.getElementById('r_err');
-  err.style.display='none';
+
+async function autenticar(){
+  const err    = document.getElementById('r_err');
+  const btn    = document.getElementById('btnEntrar');
+  err.style.display = 'none';
   const correo = (document.getElementById('r_correo').value||'').trim().toLowerCase();
   const pass   = (document.getElementById('r_pass').value||'').trim();
-  if(!correo.endsWith('@tam.conalep.edu.mx')){ err.textContent='El correo debe terminar en @tam.conalep.edu.mx.'; err.style.display='block'; return; }
-  if(!pass){ err.textContent='Escribe tu matrícula.'; err.style.display='block'; return; }
+  if(!correo.endsWith('@tam.conalep.edu.mx')){
+    err.textContent='El correo debe terminar en @tam.conalep.edu.mx.'; err.style.display='block'; return;
+  }
+  if(pass.length < 4){
+    err.textContent='Escribe tu matrícula (mínimo 4 caracteres).'; err.style.display='block'; return;
+  }
+  btn.disabled=true; btn.textContent='Conectando…';
+  initSB();
   if(modoRegistro){
     const nombre = (document.getElementById('r_nombre').value||'').trim();
     const grupo  = document.getElementById('r_grupo').value;
     const turno  = document.getElementById('r_turno').value;
-    if(!nombre){ err.textContent='Escribe tu nombre completo.'; err.style.display='block'; return; }
-    if(!grupo){ err.textContent='Selecciona tu grupo.'; err.style.display='block'; return; }
-    if(!turno){ err.textContent='Selecciona tu turno.'; err.style.display='block'; return; }
-    state.alumno = { nombre, grupo, turno, correo, matricula: pass };
-    persist();
-    entrarApp();
+    if(!nombre){ err.textContent='Escribe tu nombre completo.'; err.style.display='block'; btn.disabled=false; btn.textContent='Entrar a mi cuaderno'; return; }
+    if(!grupo){  err.textContent='Selecciona tu grupo.';        err.style.display='block'; btn.disabled=false; btn.textContent='Entrar a mi cuaderno'; return; }
+    if(!turno){  err.textContent='Selecciona tu turno.';        err.style.display='block'; btn.disabled=false; btn.textContent='Entrar a mi cuaderno'; return; }
+    /* Registrar en Supabase Auth */
+    const { data:signData, error:signErr } = await sb.auth.signUp({ email:correo, password:pass });
+    if(signErr && !signErr.message.includes('already registered')){
+      err.textContent='Error al crear cuenta: '+signErr.message; err.style.display='block'; btn.disabled=false; btn.textContent='Entrar a mi cuaderno'; return;
+    }
+    /* Si ya existe el usuario, hacer login directamente */
+    const { data:loginData, error:loginErr } = await sb.auth.signInWithPassword({ email:correo, password:pass });
+    if(loginErr){
+      err.textContent='Cuenta creada. Inicia sesión con tu correo y matrícula.'; err.style.display='block'; btn.disabled=false; btn.textContent='Entrar a mi cuaderno'; return;
+    }
+    currentUser = loginData.user;
+    /* Guardar/actualizar perfil */
+    const matriculaOculta = pass.slice(0,4)+'*'.repeat(Math.max(0,pass.length-4));
+    await sb.from('perfiles').upsert({
+      id: currentUser.id, correo, nombre, grupo, turno,
+      matricula: matriculaOculta
+    }, { onConflict: 'id' });
+    perfil = { nombre, grupo, turno, correo, matricula: matriculaOculta };
   } else {
-    if(!state.alumno){ err.textContent='No encontré tu cuenta. Usa "Crear mi cuenta" si es la primera vez.'; err.style.display='block'; return; }
-    if(state.alumno.correo !== correo || state.alumno.matricula !== pass){ err.textContent='Correo o matrícula incorrectos.'; err.style.display='block'; return; }
-    entrarApp();
+    /* Login */
+    const { data:loginData, error:loginErr } = await sb.auth.signInWithPassword({ email:correo, password:pass });
+    if(loginErr){
+      err.textContent='Correo o matrícula incorrectos. Si es tu primera vez, usa "Crear mi cuenta".';
+      err.style.display='block'; btn.disabled=false; btn.textContent='Entrar a mi cuaderno'; return;
+    }
+    currentUser = loginData.user;
+    const { data:p } = await sb.from('perfiles').select('*').eq('id', currentUser.id).single();
+    if(!p){
+      err.textContent='Tu perfil no está registrado. Usa "Crear mi cuenta".';
+      err.style.display='block'; await sb.auth.signOut(); btn.disabled=false; btn.textContent='Entrar a mi cuaderno'; return;
+    }
+    perfil = p;
   }
+  btn.disabled=false; btn.textContent='Entrar a mi cuaderno';
+  await cargarDesdeNube();
+  entrarApp();
 }
-function cerrarSesion(){
-  if(!confirm('¿Cerrar sesión? Tu avance queda guardado.')) return;
+
+async function cerrarSesion(){
+  if(!confirm('¿Cerrar sesión?')) return;
+  await sb.auth.signOut();
+  currentUser = null; perfil = null;
+  state = { respuestas:{}, entregas:{}, guardadas:{}, evaluacion:null, enviado:null };
   document.getElementById('gate').style.display='flex';
   document.getElementById('studentChip').style.display='none';
 }
 
-/* ---------- App ---------- */
+/* ══════════════════════════════════════════════════
+   APP
+══════════════════════════════════════════════════ */
 function entrarApp(){
   document.getElementById('gate').style.display='none';
-  const a = state.alumno;
   const chip = document.getElementById('studentChip');
   chip.style.display='block';
-  document.getElementById('sc_nombre').textContent = a.nombre;
-  document.getElementById('sc_detalle').textContent = 'Grupo '+a.grupo+' · '+a.turno;
+  document.getElementById('sc_nombre').textContent  = perfil.nombre;
+  document.getElementById('sc_detalle').textContent = 'Grupo '+perfil.grupo+' · '+perfil.turno;
   restaurarCampos();
   restaurarEntregas();
   actualizarProgreso();
@@ -1096,7 +1216,9 @@ function entrarApp(){
   if(state.enviado){ sellarCuaderno(); }
 }
 
-/* ---------- Navegación ---------- */
+/* ══════════════════════════════════════════════════
+   NAVEGACIÓN
+══════════════════════════════════════════════════ */
 const SECCIONES = ['intro','conceptos','troncales','ejemplo','act1','act2','act3','bitacora','evaluacion'];
 function go(id){
   document.querySelectorAll('section.page').forEach(s=>s.classList.remove('visible'));
@@ -1112,71 +1234,67 @@ document.querySelectorAll('.toc a[data-sec]').forEach(a=>{
   a.addEventListener('click',()=>go(a.dataset.sec));
 });
 
-/* ---------- Guardar campos automáticamente ---------- */
+/* ══════════════════════════════════════════════════
+   CAMPOS — autoguardado en memoria + nube (debounce)
+══════════════════════════════════════════════════ */
+let _persistTimer = null;
+function persistDebounce(){ clearTimeout(_persistTimer); _persistTimer = setTimeout(persist, 1200); }
+
 function bindCampos(){
   document.querySelectorAll('[data-key]').forEach(el=>{
-    el.addEventListener('input',()=>{
-      state.respuestas[el.dataset.key] = el.value;
-      persist();
-    });
+    el.addEventListener('input',()=>{ state.respuestas[el.dataset.key]=el.value; persistDebounce(); });
   });
   document.querySelectorAll('input[type=radio][name]').forEach(el=>{
-    el.addEventListener('change',()=>{
-      state.respuestas[el.name] = el.value;
-      persist();
-    });
+    el.addEventListener('change',()=>{ state.respuestas[el.name]=el.value; persistDebounce(); });
   });
 }
 function restaurarCampos(){
   document.querySelectorAll('[data-key]').forEach(el=>{
-    if(state.respuestas[el.dataset.key] !== undefined)
-      el.value = state.respuestas[el.dataset.key];
+    if(state.respuestas[el.dataset.key]!==undefined) el.value=state.respuestas[el.dataset.key];
   });
   document.querySelectorAll('input[type=radio][name]').forEach(el=>{
-    if(state.respuestas[el.name] === el.value) el.checked = true;
+    if(state.respuestas[el.name]===el.value) el.checked=true;
   });
 }
 function restaurarEntregas(){
-  Object.keys(state.entregas).forEach(act=>{
-    bloquearActividad(act);
-    mostrarFeedback(act);
-  });
+  Object.keys(state.entregas).forEach(act=>{ bloquearActividad(act); mostrarFeedback(act); });
   if(state.guardadas.bitacora) bloquearBitacora();
 }
 
-/* ---------- Progreso ---------- */
+/* ══════════════════════════════════════════════════
+   PROGRESO
+══════════════════════════════════════════════════ */
 function actualizarProgreso(){
-  const total = 9; // secciones en TOC
-  let done = 0;
-  if(state.alumno) done++;
-  if(state.entregas.act1) done++;
-  if(state.entregas.act2) done++;
-  if(state.entregas.act3) done++;
-  if(state.guardadas.bitacora) done++;
-  // conceptos + troncales + ejemplo + evaluación como "visitados" via dummy
-  const pct = Math.round((done / 5) * 100);
-  document.getElementById('progFill').style.width = pct+'%';
-  document.getElementById('progPct').textContent = pct+'%';
+  let done=0;
+  if(perfil)                  done++;
+  if(state.entregas.act1)     done++;
+  if(state.entregas.act2)     done++;
+  if(state.entregas.act3)     done++;
+  if(state.guardadas.bitacora)done++;
+  const pct=Math.round((done/5)*100);
+  document.getElementById('progFill').style.width=pct+'%';
+  document.getElementById('progPct').textContent=pct+'%';
 }
 function marcarTOC(){
-  const doneSet = new Set();
-  if(state.entregas.act1) doneSet.add('act1');
-  if(state.entregas.act2) doneSet.add('act2');
-  if(state.entregas.act3) doneSet.add('act3');
-  if(state.guardadas.bitacora) doneSet.add('bitacora');
-  document.querySelectorAll('.toc a[data-sec]').forEach(a=>{
-    a.classList.toggle('done', doneSet.has(a.dataset.sec));
-  });
+  const ds=new Set();
+  if(state.entregas.act1)     ds.add('act1');
+  if(state.entregas.act2)     ds.add('act2');
+  if(state.entregas.act3)     ds.add('act3');
+  if(state.guardadas.bitacora)ds.add('bitacora');
+  document.querySelectorAll('.toc a[data-sec]').forEach(a=>a.classList.toggle('done',ds.has(a.dataset.sec)));
 }
 
-/* ---------- Bitácora ---------- */
-function guardarBitacora(){
-  const ok = ['bit1','bit2','bit3'].every(k=>(state.respuestas[k]||'').trim().length >= 20);
+/* ══════════════════════════════════════════════════
+   BITÁCORA
+══════════════════════════════════════════════════ */
+async function guardarBitacora(){
+  const ok=['bit1','bit2','bit3'].every(k=>(state.respuestas[k]||'').trim().length>=20);
   if(!ok){ alert('Completa las tres preguntas de la bitácora (mínimo 20 caracteres cada una).'); return; }
-  state.guardadas.bitacora = true; persist();
-  const btn = document.getElementById('btn-bitacora');
-  if(btn){ btn.textContent = '✓ Bitácora guardada'; }
-  const sn = document.getElementById('sn-bitacora');
+  state.guardadas.bitacora=true;
+  await persist();
+  const btn=document.getElementById('btn-bitacora');
+  if(btn) btn.textContent='✓ Bitácora guardada';
+  const sn=document.getElementById('sn-bitacora');
   if(sn){ sn.textContent='✓ Guardada'; sn.classList.add('show'); setTimeout(()=>sn.classList.remove('show'),3000); }
   actualizarProgreso(); marcarTOC();
 }
@@ -1302,22 +1420,23 @@ act3(){
 }
 };
 
-/* ---------- Entregar actividad (intento único) ---------- */
-function entregar(act){
+/* ══════════════════════════════════════════════════
+   EVALUAR Y ENTREGAR — persiste en Supabase
+══════════════════════════════════════════════════ */
+async function entregar(act){
   if(state.entregas[act]){ alert('Esta actividad ya fue entregada.'); return; }
-  // Recoger radios antes de evaluar
-  document.querySelectorAll('input[type=radio]:checked').forEach(el=>{
-    state.respuestas[el.name] = el.value;
-  });
-  document.querySelectorAll('[data-key]').forEach(el=>{
-    state.respuestas[el.dataset.key] = el.value;
-  });
-  const msgs = {act1:'Actividad 1',act2:'Actividad 2',act3:'Actividad 3'};
+  document.querySelectorAll('input[type=radio]:checked').forEach(el=>{ state.respuestas[el.name]=el.value; });
+  document.querySelectorAll('[data-key]').forEach(el=>{ state.respuestas[el.dataset.key]=el.value; });
+  const msgs={act1:'Actividad 1',act2:'Actividad 2',act3:'Actividad 3'};
   if(!confirm('Vas a entregar '+msgs[act]+'.\n\nEsta es tu ÚNICA oportunidad. ¿Confirmas la entrega?')) return;
   const ev = GRADERS[act]();
-  state.entregas[act] = { ...ev, fecha: new Date().toLocaleString('es-MX') };
+  const registro = { ...ev, fecha: new Date().toLocaleString('es-MX'), respuestas: { ...state.respuestas } };
+  state.entregas[act] = registro;
   state.guardadas[act] = true;
-  persist();
+  const btn = document.getElementById('btn-'+act);
+  if(btn){ btn.disabled=true; btn.textContent='Guardando…'; }
+  await persistEntrega(act, registro);
+  await persist();
   bloquearActividad(act);
   mostrarFeedback(act);
   actualizarProgreso();
@@ -1327,16 +1446,16 @@ function entregar(act){
 function bloquearActividad(act){
   document.querySelectorAll('#sec-'+act+' [data-key]').forEach(el=>el.disabled=true);
   document.querySelectorAll('#sec-'+act+' input[type=radio]').forEach(el=>el.disabled=true);
-  const btn = document.getElementById('btn-'+act);
-  const lbl = {act1:'Actividad 1',act2:'Actividad 2',act3:'Actividad 3'};
+  const btn=document.getElementById('btn-'+act);
+  const lbl={act1:'Actividad 1',act2:'Actividad 2',act3:'Actividad 3'};
   if(btn){ btn.disabled=true; btn.textContent='✓ '+lbl[act]+' entregada'; }
 }
 
 function mostrarFeedback(act){
-  const e = state.entregas[act]; if(!e) return;
-  const panel = document.getElementById('fb-'+act); if(!panel) return;
-  const lista = e.fb.map(x=>'<li class="'+(x.ok?'ok':'miss')+'">'+(x.ok?'✓ ':'✗ ')+x.label+' ('+x.pts+' pts)</li>').join('');
-  panel.innerHTML =
+  const e=state.entregas[act]; if(!e) return;
+  const panel=document.getElementById('fb-'+act); if(!panel) return;
+  const lista=e.fb.map(x=>'<li class="'+(x.ok?'ok':'miss')+'">'+(x.ok?'✓ ':'✗ ')+x.label+' ('+x.pts+' pts)</li>').join('');
+  panel.innerHTML=
     '<div class="fb-head"><span>Resultado de tu entrega</span><span>'+e.pts+' / '+e.max+' pts · '+e.fecha+'</span></div>'+
     '<div class="fb-body"><ul class="fb-list">'+lista+'</ul>'+
     '<div class="solucion"><h5>Solución correcta</h5>'+SOLUCIONES[act]+'</div>'+
@@ -1344,18 +1463,24 @@ function mostrarFeedback(act){
   panel.classList.add('show');
 }
 
-function desbloquear(act){
-  const clave = prompt('Clave del docente para liberar un nuevo intento:');
-  if(clave === null) return;
-  if(clave.trim() !== CLAVE_DOCENTE){ alert('Clave incorrecta.'); return; }
-  if(state.enviado && !confirm('Este cuaderno ya fue ENVIADO (folio '+state.enviado.folio+'). ¿Liberar de todos modos?')) return;
-  delete state.entregas[act]; state.guardadas[act]=false; persist();
+async function desbloquear(act){
+  const clave=prompt('Clave del docente para liberar un nuevo intento:');
+  if(clave===null) return;
+  if(clave.trim()!==CLAVE_DOCENTE){ alert('Clave incorrecta.'); return; }
+  if(state.enviado && !confirm('Este cuaderno ya fue ENVIADO. ¿Liberar de todos modos?')) return;
+  /* Borrar la entrega en Supabase */
+  if(currentUser){
+    await sb.from('entregas').delete()
+      .eq('user_id',currentUser.id).eq('cuaderno',CUADERNO).eq('actividad',act);
+  }
+  delete state.entregas[act]; state.guardadas[act]=false;
+  await persist();
   document.querySelectorAll('#sec-'+act+' [data-key]').forEach(el=>el.disabled=false);
   document.querySelectorAll('#sec-'+act+' input[type=radio]').forEach(el=>el.disabled=false);
-  const lbl = {act1:'Actividad 1',act2:'Actividad 2',act3:'Actividad 3'};
-  const btn = document.getElementById('btn-'+act);
+  const lbl={act1:'Actividad 1',act2:'Actividad 2',act3:'Actividad 3'};
+  const btn=document.getElementById('btn-'+act);
   if(btn){ btn.disabled=false; btn.textContent='Entregar '+lbl[act]+' · intento único'; }
-  const panel = document.getElementById('fb-'+act);
+  const panel=document.getElementById('fb-'+act);
   if(panel){ panel.classList.remove('show'); panel.innerHTML=''; }
   actualizarProgreso(); marcarTOC();
 }
@@ -1397,73 +1522,6 @@ function calificarTodo(){
   window.scrollTo({top:0});
 }
 
-/* ---------- Envío al docente (FormSubmit AJAX) ---------- */
-function sellarCuaderno(){
-  ['bit1','bit2','bit3'].forEach(id=>{ const el=document.getElementById(id); if(el) el.disabled=true; });
-  const bb = document.getElementById('btn-bitacora');
-  if(bb){ bb.disabled=true; bb.textContent='✓ Bitácora sellada'; }
-  const be = document.getElementById('btnEnviar');
-  if(be){ be.disabled=true; be.textContent='✓ Reporte enviado'; }
-  const ok = document.getElementById('envio_ok');
-  if(ok && state.enviado){
-    ok.style.display='block';
-    ok.innerHTML = '<div class="c-title">✓ Cuaderno enviado y sellado</div><p>Folio: <strong>'+state.enviado.folio+'</strong> · Enviado: '+state.enviado.fecha+' · Calificación: <strong>'+state.enviado.total+' / 100</strong>.</p>';
-  }
-}
-
-async function enviarReporte(){
-  const st2 = document.getElementById('envio_status');
-  if(state.enviado){ st2.style.color='var(--gris)'; st2.textContent='Este cuaderno ya fue enviado (folio '+state.enviado.folio+').'; return; }
-  const faltan = ACTS_META.filter(([a])=>!state.entregas[a]).map(([,n])=>n.split(' ·')[0]);
-  const bitOk = ['bit1','bit2','bit3'].every(k=>(state.respuestas[k]||'').trim().length >= 20);
-  if(!bitOk) faltan.push('Bitácora (responde y guarda sus 3 preguntas)');
-  if(faltan.length){ st2.style.color='var(--rojo)'; st2.textContent='✗ Antes de enviar completa: '+faltan.join(', ')+'.'; return; }
-  if(!confirm('Vas a ENVIAR tu reporte al docente.\n\n• Envío ÚNICO y definitivo.\n• Tu calificación llegará al correo del docente con fecha, hora y folio.\n• Las actividades quedarán selladas (solo lectura).\n\n¿Enviar ahora?')) return;
-  calificarTodo();
-  const ev = state.evaluacion, a = state.alumno||{}, R = state.respuestas, E = state.entregas;
-  const folio = 'MRDE31-'+Date.now().toString(36).toUpperCase()+'-'+Math.random().toString(36).slice(2,6).toUpperCase();
-  const btn = document.getElementById('btnEnviar'); if(btn) btn.disabled=true;
-  st2.style.color='var(--gris)'; st2.textContent='⏳ Enviando reporte al docente…';
-  const payload = {
-    _subject: 'MRDE RA3.1 · '+(a.nombre||'Alumno')+' · Grupo '+(a.grupo||'?')+' · '+ev.total+'/100',
-    _captcha: 'false', _template: 'table',
-    Folio: folio,
-    Fecha_de_envio: new Date().toLocaleString('es-MX'),
-    Alumno: a.nombre||'', Grupo: a.grupo||'', Turno: a.turno||'', Correo_institucional: a.correo||'',
-    CALIFICACION_TOTAL: ev.total+' / 100',
-    Act1_Identificar_elementos: (E.act1?E.act1.pts+'/20 · '+E.act1.fecha:'No entregada'),
-    Act2_Configurar_VLANs: (E.act2?E.act2.pts+'/40 · '+E.act2.fecha:'No entregada'),
-    Act3_Troncal_problemas: (E.act3?E.act3.pts+'/30 · '+E.act3.fecha:'No entregada'),
-    Bitacora_puntos: (ev.filas[3]?ev.filas[3].pts:0)+'/10',
-    A1_NumVlans: R.a1_numvlans||'', A1_TipoAdmin: R.a1_tipoadmin||'', A1_Trunk: R.a1_trunk||'',
-    A1_Diseno: R.a1_diseno||'', A1_Vlan1Risk: R.a1_vlan1||'',
-    A2_CrearVlans: R.a2_crear_vlans||'', A2_AsignarPuertos: R.a2_asignar_puertos||'',
-    A2_ShowVlan: R.a2_show_vlan||'', A2_Ping: R.a2_ping||'', A2_Explicacion: R.a2_explicacion||'',
-    A3_TrunkCmds: R.a3_trunk_cmds||'', A3_ShowTrunk: R.a3_show_trunk||'',
-    A3_Prob1: R.a3_prob1||'', A3_Prob2: R.a3_prob2||'', A3_Eliminar: R.a3_eliminar||'',
-    Bitacora_1: R.bit1||'', Bitacora_2: R.bit2||'', Bitacora_3: R.bit3||'',
-    Navegador: navigator.userAgent
-  };
-  try{
-    const r = await fetch(FORMSUBMIT_ENDPOINT,{
-      method:'POST',
-      headers:{'Content-Type':'application/json','Accept':'application/json','X-Requested-With':'XMLHttpRequest'},
-      body:JSON.stringify(payload)
-    });
-    if(!r.ok) throw new Error('HTTP '+r.status);
-    await r.json();
-    state.enviado = { folio, fecha:new Date().toLocaleString('es-MX'), total:ev.total };
-    persist();
-    st2.textContent='';
-    sellarCuaderno();
-    window.scrollTo({top:0});
-  }catch(e){
-    if(btn) btn.disabled=false;
-    st2.style.color='var(--rojo)';
-    st2.textContent='✗ No se pudo enviar ('+e.message+'). Revisa tu conexión e inténtalo de nuevo — tus respuestas están a salvo.';
-  }
-}
-
 /* ---------- Boleta PDF (jsPDF) ---------- */
 function descargarPDF(){
   if(!state.evaluacion) calificarTodo();
@@ -1471,7 +1529,7 @@ function descargarPDF(){
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ unit:'mm', format:'letter' });
   const M=14, W=188;
-  const a = state.alumno||{}, ev = state.evaluacion;
+  const a = perfil||{}, ev = state.evaluacion;
   let y=16;
   doc.setFont('helvetica','bold'); doc.setFontSize(15); doc.setTextColor(21,34,48);
   doc.text('MRDE Classroom · Boleta de Resultados', M, y); y+=5.5;
@@ -1621,43 +1679,114 @@ function descargarApuntes(){
   doc.save('Apuntes_MRDE_VLANs.pdf');
 }
 
-/* ---------- Respaldo portátil ---------- */
+/* ══════════════════════════════════════════════════
+   ENVÍO FINAL — Supabase + correo FormSubmit
+══════════════════════════════════════════════════ */
+function sellarCuaderno(){
+  ['bit1','bit2','bit3'].forEach(id=>{ const el=document.getElementById(id); if(el) el.disabled=true; });
+  const bb=document.getElementById('btn-bitacora'); if(bb){ bb.disabled=true; bb.textContent='✓ Bitácora sellada'; }
+  const be=document.getElementById('btnEnviar');    if(be){ be.disabled=true; be.textContent='✓ Reporte enviado'; }
+  const ok=document.getElementById('envio_ok');
+  if(ok&&state.enviado){
+    ok.style.display='block';
+    ok.innerHTML='<div class="c-title">✓ Cuaderno enviado y sellado</div><p>Folio: <strong>'+state.enviado.folio+'</strong> · Enviado: '+state.enviado.fecha+' · Calificación: <strong>'+state.enviado.total+' / 100</strong>.</p>';
+  }
+}
+
+async function enviarReporte(){
+  const st2=document.getElementById('envio_status');
+  if(state.enviado){ st2.style.color='var(--gris)'; st2.textContent='Este cuaderno ya fue enviado (folio '+state.enviado.folio+').'; return; }
+  const faltan=ACTS_META.filter(([a])=>!state.entregas[a]).map(([,n])=>n.split(' ·')[0]);
+  const bitOk=['bit1','bit2','bit3'].every(k=>(state.respuestas[k]||'').trim().length>=20);
+  if(!bitOk) faltan.push('Bitácora');
+  if(faltan.length){ st2.style.color='var(--rojo)'; st2.textContent='✗ Completa antes de enviar: '+faltan.join(', ')+'.'; return; }
+  if(!confirm('Vas a ENVIAR tu reporte al docente.\n\n• Envío ÚNICO y definitivo.\n• Tu calificación quedará registrada en el panel del docente.\n• Las actividades quedarán selladas.\n\n¿Enviar ahora?')) return;
+  calificarTodo();
+  const ev=state.evaluacion, a=perfil||{}, R=state.respuestas, E=state.entregas;
+  const folio='MRDE31-'+Date.now().toString(36).toUpperCase()+'-'+Math.random().toString(36).slice(2,6).toUpperCase();
+  const btn=document.getElementById('btnEnviar'); if(btn) btn.disabled=true;
+  st2.style.color='var(--gris)'; st2.textContent='⏳ Guardando en el panel del docente…';
+  /* 1. Guardar en Supabase */
+  await persistEnvio(folio, ev.total);
+  state.enviado={ folio, fecha:new Date().toLocaleString('es-MX'), total:ev.total };
+  await persist();
+  /* 2. Enviar correo de respaldo por FormSubmit */
+  try{
+    const payload={
+      _subject:'MRDE RA3.1 · '+(a.nombre||'Alumno')+' · Grupo '+(a.grupo||'?')+' · '+ev.total+'/100',
+      _captcha:'false', _template:'table',
+      Folio:folio, Fecha:new Date().toLocaleString('es-MX'),
+      Alumno:a.nombre||'', Grupo:a.grupo||'', Turno:a.turno||'', Correo:a.correo||'',
+      CALIFICACION:ev.total+' / 100',
+      Act1: E.act1?E.act1.pts+'/20':'—', Act2: E.act2?E.act2.pts+'/40':'—', Act3: E.act3?E.act3.pts+'/30':'—',
+      Bitacora_1:R.bit1||'', Bitacora_2:R.bit2||'', Bitacora_3:R.bit3||''
+    };
+    await fetch('https://formsubmit.co/ajax/profesantiagomtzglez@gmail.com',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Accept':'application/json','X-Requested-With':'XMLHttpRequest'},
+      body:JSON.stringify(payload)
+    });
+  }catch(e){ /* el correo es secundario; el registro en Supabase ya se hizo */ }
+  st2.textContent='';
+  sellarCuaderno();
+  window.scrollTo({top:0});
+}
+
+/* ══════════════════════════════════════════════════
+   RESPALDO PORTÁTIL (export/import JSON local)
+══════════════════════════════════════════════════ */
 function exportarAvance(){
-  persist();
-  const data={app:LS_KEY,fecha:new Date().toISOString(),state:state};
+  const data={ app:'MRDE_RA3_1_SB', fecha:new Date().toISOString(), state:state, perfil:perfil };
   const blob=new Blob([JSON.stringify(data)],{type:'application/json'});
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
-  const safe=((state.alumno&&state.alumno.nombre)||'alumno').trim().replace(/\s+/g,'_').replace(/[^\w\u00C0-\u017F_-]/g,'');
-  a.download='Respaldo_'+LS_KEY+'_'+safe+'.json';
-  document.body.appendChild(a); a.click(); a.remove();
+  const safe=((perfil&&perfil.nombre)||'alumno').trim().replace(/\s+/g,'_').replace(/[^\w\u00C0-\u017F_-]/g,'');
+  a.download='Respaldo_MRDE_RA3-1_'+safe+'.json'; document.body.appendChild(a); a.click(); a.remove();
 }
 function importarAvance(file){
   if(!file) return;
   const r=new FileReader();
-  r.onload=()=>{
+  r.onload=async()=>{
     try{
       const data=JSON.parse(r.result);
-      if(!data||data.app!==LS_KEY||!data.state){ alert('Este archivo no es un respaldo de ESTE cuaderno (MRDE RA 3.1).'); return; }
-      const quien=(data.state.alumno&&data.state.alumno.nombre)||'(sin registro)';
-      const cuando=new Date(data.fecha).toLocaleString('es-MX');
-      if(!confirm('Se restaurará el avance de:\n\n'+quien+'\nguardado el '+cuando+'\n\nEl avance actual en esta computadora será REEMPLAZADO. ¿Continuar?')) return;
-      localStorage.setItem(LS_KEY,JSON.stringify(data.state)); location.reload();
-    }catch(e){ alert('Archivo de respaldo inválido o dañado.'); }
+      if(!data||data.app!=='MRDE_RA3_1_SB'||!data.state){ alert('Este archivo no es un respaldo válido de este cuaderno.'); return; }
+      const quien=(data.perfil&&data.perfil.nombre)||'(sin nombre)';
+      if(!confirm('Restaurar avance de:\n\n'+quien+'\n\nSe sincronizará con la nube. ¿Continuar?')) return;
+      state=data.state;
+      await persist();
+      restaurarCampos(); restaurarEntregas(); actualizarProgreso(); marcarTOC();
+      alert('✓ Avance restaurado correctamente.');
+    }catch(e){ alert('Archivo inválido o dañado.'); }
   };
   r.readAsText(file);
 }
 
-/* ---------- Inicio ---------- */
+/* ══════════════════════════════════════════════════
+   ARRANQUE
+══════════════════════════════════════════════════ */
 document.getElementById('toggleModo').addEventListener('click', toggleModoUI);
 document.getElementById('r_pass').addEventListener('keydown', e=>{ if(e.key==='Enter') autenticar(); });
 
-function arranque(){
-  cargar();
+(async ()=>{
+  initSB();
+  /* Mostrar pantalla de carga mientras revisamos sesión */
+  document.getElementById('gate').style.display='flex';
+  const { data:{ session } } = await sb.auth.getSession();
+  if(session && session.user){
+    currentUser = session.user;
+    const { data:p } = await sb.from('perfiles').select('*').eq('id', currentUser.id).single();
+    if(p){
+      perfil = p;
+      await cargarDesdeNube();
+      entrarApp();
+      return;
+    }
+    /* Perfil no existe — forzar registro */
+    await sb.auth.signOut(); currentUser=null;
+  }
+  /* Sin sesión — mostrar gate */
+  document.getElementById('gate').style.display='flex';
   bindCampos();
-  if(state.alumno){ entrarApp(); }
-  else { document.getElementById('gate').style.display='flex'; }
-}
-arranque();
+})();
 </script>
 </body>
 </html>
