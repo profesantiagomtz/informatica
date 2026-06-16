@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mi Ruta de Aprendizaje · CONALEP</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@300;400;500;700&display=swap');
+:root{
+  --bg:#0d1117;--surface:#161b22;--surface2:#1c2230;--border:#30363d;
+  --accent:#00d4aa;--blue:#58a6ff;--purple:#7c6fff;--red:#f85149;
+  --text:#e6edf3;--muted:#8b949e;--green:#3fb950;--yellow:#d29922;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  min-height:100vh;
+  font-family:'IBM Plex Sans',sans-serif;
+  background:
+    radial-gradient(ellipse 60% 40% at 10% 0%,rgba(0,212,170,.10),transparent),
+    radial-gradient(ellipse 50% 50% at 90% 100%,rgba(88,166,255,.09),transparent),
+    var(--bg);
+  color:var(--text);
+  line-height:1.7;
+}
+
+/* ── PAGE WRAPPER ── */
+.page{max-width:1160px;margin:0 auto;padding:36px 22px 80px}
+
+/* ── TOPBAR ── */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:16px;margin-bottom:48px;flex-wrap:wrap;
+}
+.brand{display:flex;flex-direction:column;gap:2px}
+.brand-name{
+  font-family:'IBM Plex Mono',monospace;font-size:13px;
+  font-weight:700;color:var(--accent);letter-spacing:2px;text-transform:uppercase;
+}
+.brand-sub{font-size:12px;color:var(--muted)}
+.credit-chip{
+  display:inline-flex;flex-direction:column;gap:1px;
+  padding:10px 14px;border:1px solid rgba(0,212,170,.25);
+  border-left:3px solid var(--accent);border-radius:10px;
+  background:rgba(22,27,34,.7);
+}
+.credit-chip span{font-family:'IBM Plex Mono',monospace;color:var(--accent);font-size:10px;letter-spacing:1.5px;text-transform:uppercase}
+.credit-chip strong{font-size:15px;color:#fff}
+
+/* ── HERO ── */
+.hero{
+  border:1px solid var(--border);
+  border-bottom:3px solid var(--accent);
+  border-radius:24px;
+  padding:52px 48px 44px;
+  background:linear-gradient(135deg,#050c1a 0%,#081428 55%,#0d1f3c 100%);
+  position:relative;overflow:hidden;
+  margin-bottom:42px;
+}
+.hero:before{
+  content:'';position:absolute;
+  top:-100px;right:-100px;
+  width:420px;height:420px;border-radius:50%;
+  border:80px solid rgba(0,212,170,.04);
+}
+.hero:after{
+  content:'CONALEP';
+  position:absolute;right:48px;bottom:24px;
+  font-family:'IBM Plex Mono',monospace;font-size:72px;font-weight:700;
+  color:rgba(255,255,255,.03);letter-spacing:-2px;user-select:none;
+}
+.hero-tag{
+  font-family:'IBM Plex Mono',monospace;font-size:11px;
+  color:var(--accent);letter-spacing:3px;text-transform:uppercase;
+  margin-bottom:16px;display:block;
+}
+.hero h1{
+  font-size:clamp(36px,5.5vw,64px);font-weight:700;
+  line-height:1.05;color:#fff;max-width:760px;
+}
+.hero h1 em{color:var(--accent);font-style:normal}
+.hero-sub{
+  color:var(--muted);font-size:16px;margin-top:16px;
+  font-weight:300;max-width:600px;line-height:1.6;
+}
+.hero-pills{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+.pill{
+  background:rgba(255,255,255,.05);border:1px solid var(--border);
+  border-radius:999px;padding:5px 13px;
+  font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);
+}
+.pill b{color:var(--text)}
+
+/* ── SECTION HEADER ── */
+.sec-head{
+  display:flex;align-items:baseline;justify-content:space-between;
+  gap:12px;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border);
+  flex-wrap:wrap;
+}
+.sec-head h2{font-size:20px;color:#fff}
+.sec-head p{color:var(--muted);font-size:13px}
+
+/* ── MÓDULOS GRID ── */
+.modulos{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:40px}
+
+.modulo{
+  background:rgba(22,27,34,.90);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:28px 24px 24px;
+  text-decoration:none;
+  display:flex;flex-direction:column;gap:0;
+  position:relative;overflow:hidden;
+  transition:transform .2s,border-color .2s,box-shadow .2s;
+  cursor:pointer;
+}
+.modulo:hover{
+  transform:translateY(-4px);
+  box-shadow:0 20px 50px rgba(0,0,0,.35);
+}
+
+/* barra superior de color por módulo */
+.modulo:before{
+  content:'';position:absolute;inset:0 0 auto 0;
+  height:4px;border-radius:20px 20px 0 0;
+}
+.modulo.mred:before{background:linear-gradient(90deg,var(--accent),var(--blue))}
+.modulo.cobd:before{background:linear-gradient(90deg,var(--blue),var(--purple))}
+.modulo.proo:before{background:linear-gradient(90deg,var(--purple),var(--red))}
+
+.modulo:hover.mred{border-color:rgba(0,212,170,.4)}
+.modulo:hover.cobd{border-color:rgba(88,166,255,.4)}
+.modulo:hover.proo{border-color:rgba(124,111,255,.4)}
+
+/* código grande de fondo */
+.modulo-bg-code{
+  position:absolute;right:16px;bottom:12px;
+  font-family:'IBM Plex Mono',monospace;font-size:52px;font-weight:700;
+  opacity:.04;user-select:none;color:#fff;
+}
+
+.modulo-badge{
+  font-family:'IBM Plex Mono',monospace;font-size:9px;
+  letter-spacing:1.8px;text-transform:uppercase;
+  border-radius:4px;padding:3px 8px;margin-bottom:14px;
+  display:inline-flex;align-self:flex-start;
+}
+.mred .modulo-badge{color:var(--accent);background:rgba(0,212,170,.08);border:1px solid rgba(0,212,170,.2)}
+.cobd .modulo-badge{color:var(--blue);background:rgba(88,166,255,.08);border:1px solid rgba(88,166,255,.2)}
+.proo .modulo-badge{color:var(--purple);background:rgba(124,111,255,.08);border:1px solid rgba(124,111,255,.2)}
+
+.modulo-num{
+  font-family:'IBM Plex Mono',monospace;font-size:10px;
+  color:var(--muted);margin-bottom:4px;letter-spacing:1px;
+}
+.modulo h3{font-size:17px;font-weight:700;color:#fff;margin-bottom:8px;line-height:1.25}
+.modulo p{font-size:13px;color:var(--muted);flex:1;line-height:1.5;margin-bottom:18px}
+
+.modulo-meta{
+  display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;
+}
+.modulo-meta span{
+  font-family:'IBM Plex Mono',monospace;font-size:10px;
+  color:var(--muted);background:var(--surface2);
+  border:1px solid var(--border);border-radius:6px;padding:3px 7px;
+}
+
+.modulo-btn{
+  display:inline-flex;align-self:flex-start;
+  border-radius:8px;padding:9px 14px;
+  font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;
+  transition:filter .15s;
+}
+.mred .modulo-btn{background:var(--accent);color:#06110f}
+.cobd .modulo-btn{background:var(--blue);color:#040d1a}
+.proo .modulo-btn{background:var(--purple);color:#0d0a1f}
+.modulo-btn.disabled{
+  background:var(--surface2);color:var(--muted);
+  border:1px solid var(--border);pointer-events:none;
+}
+.modulo:hover .modulo-btn:not(.disabled){filter:brightness(1.1)}
+
+/* ── ESTADO BADGE ── */
+.status-dot{
+  display:inline-flex;align-items:center;gap:5px;
+  font-family:'IBM Plex Mono',monospace;font-size:10px;
+  letter-spacing:1.5px;text-transform:uppercase;
+  border-radius:999px;padding:4px 10px;margin-bottom:10px;
+}
+.status-dot.active{color:var(--green);background:rgba(63,185,80,.09);border:1px solid rgba(63,185,80,.25)}
+.status-dot.active:before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;animation:pulse 1.6s infinite}
+.status-dot.soon{color:var(--yellow);background:rgba(210,153,34,.09);border:1px solid rgba(210,153,34,.25)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ── INFO PANEL ── */
+.info-panel{
+  padding:16px 20px;
+  background:rgba(88,166,255,.07);
+  border:1px solid rgba(88,166,255,.22);
+  border-left:4px solid var(--blue);
+  border-radius:12px;
+  color:var(--muted);font-size:13px;
+  margin-top:8px;
+}
+.info-panel b{color:var(--text)}
+
+/* ── FOOTER ── */
+footer{
+  margin-top:48px;padding-top:20px;
+  border-top:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:center;
+  gap:14px;flex-wrap:wrap;
+  font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);
+}
+.footer-logo{
+  font-size:13px;font-weight:700;color:var(--accent);letter-spacing:2px;text-transform:uppercase;
+}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .modulos{grid-template-columns:1fr 1fr}
+  .hero{padding:36px 28px 32px}
+  .hero:after{display:none}
+}
+@media(max-width:600px){
+  .modulos{grid-template-columns:1fr}
+  .hero{padding:28px 22px 26px}
+  .topbar{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="brand">
+      <span class="brand-name">Mi Ruta de Aprendizaje</span>
+      <span class="brand-sub">CONALEP Plantel 22526 · Informática · 6° Semestre</span>
+    </div>
+    <div class="credit-chip">
+      <span>Material didáctico desarrollado por:</span>
+      <strong>Ing. Santiago Martínez González</strong>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <header class="hero">
+    <span class="hero-tag">Portal de materiales · Ciclo 2 · 2526</span>
+    <h1>Tres módulos,<br>un solo <em>camino</em>.</h1>
+    <p class="hero-sub">Selecciona el módulo en el que estás trabajando. Cada uno contiene materiales interactivos, simuladores y actividades de evaluación alineados al programa CONALEP.</p>
+    <div class="hero-pills">
+      <div class="pill">Carrera: <b>PT-B en Informática</b></div>
+      <div class="pill">Semestre: <b>Cuarto y Sexto</b></div>
+      <div class="pill">Ciclo: <b>2 · 2526</b></div>
+      <div class="pill">Herramientas: <b>Cisco Packet Tracer</b></div>
+      <div class="pill"><b>MS Access</b></div>
+      <div class="pill"><b>VS Code</b></div>
+      <div class="pill"><b>SQL Server</b></div>
+      <div class="pill"><b>PHP</b></div>
+    </div>
+  </header>
+
+  <!-- MÓDULOS -->
+  <section>
+    <div class="sec-head">
+      <h2>Módulos disponibles</h2>
+      <p>Trabaja el módulo que corresponda a tu horario de clase.</p>
+    </div>
+
+    <div class="modulos">
+
+      <!-- MRED -->
+      <a class="modulo mred" href="manejo-de-redes/index.html">
+        <div class="modulo-bg-code">MRED</div>
+        <span class="status-dot active">Activo</span>
+        <div class="modulo-num">Módulo 03</div>
+        <h3>Manejo de Redes</h3>
+        <p>Configuración de dispositivos Cisco, IOS, redes inalámbricas, VLANs y enrutamiento. Práctica con Cisco Packet Tracer.</p>
+        <div class="modulo-meta">
+          <span>6° Semestre</span>
+          <span>144 hrs</span>
+          <span>Packet Tracer</span>
+        </div>
+        <span class="modulo-btn">Entrar al módulo →</span>
+      </a>
+
+      <!-- COBD -->
+      <a class="modulo cobd" href="bases-de-datos/index.html">
+        <div class="modulo-bg-code">COBD</div>
+        <span class="status-dot active">Activo</span>
+        <div class="modulo-num">Módulo 01</div>
+        <h3>Construcción de Bases de Datos</h3>
+        <p>Gestión y aprovechamiento de la información en bases de datos: consultas SQL, actualización de registros, combinación de tablas y disparadores.</p>
+        <div class="modulo-meta">
+          <span>4° Semestre</span>
+          <span>Grupos 410 · 411</span>
+          <span>SQL</span>
+        </div>
+        <span class="modulo-btn">Entrar al módulo →</span>
+      </a>
+
+      <!-- PROO -->
+      <a class="modulo proo" href="programacion/index.html">
+        <div class="modulo-bg-code">PROO</div>
+        <span class="status-dot soon">En desarrollo</span>
+        <div class="modulo-num">Módulo 02</div>
+        <h3>Programación Orientada a Objetos</h3>
+        <p>Fundamentos de POO: clases, objetos, herencia, encapsulamiento y polimorfismo aplicados con ejemplos prácticos.</p>
+        <div class="modulo-meta">
+          <span>5° Semestre</span>
+          <span>Java / Python</span>
+          <span>Interactivo</span>
+        </div>
+        <span class="modulo-btn disabled">Próximamente</span>
+      </a>
+
+    </div>
+
+    <div class="info-panel">
+      <b>Indicaciones:</b> Selecciona el módulo correspondiente a tu clase. Actualmente están disponibles <b>Manejo de Redes (MRED)</b> y <b>Construcción de Bases de Datos (COBD)</b>.
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <span class="footer-logo">Mi Ruta de Aprendizaje</span>
+    <span>Ing. Santiago Martínez González · CONALEP 22526</span>
+    <span>Ciclo 2 · 2526</span>
+  </footer>
+
+</div>
+</body>
+</html>
