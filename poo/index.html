@@ -3,103 +3,225 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Programación Orientada a Objetos | C++</title>
+<title>Programación Orientada a Objetos · PROO-20 · CONALEP</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@300;400;500;700&display=swap');
-:root{--bg:#0e0d17;--surface:#161522;--surface2:#1f1c30;--border:#322d44;--accent:#6D28D9;--accent2:#A78BFA;--text:#ece9f3;--muted:#969;--muted:#9a93ad;--green:#3fb950}
+:root{
+  --bg:#0d1117;--surface:#161b22;--surface2:#1c2230;--border:#30363d;
+  --accent:#a78bfa;--blue:#58a6ff;--purple:#7c6fff;--red:#f85149;
+  --text:#e6edf3;--muted:#8b949e;--green:#3fb950;--yellow:#d29922;
+}
 *{box-sizing:border-box;margin:0;padding:0}
-body{min-height:100vh;font-family:'IBM Plex Sans',sans-serif;background:radial-gradient(circle at top left,rgba(109,40,217,.18),transparent 34%),radial-gradient(circle at bottom right,rgba(167,139,250,.12),transparent 34%),var(--bg);color:var(--text);line-height:1.7}
-.page{max-width:1100px;margin:0 auto;padding:36px 24px 80px}
-.credit{display:inline-flex;flex-direction:column;gap:2px;padding:12px 16px;border:1px solid rgba(167,139,250,.28);border-left:4px solid var(--accent2);border-radius:12px;background:rgba(22,21,34,.78);margin-bottom:28px}
-.credit span{font-family:'IBM Plex Mono',monospace;color:var(--accent2);font-size:11px;letter-spacing:1.8px;text-transform:uppercase}
-.credit strong{font-size:17px;color:#fff}
-header{border:1px solid var(--border);border-bottom:3px solid var(--accent2);border-radius:20px;padding:40px 44px;background:linear-gradient(135deg,#12091f 0%,#241640 58%,#3a1d6e 100%);overflow:hidden;position:relative;margin-bottom:48px}
-header:after{content:'C++';position:absolute;right:40px;bottom:20px;font-family:'IBM Plex Mono',monospace;font-size:80px;font-weight:700;color:rgba(255,255,255,.05);letter-spacing:-2px}
-.htag{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent2);letter-spacing:3px;text-transform:uppercase;margin-bottom:12px;display:block}
-header h1{font-size:clamp(28px,4vw,52px);line-height:1.1;color:#fff;max-width:780px}
-header h1 span{color:var(--accent2)}
-header p{color:#cdc2e2;font-size:15px;margin-top:12px;max-width:720px}
-.pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
-.pill{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.10);border-radius:999px;padding:4px 12px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#cdc2e2}.pill b{color:#fff}
-.ra-block{margin-bottom:40px;border:1px solid var(--border);border-radius:16px;overflow:hidden;background:rgba(22,21,34,.55)}
-.ra-head{display:grid;grid-template-columns:220px 1fr;min-height:86px}.ra-left{display:flex;flex-direction:column;justify-content:center;padding:20px 24px;border-right:1px solid var(--border);background:linear-gradient(135deg,rgba(167,139,250,.11),rgba(109,40,217,.04))}.ra-num{font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:700;color:var(--accent2);line-height:1}.ra-pct{font-family:'IBM Plex Mono',monospace;font-size:11px;margin-top:4px;color:rgba(167,139,250,.72)}.ra-right{display:flex;flex-direction:column;justify-content:center;padding:16px 24px}.ra-right h2{font-size:15px;color:#fff;font-weight:600;line-height:1.4;margin-bottom:4px}.ra-right p{font-size:12px;color:var(--muted);margin:0}
-.access-row{display:grid;grid-template-columns:220px 1fr auto;align-items:center;border-top:1px solid var(--border);min-height:92px;transition:background .15s}.access-row:hover{background:rgba(255,255,255,.025)}.access-label{display:flex;flex-direction:column;justify-content:center;padding:16px 24px;border-right:1px solid var(--border);height:100%}.access-label .main{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:700;color:var(--accent2)}.access-label .sub{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);margin-top:2px}.access-info{padding:16px 24px;border-right:1px solid var(--border)}.access-info h3{font-size:16px;color:#fff;font-weight:600;margin-bottom:4px}.access-info p{font-size:12px;color:var(--muted);margin:0;line-height:1.5}.tags{display:flex;gap:5px;margin-top:8px;flex-wrap:wrap}.tag{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted);background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:2px 6px}.access-action{padding:16px 24px;display:flex;align-items:center;justify-content:center}.btn{display:inline-flex;align-items:center;gap:6px;text-decoration:none;border-radius:8px;padding:9px 17px;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;white-space:nowrap;transition:filter .15s,transform .1s}.btn:hover{filter:brightness(1.1);transform:translateY(-1px)}.btn.g{background:var(--accent2);color:#1a0b2e}.dot{width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;margin-right:5px;flex-shrink:0}footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--border);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted)}
-@media(max-width:768px){.ra-head,.access-row{grid-template-columns:1fr}.ra-left,.access-label{border-right:none;border-bottom:1px solid var(--border)}.access-info{border-right:none;border-bottom:1px solid var(--border)}.access-action{justify-content:flex-start;padding-left:20px}header{padding:28px 22px}header:after{display:none}}
+html{scroll-behavior:smooth}
+body{
+  min-height:100vh;
+  font-family:'IBM Plex Sans',sans-serif;
+  background:
+    radial-gradient(ellipse 60% 40% at 10% 0%,rgba(124,111,255,.10),transparent),
+    radial-gradient(ellipse 50% 50% at 90% 100%,rgba(167,139,250,.06),transparent),
+    var(--bg);
+  color:var(--text);line-height:1.7;
+}
+.page{max-width:1160px;margin:0 auto;padding:36px 22px 80px}
+
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:40px;flex-wrap:wrap}
+.breadcrumb{display:flex;align-items:center;gap:8px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted)}
+.breadcrumb a{color:var(--accent);text-decoration:none}
+.breadcrumb a:hover{text-decoration:underline}
+.breadcrumb span{color:var(--border)}
+.credit-chip{
+  display:inline-flex;flex-direction:column;gap:1px;
+  padding:10px 14px;border:1px solid rgba(124,111,255,.25);
+  border-left:3px solid var(--accent);border-radius:10px;
+  background:rgba(22,27,34,.7);
+}
+.credit-chip span{font-family:'IBM Plex Mono',monospace;color:var(--accent);font-size:10px;letter-spacing:1.5px;text-transform:uppercase}
+.credit-chip strong{font-size:15px;color:#fff}
+
+.hero{
+  border:1px solid rgba(124,111,255,.25);
+  border-bottom:3px solid var(--accent);
+  border-radius:24px;padding:52px 48px 44px;
+  background:linear-gradient(135deg,#090714 0%,#0f0d1f 55%,#130f2a 100%);
+  position:relative;overflow:hidden;margin-bottom:42px;
+}
+.hero:before{content:'';position:absolute;top:-100px;right:-100px;width:420px;height:420px;border-radius:50%;border:80px solid rgba(124,111,255,.05)}
+.hero:after{content:'PROO';position:absolute;right:48px;bottom:24px;font-family:'IBM Plex Mono',monospace;font-size:80px;font-weight:700;color:rgba(124,111,255,.04);letter-spacing:-2px;user-select:none}
+.hero-tag{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent);letter-spacing:3px;text-transform:uppercase;margin-bottom:16px;display:block}
+.hero h1{font-size:clamp(32px,5vw,58px);font-weight:700;line-height:1.05;color:#fff;max-width:720px}
+.hero h1 em{color:var(--accent);font-style:normal}
+.hero-sub{color:var(--muted);font-size:16px;margin-top:16px;font-weight:300;max-width:580px;line-height:1.6}
+.hero-pills{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+.pill{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:999px;padding:5px 13px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted)}
+.pill b{color:var(--text)}
+
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.sec-head h2{font-size:20px;color:#fff}
+.sec-head p{color:var(--muted);font-size:13px}
+
+.resumen-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:40px}
+.resumen-card{background:rgba(22,27,34,.90);border:1px solid var(--border);border-radius:14px;padding:20px 18px;text-align:center}
+.resumen-card .n{font-family:'IBM Plex Mono',monospace;font-size:28px;font-weight:700;color:var(--accent);line-height:1;margin-bottom:6px}
+.resumen-card .l{font-size:12px;color:var(--muted);line-height:1.4}
+
+.ra-list{display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:40px}
+.ra-card{
+  display:flex;align-items:center;gap:16px;
+  background:rgba(22,27,34,.90);border:1px solid var(--border);
+  border-radius:14px;padding:18px 20px;text-decoration:none;
+  transition:border-color .2s,background .2s;
+}
+.ra-card:hover:not(.disabled-card){border-color:rgba(124,111,255,.35);background:rgba(124,111,255,.04)}
+.ra-card.disabled-card{opacity:.5;cursor:default}
+.ra-icon{
+  width:46px;height:46px;border-radius:12px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:700;
+  background:rgba(124,111,255,.12);border:1px solid rgba(124,111,255,.25);color:var(--accent);
+}
+.ra-info{flex:1}
+.ra-label{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:3px}
+.ra-title{font-size:15px;font-weight:700;color:#fff;margin-bottom:3px}
+.ra-desc{font-size:12.5px;color:var(--muted);line-height:1.45}
+.ra-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.ra-meta span{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);background:var(--surface2);border:1px solid var(--border);border-radius:5px;padding:2px 7px}
+.ra-arrow{font-size:18px;color:var(--accent);flex-shrink:0;opacity:.6;transition:opacity .2s,transform .2s}
+.ra-card:hover:not(.disabled-card) .ra-arrow{opacity:1;transform:translateX(4px)}
+
+.status-dot{display:inline-flex;align-items:center;gap:5px;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;border-radius:999px;padding:4px 10px;margin-bottom:10px}
+.status-dot.active{color:var(--green);background:rgba(63,185,80,.09);border:1px solid rgba(63,185,80,.25)}
+.status-dot.active:before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;animation:pulse 1.6s infinite}
+.status-dot.soon{color:var(--yellow);background:rgba(210,153,34,.09);border:1px solid rgba(210,153,34,.25)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+.info-panel{padding:16px 20px;background:rgba(88,166,255,.07);border:1px solid rgba(88,166,255,.22);border-left:4px solid var(--blue);border-radius:12px;color:var(--muted);font-size:13px;margin-bottom:40px}
+.info-panel b{color:var(--text)}
+
+/* bloque de código decorativo */
+.code-preview{
+  background:#0d1117;border:1px solid rgba(124,111,255,.2);border-radius:14px;
+  padding:24px 26px;font-family:'IBM Plex Mono',monospace;font-size:13px;
+  line-height:1.8;margin-bottom:40px;overflow-x:auto;
+}
+.code-preview .cm{color:#5B9E72;font-style:italic}
+.code-preview .kw{color:#a78bfa;font-weight:600}
+.code-preview .ty{color:#58a6ff}
+.code-preview .str{color:#f0c674}
+.code-preview .fn{color:#79c0ff}
+
+footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted)}
+.footer-logo{font-size:13px;font-weight:700;color:var(--accent);letter-spacing:2px;text-transform:uppercase}
+
+@media(max-width:900px){.resumen-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.hero{padding:28px 22px 26px}.hero:after{display:none}.resumen-grid{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
 <div class="page">
-  <div class="credit"><span>Material didáctico desarrollado por:</span><strong>Ing. Santiago Martínez González</strong></div>
-  <header>
-    <span class="htag">Mi ruta de aprendizaje · Programación Orientada a Objetos · Ciclo 2-2526</span>
-    <h1>Programación <span>Orientada a Objetos</span> con C++</h1>
-    <p>Acceso a los cuadernos digitales de POO Classroom para dominar el paradigma orientado a objetos en C++: clases, herencia, polimorfismo, patrones de diseño y seguridad, con editor de código real integrado.</p>
-    <div class="pills">
-      <div class="pill">Materia: <b>Programación Orientada a Objetos</b></div>
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="breadcrumb">
+      <a href="../index.html">Mi Ruta de Aprendizaje</a>
+      <span>/</span>
+      <span style="color:var(--accent)">Programación Orientada a Objetos</span>
+    </div>
+    <div class="credit-chip">
+      <span>Material didáctico desarrollado por:</span>
+      <strong>Ing. Santiago Martínez González</strong>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <header class="hero">
+    <span class="hero-tag">PROO-20 · 4° Semestre · PT-B en Informática</span>
+    <h1>Programación<br><em>Orientada a Objetos</em></h1>
+    <p class="hero-sub">Domina los pilares de la POO en C++: clases, herencia, sobrecarga de operadores, polimorfismo y clases abstractas. Actividades prácticas con código real desde el primer día.</p>
+    <div class="hero-pills">
+      <div class="pill">Grupo: <b>411</b></div>
+      <div class="pill">Semestre: <b>4°</b></div>
       <div class="pill">Lenguaje: <b>C++</b></div>
-      <div class="pill">Grupos: <b>410 · 411</b></div>
-      <div class="pill">Proyecto: <b>Cajero Automático</b></div>
+      <div class="pill">Editor: <b>VS Code</b></div>
+      <div class="pill">Ciclo: <b>2 · 2526</b></div>
     </div>
   </header>
 
-  <div class="ra-block">
-    <div class="ra-head">
-      <div class="ra-left"><div class="ra-num">R.A. 1.2</div><div class="ra-pct">Repaso · 44 horas</div></div>
-      <div class="ra-right">
-        <h2>Modela y codifica programas haciendo uso del paradigma orientado a objetos, a través de sentencias de control, objetos y clases.</h2>
-        <p>Unidad 1 · Repaso de C++ desde cero · Cuaderno digital interactivo</p>
-      </div>
-    </div>
-    <div class="access-row">
-      <div class="access-label"><span class="main">Disponible</span><span class="sub">Cuaderno completo</span></div>
-      <div class="access-info">
-        <h3><span class="dot"></span>POO Classroom · Cuaderno Digital · R.A. 1.2</h3>
-        <p>Repaso completo de C++: entrada/salida, sentencias de control, arreglos y estructuras, clases, objetos, constructor y destructor, con editor de código real.</p>
-        <div class="tags"><span class="tag">C++</span><span class="tag">Clases</span><span class="tag">Constructor</span><span class="tag">Editor real</span><span class="tag">Cajero</span></div>
-      </div>
-      <div class="access-action"><a class="btn g" href="PROO_Classroom_RA1-2.html">Entrar →</a></div>
-    </div>
+  <!-- RESUMEN -->
+  <div class="resumen-grid">
+    <div class="resumen-card"><div class="n">2</div><div class="l">Unidades de aprendizaje activas</div></div>
+    <div class="resumen-card"><div class="n">4</div><div class="l">Resultados de aprendizaje</div></div>
+    <div class="resumen-card"><div class="n">C++</div><div class="l">Lenguaje de programación</div></div>
+    <div class="resumen-card"><div class="n">100%</div><div class="l">Digital e interactivo</div></div>
   </div>
 
-  <div class="ra-block">
-    <div class="ra-head">
-      <div class="ra-left"><div class="ra-num">R.A. 2.1</div><div class="ra-pct">Evidencia 2.1.1 · 35%</div></div>
-      <div class="ra-right">
-        <h2>Elabora aplicaciones mediante la interacción de los objetos y actores del sistema.</h2>
-        <p>Unidad 2 · 60 horas · Cuaderno digital interactivo</p>
-      </div>
-    </div>
-    <div class="access-row">
-      <div class="access-label"><span class="main">Disponible</span><span class="sub">Cuaderno completo</span></div>
-      <div class="access-info">
-        <h3><span class="dot"></span>POO Classroom · Cuaderno Digital · R.A. 2.1</h3>
-        <p>Herencia y reutilización, tipos de herencia, sobrecarga de operadores (unarios y binarios) y polimorfismo con funciones virtuales, con editor de código real.</p>
-        <div class="tags"><span class="tag">Herencia</span><span class="tag">Sobrecarga</span><span class="tag">Polimorfismo</span><span class="tag">virtual</span><span class="tag">Editor real</span></div>
-      </div>
-      <div class="access-action"><a class="btn g" href="PROO_Classroom_RA2-1.html">Entrar →</a></div>
-    </div>
+  <!-- VISTA PREVIA DE CÓDIGO -->
+  <div class="code-preview">
+    <span class="cm">// Ejemplo: Polimorfismo en C++ — lo que aprenderás en RA 2.1</span><br>
+    <span class="kw">class</span> <span class="ty">Figura</span> {<br>
+    &nbsp;&nbsp;<span class="kw">public</span>:<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">virtual</span> <span class="ty">double</span> <span class="fn">area</span>() = 0; &nbsp;<span class="cm">// método virtual puro → clase abstracta</span><br>
+    };<br><br>
+    <span class="kw">class</span> <span class="ty">Circulo</span> : <span class="kw">public</span> <span class="ty">Figura</span> {<br>
+    &nbsp;&nbsp;<span class="ty">double</span> radio;<br>
+    &nbsp;&nbsp;<span class="kw">public</span>:<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="ty">Circulo</span>(<span class="ty">double</span> r) : radio(r) {}<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="ty">double</span> <span class="fn">area</span>() <span class="kw">override</span> { <span class="kw">return</span> 3.14159 * radio * radio; }<br>
+    };&nbsp;&nbsp;<span class="cm">// ← herencia + polimorfismo</span>
   </div>
 
-  <div class="ra-block">
-    <div class="ra-head">
-      <div class="ra-left"><div class="ra-num">R.A. 2.2</div><div class="ra-pct">Evidencia 2.2.1 · 15%</div></div>
-      <div class="ra-right">
-        <h2>Asegura la integridad de los datos implementando medidas de seguridad haciendo uso de patrones de diseño.</h2>
-        <p>Unidad 2 · 24 horas · Cuaderno digital interactivo</p>
-      </div>
+  <!-- UNIDAD 2 — RA 2.1 -->
+  <section>
+    <div class="sec-head">
+      <h2>Unidad 2 · Programación con herencia y polimorfismo</h2>
+      <p>Resultados de Aprendizaje disponibles · Grupo 411</p>
     </div>
-    <div class="access-row">
-      <div class="access-label"><span class="main">Disponible</span><span class="sub">Cuaderno completo</span></div>
-      <div class="access-info">
-        <h3><span class="dot"></span>POO Classroom · Cuaderno Digital · R.A. 2.2</h3>
-        <p>Patrones de diseño (Singleton, Factory Method, Abstract Factory, Prototype), cifrado de datos, ciclo de vida de objetos y manejo de excepciones, con editor de código real.</p>
-        <div class="tags"><span class="tag">Singleton</span><span class="tag">Factory</span><span class="tag">Excepciones</span><span class="tag">Cifrado</span><span class="tag">Editor real</span></div>
-      </div>
-      <div class="access-action"><a class="btn g" href="PROO_Classroom_RA2-2.html">Entrar →</a></div>
-    </div>
-  </div>
 
-  <footer><span>Programación Orientada a Objetos · Unidades 1 y 2 · C++</span><span>Ing. Santiago Martínez González</span><span>CONALEP Extensión Nuevo Progreso · 2-2526</span></footer>
+    <div class="ra-list">
+
+      <!-- RA 2.1 — ACTIVO -->
+      <a class="ra-card" href="PROO_Classroom_RA2-1.html">
+        <div class="ra-icon">2.1</div>
+        <div class="ra-info">
+          <div class="ra-label">Resultado de Aprendizaje 2.1 · 15% del módulo</div>
+          <div class="ra-title">Sobrecarga de operadores y polimorfismo</div>
+          <div class="ra-desc">Implementa sobrecarga de operadores y polimorfismo en C++ para crear jerarquías de clases reutilizables y flexibles.</div>
+          <div class="ra-meta">
+            <span>✓ Disponible</span>
+            <span>C++</span>
+            <span>4 actividades</span>
+            <span>Bitácora</span>
+            <span>Boleta PDF</span>
+          </div>
+        </div>
+        <div class="ra-arrow">→</div>
+      </a>
+
+      <!-- RA 2.2 — PRÓXIMO -->
+      <div class="ra-card disabled-card">
+        <div class="ra-icon" style="background:rgba(255,255,255,.04);border-color:var(--border);color:var(--muted)">2.2</div>
+        <div class="ra-info">
+          <div class="ra-label" style="color:var(--muted)">Resultado de Aprendizaje 2.2 · En desarrollo</div>
+          <div class="ra-title">Clases abstractas e interfaces</div>
+          <div class="ra-desc">Diseña e implementa clases abstractas para modelar jerarquías de herencia en aplicaciones orientadas a objetos.</div>
+          <div class="ra-meta"><span>Próximamente</span></div>
+        </div>
+        <div class="ra-arrow" style="color:var(--muted)">→</div>
+      </div>
+
+    </div>
+
+    <div class="info-panel">
+      <b>¿Cómo usar estos materiales?</b> Haz clic en el RA disponible para abrir tu Cuaderno Digital. Necesitarás tu correo institucional <b>@tam.conalep.edu.mx</b> y tu matrícula para ingresar. Tendrás acceso a ejemplos de código, actividades con retroalimentación automática y boleta PDF para tu docente.
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <span class="footer-logo">PROO-20 · Programación OO</span>
+    <a href="../index.html" style="color:var(--muted);text-decoration:none">← Regresar al portal principal</a>
+    <span>Ing. Santiago Martínez González · CONALEP 22526 · Ciclo 2 · 2526</span>
+  </footer>
+
 </div>
 </body>
 </html>
