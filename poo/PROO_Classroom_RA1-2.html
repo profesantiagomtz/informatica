@@ -1,0 +1,2010 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>POO Classroom · Cuaderno Digital de Aprendizaje · RA 1.2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --azul:#6D28D9;
+  --azul-osc:#4C1D95;
+  --azul-tinte:#EDE7FB;
+  --ink:#152230;
+  --gris:#5A6B78;
+  --bg:#F1F6F9;
+  --surface:#FFFFFF;
+  --line:#D8E5EE;
+  --code-bg:#0A2233;
+  --code-ink:#D6ECF8;
+  --kw:#5BC8F5;
+  --str:#F0C674;
+  --num:#8FE3AC;
+  --amber-bg:#FFF4E0;
+  --amber:#8A5300;
+  --rojo:#A33B2E;
+  --rojo-bg:#FBEAE7;
+  --ok:#0B6B3A;
+  --radius:10px;
+  --sans:'IBM Plex Sans',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);font-size:16px;line-height:1.65}
+
+/* ===== LAYOUT ===== */
+.app{display:grid;grid-template-columns:292px 1fr;min-height:100vh}
+.sidebar{background:var(--surface);border-right:1px solid var(--line);padding:0;position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column}
+.main{padding:32px clamp(20px,5vw,64px) 96px;max-width:980px;width:100%}
+
+/* ===== SIDEBAR ===== */
+.brand{padding:22px 22px 18px;border-bottom:1px solid var(--line)}
+.brand .logo{display:flex;align-items:center;gap:10px}
+.logo-mark{width:38px;height:38px;border-radius:8px;background:var(--azul);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:600;font-size:14px;letter-spacing:-.5px}
+.brand h1{font-size:17px;font-weight:700;letter-spacing:-.2px}
+.brand .sub{font-size:12.5px;color:var(--gris);margin-top:2px}
+.brand .inst{margin-top:10px;font-size:11px;text-transform:uppercase;letter-spacing:1.2px;color:var(--azul);font-weight:600}
+
+.student-chip{margin:14px 18px 0;padding:10px 12px;background:var(--azul-tinte);border:1px solid #C9E2F2;border-radius:8px;font-size:13px;display:none}
+.student-chip strong{display:block;font-size:13.5px}
+.student-chip span{color:var(--gris);font-size:12px}
+.student-chip button{margin-top:6px;background:none;border:none;color:var(--azul);font-size:12px;font-weight:600;cursor:pointer;padding:0;font-family:var(--sans)}
+
+.progress-wrap{padding:16px 22px 6px}
+.progress-label{display:flex;justify-content:space-between;font-size:12px;color:var(--gris);margin-bottom:6px;font-weight:500}
+.progress-bar{height:7px;background:var(--line);border-radius:99px;overflow:hidden}
+.progress-fill{height:100%;width:0%;background:var(--azul);border-radius:99px;transition:width .4s ease}
+
+nav.toc{padding:12px 12px 24px;flex:1}
+.toc-group{font-size:11px;text-transform:uppercase;letter-spacing:1.1px;color:var(--gris);padding:14px 10px 6px;font-weight:600}
+.toc a{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:7px;color:var(--ink);text-decoration:none;font-size:14px;cursor:pointer}
+.toc a:hover{background:var(--bg)}
+.toc a.active{background:var(--azul-tinte);color:var(--azul-osc);font-weight:600}
+.toc .dot{width:8px;height:8px;border-radius:50%;border:2px solid var(--line);flex-shrink:0;background:#fff}
+.toc a.done .dot{background:var(--azul);border-color:var(--azul)}
+.sidebar-foot{padding:14px 22px;border-top:1px solid var(--line);font-size:11.5px;color:var(--gris)}
+
+/* ===== TOPBAR (mobile) ===== */
+.topbar{display:none;position:sticky;top:0;z-index:50;background:var(--surface);border-bottom:1px solid var(--line);padding:12px 16px;align-items:center;gap:12px}
+.topbar button{background:none;border:1px solid var(--line);border-radius:7px;padding:7px 11px;font-size:18px;cursor:pointer;line-height:1}
+.topbar .t-title{font-weight:700;font-size:15px}
+
+/* ===== SECTIONS ===== */
+section.page{display:none;animation:fadeIn .25s ease}
+section.page.visible{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:1.4px;color:var(--azul);font-weight:600;margin-bottom:8px}
+h2.page-title{font-size:clamp(24px,3.4vw,32px);font-weight:700;letter-spacing:-.5px;line-height:1.2;margin-bottom:10px}
+.page-lead{font-size:17px;color:var(--gris);max-width:64ch;margin-bottom:28px}
+h3{font-size:20px;font-weight:700;margin:34px 0 12px;letter-spacing:-.2px}
+h4{font-size:16px;font-weight:600;margin:22px 0 8px}
+p{margin-bottom:14px;max-width:72ch}
+ul.list,ol.list{margin:0 0 16px 22px;max-width:70ch}
+ul.list li,ol.list li{margin-bottom:7px}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:24px 26px;margin-bottom:18px}
+.card h4{margin-top:0}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+/* db-path chip: firma visual del cuaderno */
+.db-path{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:12.5px;background:var(--azul-osc);color:#CBE7F7;padding:6px 12px;border-radius:7px 7px 0 0;font-weight:500}
+.db-path .sep{opacity:.45}
+.db-path .tbl{color:#fff;font-weight:600}
+.db-path svg{flex-shrink:0}
+
+/* SQL blocks */
+pre.sql,pre.cpp{background:var(--code-bg);color:var(--code-ink);font-family:var(--mono);font-size:13.5px;line-height:1.65;padding:18px 20px;border-radius:var(--radius);overflow-x:auto;margin-bottom:18px;white-space:pre}
+pre.sql.solo{border-radius:var(--radius)}
+.kw{color:var(--kw);font-weight:600}
+.str{color:var(--str)}
+.num{color:var(--num)}
+.cm{color:#7FA0B4;font-style:italic}
+code.inline{font-family:var(--mono);font-size:.88em;background:var(--azul-tinte);color:var(--azul-osc);padding:2px 6px;border-radius:5px;font-weight:500}
+/* Editor C++ */
+.editor-wrap{border:1px solid var(--linea);border-radius:var(--radius);overflow:hidden;margin-bottom:16px}
+.editor-bar{background:#1A2433;color:#C7D6E5;padding:8px 14px;font-family:var(--mono);font-size:12px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #2A3850}
+.editor-bar .dot-r{width:11px;height:11px;border-radius:50%;background:#E06C5A}.editor-bar .dot-y{width:11px;height:11px;border-radius:50%;background:#E0B85A}.editor-bar .dot-g{width:11px;height:11px;border-radius:50%;background:#5AC07A}
+.editor-bar .fname{margin-left:6px;color:#8FA8BE}
+textarea.code-edit{width:100%;min-height:280px;background:#0E1726;color:#E6EDF3;font-family:var(--mono);font-size:13.5px;line-height:1.6;border:none;padding:14px 16px;resize:vertical;tab-size:4;outline:none;display:block}
+.stdin-wrap{border-top:1px solid #2A3850}
+textarea.stdin-edit{width:100%;min-height:60px;background:#121C2B;color:#C7D6E5;font-family:var(--mono);font-size:13px;border:none;padding:10px 16px;resize:vertical;outline:none;display:block}
+.run-out{background:#0A1220;color:#D6ECF8;font-family:var(--mono);font-size:13px;line-height:1.6;padding:14px 16px;border-radius:var(--radius);white-space:pre-wrap;margin-top:12px;min-height:48px;border:1px solid var(--linea)}
+.run-out .ok-line{color:#5AC07A}.run-out .err-line{color:#E89A8A}.run-out .muted{color:#7FA0B4}
+.run-bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}
+
+/* data tables */
+.tbl-wrap{overflow-x:auto;margin-bottom:18px}
+table.data{border-collapse:collapse;width:100%;background:var(--surface);font-size:14px;border-radius:0 var(--radius) var(--radius) var(--radius);overflow:hidden;border:1px solid var(--line)}
+table.data th{background:#F5FAFD;font-family:var(--mono);font-size:12.5px;font-weight:600;text-align:left;padding:10px 14px;border-bottom:2px solid var(--line);color:var(--azul-osc)}
+table.data td{padding:9px 14px;border-bottom:1px solid var(--line)}
+table.data tr:last-child td{border-bottom:none}
+table.data tr.hl td{background:#FFF9E8}
+
+/* callouts */
+.callout{border-radius:var(--radius);padding:16px 18px 14px;margin-bottom:18px;border:1px solid;font-size:15px}
+.callout .c-title{font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.callout.info{background:var(--azul-tinte);border-color:#C3DFF0;color:var(--azul-osc)}
+.callout.warn{background:var(--amber-bg);border-color:#EDD9AE;color:var(--amber)}
+.callout.danger{background:var(--rojo-bg);border-color:#EFC9C2;color:var(--rojo)}
+.callout p{margin-bottom:6px;color:inherit}
+.callout p:last-child{margin-bottom:0}
+
+/* método 4 pasos */
+.metodo{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0 24px}
+.metodo .paso{background:var(--surface);border:1px solid var(--line);border-top:3px solid var(--azul);border-radius:8px;padding:14px}
+.metodo .paso .n{font-family:var(--mono);font-size:12px;color:var(--azul);font-weight:600;margin-bottom:4px}
+.metodo .paso .q{font-size:13.5px;font-weight:600;line-height:1.4}
+
+/* forms */
+.field{margin-bottom:18px}
+.field label{display:block;font-weight:600;font-size:14px;margin-bottom:6px}
+.field .hint{font-weight:400;color:var(--gris);font-size:13px;display:block;margin-top:2px}
+input[type=text],input[type=email],select,textarea{width:100%;border:1px solid #C2D5E2;border-radius:8px;padding:11px 13px;font-size:15px;font-family:var(--sans);background:#fff;color:var(--ink)}
+textarea{min-height:110px;resize:vertical;line-height:1.6}
+textarea.sql-input{font-family:var(--mono);font-size:14px;background:#FAFCFE;min-height:130px}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--azul);outline-offset:1px;border-color:var(--azul)}
+.radio-row{display:flex;flex-wrap:wrap;gap:10px}
+.radio-pill{display:flex;align-items:center;gap:8px;border:1px solid #C2D5E2;border-radius:8px;padding:9px 14px;cursor:pointer;background:#fff;font-size:14.5px}
+.radio-pill:has(input:checked){border-color:var(--azul);background:var(--azul-tinte);font-weight:600;color:var(--azul-osc)}
+.radio-pill input{accent-color:var(--azul)}
+
+.btn{display:inline-flex;align-items:center;gap:8px;background:var(--azul);color:#fff;border:none;border-radius:8px;padding:11px 20px;font-size:15px;font-weight:600;font-family:var(--sans);cursor:pointer}
+.btn:hover{background:var(--azul-osc)}
+.btn.ghost{background:#fff;color:var(--azul-osc);border:1px solid #B6D3E6}
+.btn.ghost:hover{background:var(--azul-tinte)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.save-note{font-size:13px;color:var(--ok);margin-left:12px;opacity:0;transition:opacity .3s}
+.save-note.show{opacity:1}
+
+/* activity meta */
+.act-meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.badge{font-size:12px;font-weight:600;padding:5px 11px;border-radius:99px;background:var(--azul-tinte);color:var(--azul-osc);border:1px solid #C3DFF0}
+.badge.pts{background:#EEF3FB;color:#27466E;border-color:#CCDCF0}
+
+/* evaluación */
+.score-hero{background:var(--azul-osc);color:#fff;border-radius:var(--radius);padding:28px;display:flex;align-items:center;gap:28px;margin-bottom:22px;flex-wrap:wrap}
+.score-num{font-size:54px;font-weight:700;font-family:var(--mono);line-height:1}
+.score-hero .detail{font-size:14px;opacity:.9}
+.rubrica td .fb{font-size:13px;color:var(--gris)}
+.fb-list{margin:6px 0 0 18px;font-size:13.5px}
+.fb-list li.ok{color:var(--ok)}
+.fb-list li.miss{color:var(--rojo)}
+
+/* retroalimentación de entrega */
+.fb-panel{display:none;margin-top:18px;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.fb-panel.show{display:block;animation:fadeIn .25s ease}
+.fb-head{background:var(--azul-osc);color:#fff;padding:12px 18px;font-weight:600;display:flex;justify-content:space-between;align-items:center;font-size:14.5px;gap:12px;flex-wrap:wrap}
+.fb-body{background:var(--surface);padding:16px 18px}
+.fb-body ul.fb-list{margin:0 0 0 18px;font-size:14px}
+.solucion{margin-top:16px;border-top:1px dashed var(--line);padding-top:14px}
+.solucion h5{font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--azul-osc);margin-bottom:10px}
+.fb-unlock{margin-top:14px;text-align:right}
+textarea:disabled,input:disabled,select:disabled{background:#EDF2F6;color:#5A6B78;cursor:not-allowed}
+.radio-pill:has(input:disabled){opacity:.6;cursor:not-allowed}
+
+/* simulador SQL */
+.sim-console{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--surface)}
+.sim-console textarea{border:none;border-radius:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);min-height:140px;font-family:var(--mono);font-size:14px;background:#FAFCFE}
+.sim-console textarea:focus{outline:none;background:#fff}
+.sim-toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:12px 14px}
+.sim-status{font-size:13px;color:var(--gris);padding:0 14px 12px}
+.sim-result{border:1px solid var(--line);border-radius:10px;margin-top:14px;overflow:hidden}
+.sim-cmd{font-family:var(--mono);font-size:12.5px;background:#0A2233;color:#D6ECF8;padding:9px 14px;cursor:pointer;white-space:pre-wrap;word-break:break-word}
+.sim-cmd:hover{background:#103049}
+.sim-cmd::before{content:'sql> ';color:#5BC8F5;font-weight:600}
+.sim-body{padding:12px 14px;background:#fff;font-size:14px}
+.sim-ok{color:var(--ok);font-weight:600;font-size:13.5px}
+.sim-err{color:var(--rojo);font-family:var(--mono);font-size:13px;white-space:pre-wrap}
+.sim-body table.data{border-radius:8px;margin-bottom:6px}
+.reto{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px dashed var(--line);font-size:14.5px}
+.reto:last-child{border-bottom:none}
+.reto .r-num{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--azul);background:var(--azul-tinte);border-radius:6px;padding:3px 8px;flex-shrink:0;margin-top:1px}
+
+/* nav footer */
+.pager{display:flex;justify-content:space-between;margin-top:42px;gap:12px}
+
+/* registro: pantalla de bienvenida */
+.gate{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:18px;background:linear-gradient(150deg,#063A57 0%,#0A5D8C 55%,#0E86C4 100%)}
+.gate::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 80% 10%,rgba(255,255,255,.08),transparent 60%);pointer-events:none}
+.gate-card{position:relative;background:#fff;border-radius:16px;max-width:900px;width:100%;display:grid;grid-template-columns:1fr 1.15fr;overflow:hidden;box-shadow:0 30px 80px rgba(3,28,44,.5);max-height:94vh}
+.gate-brand{background:linear-gradient(165deg,#084F75,#0E86C4);color:#fff;padding:38px 34px 30px;display:flex;flex-direction:column}
+.gate-brand .logo-mark{width:52px;height:52px;font-size:18px;border-radius:12px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35)}
+.gate-brand h2{font-size:26px;margin:16px 0 2px;letter-spacing:-.4px;line-height:1.15}
+.g-sub{font-size:14px;opacity:.85}
+.g-divider{height:1px;background:rgba(255,255,255,.28);margin:20px 0 16px}
+.g-mod{font-size:11.5px;text-transform:uppercase;letter-spacing:1.4px;font-weight:600;opacity:.92;margin-bottom:14px}
+.g-list{list-style:none;display:flex;flex-direction:column;gap:10px;font-size:13.5px;line-height:1.5}
+.g-list li{padding-left:24px;position:relative;opacity:.96}
+.g-list li::before{content:'✓';position:absolute;left:0;top:0;font-weight:700;color:#9FDCFF}
+.g-groups{margin-top:auto;padding-top:22px;font-family:var(--mono);font-size:12.5px;opacity:.8;letter-spacing:.5px}
+.gate-form{padding:36px 38px 30px;overflow-y:auto}
+.gate-form h3{margin:0 0 4px;font-size:21px;letter-spacing:-.3px}
+.gate-form>p{color:var(--gris);font-size:13.5px;margin-bottom:20px}
+.err{color:var(--rojo);background:var(--rojo-bg);border:1px solid #EFC9C2;border-radius:8px;padding:9px 12px;font-size:13px;margin:0 0 12px;display:none}
+@media(max-width:760px){.gate{padding:0}.gate-card{grid-template-columns:1fr;border-radius:0;max-height:100vh;overflow-y:auto}.gate-brand{padding:26px 24px 20px}.g-list{display:none}.g-divider{margin:14px 0 10px}.g-groups{margin-top:12px;padding-top:0}.gate-form{padding:24px 24px 28px}}
+
+@media(max-width:920px){
+  .app{grid-template-columns:1fr}
+  .sidebar{position:fixed;left:-300px;width:292px;z-index:60;transition:left .25s ease;box-shadow:none}
+  .sidebar.open{left:0;box-shadow:0 0 40px rgba(0,0,0,.25)}
+  .topbar{display:flex}
+  .grid-2,.metodo{grid-template-columns:1fr}
+  .metodo{grid-template-columns:1fr 1fr}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media print{.sidebar,.topbar,.pager,.btn{display:none!important}.app{display:block}}
+</style>
+</head>
+<body>
+
+<!-- ===== REGISTRO (gate) ===== -->
+<div class="gate" id="gate" style="display:none">
+  <div class="gate-card">
+    <aside class="gate-brand">
+      <div class="logo-mark">SQL</div>
+      <h2>POO Classroom</h2>
+      <div class="g-sub">Cuaderno Digital de Aprendizaje</div>
+      <div class="g-divider"></div>
+      <div class="g-mod">Programación Orientada a Objetos · CONALEP</div>
+      <ul class="g-list">
+        <li>Unidad 1 · RA 1.2 · Repaso de C++ (44 horas)</li>
+        <li>Proyecto integrador: <strong>Sistema de Administración Estudiantil</strong></li>
+        <li>3 actividades prácticas con código C++ real</li>
+        <li>Bitácora de aprendizaje y reporte descargable para tu docente</li>
+      </ul>
+      <div class="g-groups">&raquo; Grupos 410 &middot; 411</div>
+    </aside>
+    <div class="gate-form">
+      <h3 id="gateTitulo">Iniciar sesión</h3>
+      <p id="gateSub">Entra con tu correo institucional y tu matrícula. Tu avance se guarda en la nube: puedes continuar desde cualquier computadora.</p>
+      <div id="camposRegistro" style="display:none">
+      <div class="field">
+        <label for="r_nombre">Nombre completo</label>
+        <input type="text" id="r_nombre" placeholder="Ej. María Fernanda López Torres" autocomplete="name">
+      </div>
+      <div class="grid-2">
+        <div class="field">
+          <label for="r_grupo">Grupo</label>
+          <select id="r_grupo">
+            <option value="">Selecciona…</option>
+            <option>410</option><option>411</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="r_turno">Turno</label>
+          <select id="r_turno">
+            <option value="">Selecciona…</option>
+            <option>Matutino</option><option>Vespertino</option>
+          </select>
+        </div>
+      </div>
+      </div>
+      <div class="field">
+        <label for="r_correo">Correo institucional</label>
+        <input type="email" id="r_correo" placeholder="nombre@tam.conalep.edu.mx" autocomplete="email">
+        <span class="hint">Debe terminar en <strong>@tam.conalep.edu.mx</strong>.</span>
+      </div>
+      <div class="field">
+        <label for="r_pass">Tu matrícula <span class="hint" style="display:inline">(es tu contraseña de acceso)</span></label>
+        <input type="text" id="r_pass" placeholder="Ej. 23100245" autocomplete="off" inputmode="numeric">
+      </div>
+      <p class="err" id="r_err"></p>
+      <button class="btn" id="btnEntrar" style="width:100%;justify-content:center;margin-top:4px" onclick="autenticar()">Entrar a mi cuaderno</button>
+      <p style="font-size:12.5px;color:var(--gris);text-align:center;margin-top:12px">¿Primera vez? <a id="toggleModo" style="color:var(--azul-osc);font-weight:600;cursor:pointer;text-decoration:underline">Crear mi cuenta</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TOPBAR móvil ===== -->
+<div class="topbar">
+  <button onclick="document.querySelector('.sidebar').classList.toggle('open')" aria-label="Abrir menú">☰</button>
+  <div class="t-title">POO Classroom</div>
+</div>
+
+<div class="app">
+<!-- ===== SIDEBAR ===== -->
+<aside class="sidebar">
+  <div class="brand">
+    <div class="logo">
+      <div class="logo-mark">SQL</div>
+      <div>
+        <h1>POO Classroom</h1>
+        <div class="sub">Cuaderno Digital de Aprendizaje</div>
+      </div>
+    </div>
+    <div class="inst">CONALEP · Programación Orientada a Objetos</div>
+  </div>
+
+  <div class="student-chip" id="studentChip">
+    <strong id="sc_nombre"></strong>
+    <span id="sc_detalle"></span><br>
+    <span id="syncBadge" style="font-size:11px;color:var(--ok);display:block;margin-top:4px">☁ Guardado en la nube</span>
+    <button onclick="cerrarSesion()">Cerrar sesión</button>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-label"><span>Avance del cuaderno</span><span id="progPct">0%</span></div>
+    <div class="progress-bar"><div class="progress-fill" id="progFill"></div></div>
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <button class="btn ghost" style="padding:5px 10px;font-size:11.5px;flex:1;justify-content:center" onclick="exportarAvance()" title="Descarga tu avance para llevarlo a otra computadora">⬇ Respaldo</button>
+      <button class="btn ghost" style="padding:5px 10px;font-size:11.5px;flex:1;justify-content:center" onclick="document.getElementById('impFile').click()" title="Carga un respaldo descargado en otra computadora">⬆ Restaurar</button>
+      <input type="file" id="impFile" accept=".json,application/json" style="display:none" onchange="importarAvance(this.files[0]);this.value=''">
+    </div>
+    <div style="font-size:10.5px;color:var(--gris);margin-top:6px;line-height:1.4">Tu avance se guarda solo en ESTA computadora. Si trabajarás en otra (o en casa), descarga tu respaldo antes de irte y restáuralo allá.</div>
+  </div>
+
+  <nav class="toc" id="toc">
+    <div class="toc-group">Inicio</div>
+    <a data-sec="intro" class="active"><span class="dot"></span>1 · Introducción a la POO</a>
+    <div class="toc-group">Repaso de C++</div>
+    <a data-sec="es"><span class="dot"></span>2 · Entrada y salida</a>
+    <a data-sec="control"><span class="dot"></span>3 · Sentencias de control</a>
+    <a data-sec="arreglos"><span class="dot"></span>4 · Arreglos y estructuras</a>
+    <div class="toc-group">El corazón de la POO</div>
+    <a data-sec="clases"><span class="dot"></span>5 · Clases y objetos</a>
+    <a data-sec="constructor"><span class="dot"></span>6 · Constructor y destructor</a>
+    <a data-sec="ejemplo"><span class="dot"></span>7 · Ejemplo guiado: el Cajero</a>
+    <div class="toc-group">Actividades prácticas</div>
+    <a data-sec="act1"><span class="dot"></span>8 · Entrada/salida y control</a>
+    <a data-sec="act2"><span class="dot"></span>9 · Tu primera clase</a>
+    <a data-sec="act3"><span class="dot"></span>10 · Constructor y métodos</a>
+    <div class="toc-group">Práctica libre</div>
+    <a data-sec="editor"><span class="dot"></span>11 · Editor C++ libre</a>
+    <div class="toc-group">Cierre</div>
+    <a data-sec="bitacora"><span class="dot"></span>12 · Bitácora del alumno</a>
+    <a data-sec="evaluacion"><span class="dot"></span>13 · Evaluación</a>
+  </nav>
+  <div class="sidebar-foot">Unidad 1 · Manejo de componentes del lenguaje orientados a objetos<br>RA 1.2 · 44 horas · Repaso de C++</div>
+</aside>
+
+<!-- ===== MAIN ===== -->
+<main class="main">
+
+<!-- 1. INTRODUCCIÓN -->
+<section class="page visible" id="sec-intro">
+  <div class="eyebrow">Sección 1 · Introducción</div>
+  <h2 class="page-title">Programación Orientada a Objetos con C++</h2>
+  <p class="page-lead">Hasta ahora programabas dando órdenes paso a paso. La <strong>Programación Orientada a Objetos (POO)</strong> cambia la forma de pensar: en vez de solo instrucciones sueltas, modelas el programa como un conjunto de <strong>objetos</strong> que tienen datos y saben hacer cosas — igual que en la vida real.</p>
+
+  <div class="card">
+    <h4>La idea en una frase</h4>
+    <p style="margin-bottom:0">Un <strong>objeto</strong> junta en un solo lugar <em>qué sabe</em> (sus datos) y <em>qué hace</em> (sus acciones). Pensar en objetos hace que los programas grandes sean más fáciles de entender, corregir y reutilizar.</p>
+  </div>
+
+  <h3>Nuestro proyecto integrador: un Cajero Automático 🏧</h3>
+  <p>Todo este cuaderno gira en torno a un ejemplo que conoces de sobra: el <strong>cajero automático</strong>. Es perfecto para aprender POO porque un cajero es, naturalmente, un objeto:</p>
+  <div class="card">
+    <div class="tbl-wrap"><table class="data">
+      <tr><th>En el cajero real…</th><th>En POO se llama…</th></tr>
+      <tr><td>El saldo, el número de cuenta, el NIP</td><td><strong>Atributos</strong> (los datos que el objeto guarda)</td></tr>
+      <tr><td>Depositar, retirar, consultar saldo</td><td><strong>Métodos</strong> (las acciones que el objeto sabe hacer)</td></tr>
+      <tr><td>Una cuenta bancaria concreta (la tuya)</td><td>Un <strong>objeto</strong> (un ejemplar real de la clase)</td></tr>
+      <tr><td>El "molde" de cómo es cualquier cuenta</td><td>Una <strong>clase</strong> (la plantilla para crear objetos)</td></tr>
+    </table></div>
+  </div>
+
+  <h3>¿Por qué repasamos C++ antes de la Unidad 2?</h3>
+  <p>La Unidad 2 (herencia, polimorfismo, patrones de diseño) se construye <strong>encima</strong> de lo que viste en el R.A. 1.2. Si las bases están firmes, lo nuevo entra fácil. Por eso este cuaderno repasa los cuatro pilares que necesitas dominar:</p>
+  <ul class="list">
+    <li><strong>Entrada y salida:</strong> cómo el programa lee datos del usuario y muestra resultados (<code class="inline">cin</code>, <code class="inline">cout</code>).</li>
+    <li><strong>Sentencias de control:</strong> cómo el programa decide (<code class="inline">if</code>, <code class="inline">switch</code>) y repite (<code class="inline">for</code>, <code class="inline">while</code>).</li>
+    <li><strong>Arreglos y estructuras:</strong> cómo guardar muchos datos juntos.</li>
+    <li><strong>Clases y objetos:</strong> el corazón de la POO — definir clases con atributos y métodos, y crear objetos con constructores.</li>
+  </ul>
+
+  <div class="callout info">
+    <div class="c-title">Contexto del Resultado de Aprendizaje</div>
+    <p><strong>R.A. 1.2 (programa PROO-20):</strong> <em>"Modela y codifica programas de cómputo haciendo uso del paradigma orientado a objetos, a través del uso de sentencias de control, objetos y clases"</em> (44 horas). Este cuaderno te prepara con el dominio de C++ que necesitarás para la Unidad 2.</p>
+  </div>
+
+  <div class="callout warn">
+    <div class="c-title">🏧 Práctica con código real</div>
+    <p>En las actividades y en el editor libre vas a <strong>escribir y ejecutar C++ de verdad</strong>, directo en el navegador, sin instalar nada. Tu código se compila en un servidor real y ves la salida (o los errores) al instante.</p>
+  </div>
+
+  <div class="pager"><span></span><button class="btn" onclick="go('es')">Comenzar: Entrada y salida →</button></div>
+</section>
+
+<!-- 2. ENTRADA Y SALIDA -->
+<section class="page" id="sec-es">
+  <div class="eyebrow">Sección 2 · Repaso de C++</div>
+  <h2 class="page-title">Entrada y salida de datos</h2>
+  <p class="page-lead">Todo programa útil necesita <strong>comunicarse</strong>: mostrar información al usuario y recibir datos de él. En C++ eso se hace con <code class="inline">cout</code> (salida) y <code class="inline">cin</code> (entrada).</p>
+  <button class="btn ghost" onclick="descargarApuntes()" style="margin-bottom:22px">⬇ Descargar apuntes para imprimir (PDF compacto)</button>
+
+  <h3>El esqueleto de todo programa C++</h3>
+  <pre class="cpp">#include &lt;iostream&gt;   // librería de entrada/salida
+using namespace std;  // para escribir cout en vez de std::cout
+
+int main() {
+    cout &lt;&lt; "¡Bienvenido al cajero!" &lt;&lt; endl;
+    return 0;
+}</pre>
+  <div class="card">
+    <div class="tbl-wrap"><table class="data">
+      <tr><th>Parte</th><th>¿Qué hace?</th></tr>
+      <tr><td><code class="inline">#include &lt;iostream&gt;</code></td><td>Trae las herramientas de entrada/salida (cin, cout).</td></tr>
+      <tr><td><code class="inline">int main()</code></td><td>El punto donde arranca el programa. Todo lo de adentro se ejecuta en orden.</td></tr>
+      <tr><td><code class="inline">return 0;</code></td><td>Le avisa al sistema que el programa terminó bien.</td></tr>
+    </table></div>
+  </div>
+
+  <h3>Salida: <code class="inline">cout</code></h3>
+  <p>El operador <code class="inline">&lt;&lt;</code> "empuja" lo que quieras mostrar hacia la pantalla. <code class="inline">endl</code> salta de renglón.</p>
+  <pre class="cpp">double saldo = 1500.50;
+cout &lt;&lt; "Tu saldo es: $" &lt;&lt; saldo &lt;&lt; endl;
+cout &lt;&lt; "Gracias por su preferencia" &lt;&lt; endl;</pre>
+  <p>Puedes encadenar texto y variables en la misma línea con varios <code class="inline">&lt;&lt;</code>. La salida sería: <code class="inline">Tu saldo es: $1500.5</code></p>
+
+  <h3>Entrada: <code class="inline">cin</code></h3>
+  <p>El operador <code class="inline">&gt;&gt;</code> toma lo que el usuario teclea y lo guarda en una variable.</p>
+  <pre class="cpp">double monto;
+cout &lt;&lt; "¿Cuánto desea retirar? ";
+cin &gt;&gt; monto;                       // el usuario teclea, p.ej., 500
+cout &lt;&lt; "Retirando $" &lt;&lt; monto &lt;&lt; endl;</pre>
+
+  <h3>Tipos de datos que más usarás</h3>
+  <div class="card">
+    <div class="tbl-wrap"><table class="data">
+      <tr><th>Tipo</th><th>Guarda</th><th>Ejemplo en el cajero</th></tr>
+      <tr><td><code class="inline">int</code></td><td>Números enteros</td><td><code class="inline">int nip = 1234;</code></td></tr>
+      <tr><td><code class="inline">double</code></td><td>Números con decimales</td><td><code class="inline">double saldo = 1500.50;</code></td></tr>
+      <tr><td><code class="inline">char</code></td><td>Un solo carácter</td><td><code class="inline">char opcion = 'R';</code></td></tr>
+      <tr><td><code class="inline">string</code></td><td>Texto (requiere <code class="inline">#include &lt;string&gt;</code>)</td><td><code class="inline">string titular = "Ana López";</code></td></tr>
+      <tr><td><code class="inline">bool</code></td><td>Verdadero/falso</td><td><code class="inline">bool autorizado = true;</code></td></tr>
+    </table></div>
+  </div>
+
+  <div class="callout info">
+    <div class="c-title">Sobre el formato de decimales</div>
+    <p>Por defecto C++ muestra <code class="inline">1500.5</code>, no <code class="inline">1500.50</code>. Para dinero, puedes fijar 2 decimales con <code class="inline">#include &lt;iomanip&gt;</code> y <code class="inline">cout &lt;&lt; fixed &lt;&lt; setprecision(2);</code> antes de imprimir. Lo verás en el ejemplo guiado.</p>
+  </div>
+
+  <div class="pager"><button class="btn ghost" onclick="go('intro')">← Introducción</button><button class="btn" onclick="go('control')">Continuar: Sentencias de control →</button></div>
+</section>
+
+<!-- 3. SENTENCIAS DE CONTROL -->
+<section class="page" id="sec-control">
+  <div class="eyebrow">Sección 3 · Repaso de C++</div>
+  <h2 class="page-title">Sentencias de control</h2>
+  <p class="page-lead">Un cajero no hace siempre lo mismo: <strong>decide</strong> (¿hay saldo suficiente?) y <strong>repite</strong> (mostrar el menú hasta que el usuario salga). Para eso están las sentencias de control.</p>
+  <button class="btn ghost" onclick="descargarApuntes()" style="margin-bottom:22px">⬇ Descargar apuntes para imprimir (PDF compacto)</button>
+
+  <h3>A · Selección: tomar decisiones</h3>
+  <h4><code class="inline">if / else</code> — el camino que se bifurca</h4>
+  <pre class="cpp">double saldo = 1500;
+double retiro = 2000;
+
+if (retiro &lt;= saldo) {
+    saldo = saldo - retiro;
+    cout &lt;&lt; "Retiro exitoso. Nuevo saldo: " &lt;&lt; saldo &lt;&lt; endl;
+} else {
+    cout &lt;&lt; "Fondos insuficientes." &lt;&lt; endl;
+}</pre>
+  <p>Si la condición entre paréntesis es verdadera, se ejecuta el primer bloque; si no, el del <code class="inline">else</code>. Los operadores de comparación: <code class="inline">==</code> (igual), <code class="inline">!=</code> (distinto), <code class="inline">&gt;</code>, <code class="inline">&lt;</code>, <code class="inline">&gt;=</code>, <code class="inline">&lt;=</code>.</p>
+
+  <h4><code class="inline">switch</code> — elegir entre muchas opciones</h4>
+  <p>Ideal para el <strong>menú del cajero</strong>: según la opción que teclee el usuario, hace una cosa u otra.</p>
+  <pre class="cpp">int opcion;
+cout &lt;&lt; "1) Consultar  2) Depositar  3) Retirar  4) Salir\n";
+cin &gt;&gt; opcion;
+
+switch (opcion) {
+    case 1:
+        cout &lt;&lt; "Mostrando saldo..." &lt;&lt; endl;
+        break;
+    case 2:
+        cout &lt;&lt; "Depositando..." &lt;&lt; endl;
+        break;
+    case 3:
+        cout &lt;&lt; "Retirando..." &lt;&lt; endl;
+        break;
+    default:
+        cout &lt;&lt; "Opción no válida" &lt;&lt; endl;
+}</pre>
+  <div class="callout warn">
+    <div class="c-title">⚠ No olvides el <code class="inline">break</code></div>
+    <p>Sin <code class="inline">break</code> al final de cada <code class="inline">case</code>, el programa "se sigue de largo" y ejecuta también los casos siguientes. El <code class="inline">default</code> es lo que pasa si ninguna opción coincide.</p>
+  </div>
+
+  <h3>B · Repetición: hacer algo varias veces</h3>
+  <h4><code class="inline">for</code> — cuando sabes cuántas veces</h4>
+  <pre class="cpp">// Mostrar los últimos 3 movimientos
+for (int i = 1; i &lt;= 3; i++) {
+    cout &lt;&lt; "Movimiento " &lt;&lt; i &lt;&lt; endl;
+}</pre>
+  <p>El <code class="inline">for</code> tiene tres partes: inicio (<code class="inline">int i = 1</code>), condición para seguir (<code class="inline">i &lt;= 3</code>) y avance (<code class="inline">i++</code>, suma 1 cada vuelta).</p>
+
+  <h4><code class="inline">while</code> — mientras se cumpla una condición</h4>
+  <pre class="cpp">int intentos = 0;
+int nip;
+while (intentos &lt; 3) {
+    cout &lt;&lt; "Ingrese su NIP: ";
+    cin &gt;&gt; nip;
+    if (nip == 1234) break;   // NIP correcto, salimos
+    intentos++;
+}</pre>
+
+  <h4><code class="inline">do while</code> — al menos una vez</h4>
+  <p>Perfecto para el menú: <strong>siempre</strong> se muestra al menos una vez, y se repite hasta que el usuario elija salir.</p>
+  <pre class="cpp">int opcion;
+do {
+    cout &lt;&lt; "1) Consultar  2) Salir\n";
+    cin &gt;&gt; opcion;
+    // ... procesar opción ...
+} while (opcion != 2);    // repite hasta que elija "Salir"</pre>
+  <div class="callout info">
+    <div class="c-title">¿for, while o do-while?</div>
+    <p><strong>for:</strong> sabes el número de repeticiones (recorrer 3 movimientos). <strong>while:</strong> repites mientras algo sea cierto, y podría no ejecutarse ni una vez. <strong>do-while:</strong> igual que while, pero se ejecuta mínimo una vez (ideal para menús).</p>
+  </div>
+
+  <div class="pager"><button class="btn ghost" onclick="go('es')">← Entrada y salida</button><button class="btn" onclick="go('arreglos')">Continuar: Arreglos y estructuras →</button></div>
+</section>
+
+<!-- 4. ARREGLOS Y ESTRUCTURAS -->
+<section class="page" id="sec-arreglos">
+  <div class="eyebrow">Sección 4 · Repaso de C++</div>
+  <h2 class="page-title">Arreglos y estructuras</h2>
+  <p class="page-lead">Un cajero maneja muchos datos: el historial de movimientos, los billetes disponibles, los datos de varias cuentas. Para guardar <strong>colecciones</strong> de datos usamos arreglos y estructuras.</p>
+  <button class="btn ghost" onclick="descargarApuntes()" style="margin-bottom:22px">⬇ Descargar apuntes para imprimir (PDF compacto)</button>
+
+  <h3>Arreglos unidimensionales — una lista</h3>
+  <p>Un <strong>arreglo</strong> guarda varios valores del mismo tipo bajo un solo nombre. Cada valor tiene una posición (índice), <strong>empezando en 0</strong>.</p>
+  <pre class="cpp">// Los últimos 3 retiros
+double retiros[3] = {500.0, 1000.0, 200.0};
+
+cout &lt;&lt; retiros[0];   // 500.0  (primer elemento, índice 0)
+cout &lt;&lt; retiros[2];   // 200.0  (tercer elemento, índice 2)
+
+retiros[1] = 750.0;   // cambiar el segundo valor</pre>
+  <p>Con un <code class="inline">for</code> recorres todo el arreglo:</p>
+  <pre class="cpp">double total = 0;
+for (int i = 0; i &lt; 3; i++) {
+    total = total + retiros[i];
+}
+cout &lt;&lt; "Total retirado: " &lt;&lt; total;   // 1450</pre>
+
+  <h3>Arreglos multidimensionales — una tabla</h3>
+  <p>Un arreglo de dos dimensiones es como una tabla con filas y columnas. Por ejemplo, los saldos de 2 cuentas en 3 meses:</p>
+  <pre class="cpp">double saldos[2][3] = {
+    {1000, 1200, 1500},   // cuenta 0
+    {500,  800,  600}     // cuenta 1
+};
+cout &lt;&lt; saldos[0][2];   // 1500 (cuenta 0, mes 2)
+cout &lt;&lt; saldos[1][0];   // 500  (cuenta 1, mes 0)</pre>
+
+  <h3>Estructuras (<code class="inline">struct</code>) — agrupar datos distintos</h3>
+  <p>Un arreglo guarda muchos datos <em>del mismo tipo</em>. Una <strong>estructura</strong> agrupa datos <em>de distintos tipos</em> que describen una misma cosa. Por ejemplo, una cuenta tiene número (int), titular (string) y saldo (double):</p>
+  <pre class="cpp">struct Cuenta {
+    int numero;
+    string titular;
+    double saldo;
+};
+
+// Crear y usar una estructura:
+Cuenta c1;
+c1.numero = 1001;
+c1.titular = "Ana López";
+c1.saldo = 1500.50;
+
+cout &lt;&lt; c1.titular &lt;&lt; " tiene $" &lt;&lt; c1.saldo;</pre>
+  <p>El punto (<code class="inline">.</code>) accede a cada campo de la estructura.</p>
+
+  <div class="callout info">
+    <div class="c-title">struct: el escalón previo a las clases</div>
+    <p>Una <code class="inline">struct</code> ya junta datos relacionados — es el primer paso hacia la POO. La gran diferencia: en la siguiente sección verás que una <strong>clase</strong> agrupa los datos <em>Y TAMBIÉN</em> las acciones (métodos), y además protege esos datos. La clase es la <code class="inline">struct</code> llevada al siguiente nivel.</p>
+  </div>
+
+  <div class="pager"><button class="btn ghost" onclick="go('control')">← Sentencias de control</button><button class="btn" onclick="go('clases')">Continuar: Clases y objetos →</button></div>
+</section>
+
+<!-- 5. CLASES Y OBJETOS -->
+<section class="page" id="sec-clases">
+  <div class="eyebrow">Sección 5 · El corazón de la POO</div>
+  <h2 class="page-title">Clases y objetos</h2>
+  <p class="page-lead">Llegamos a lo esencial. Una <strong>clase</strong> es el molde; un <strong>objeto</strong> es lo que sale del molde. La clase <code class="inline">Cuenta</code> describe cómo es cualquier cuenta; cada cuenta concreta (la de Ana, la de Luis) es un objeto.</p>
+  <button class="btn ghost" onclick="descargarApuntes()" style="margin-bottom:22px">⬇ Descargar apuntes para imprimir (PDF compacto)</button>
+
+  <h3>Anatomía de una clase</h3>
+  <p>Una clase tiene dos cosas: <strong>atributos</strong> (los datos que guarda) y <strong>métodos</strong> (las acciones que sabe hacer).</p>
+  <pre class="cpp">class Cuenta {
+  private:
+    double saldo;        // ATRIBUTO: dato que guarda
+
+  public:
+    void depositar(double monto) {    // MÉTODO: acción
+        saldo = saldo + monto;
+    }
+    void mostrarSaldo() {             // MÉTODO: acción
+        cout &lt;&lt; "Saldo: $" &lt;&lt; saldo &lt;&lt; endl;
+    }
+};</pre>
+  <div class="card">
+    <div class="tbl-wrap"><table class="data">
+      <tr><th>Elemento</th><th>¿Qué es?</th></tr>
+      <tr><td><code class="inline">class Cuenta { ... };</code></td><td>Define el molde. Ojo: lleva <strong>punto y coma</strong> al final.</td></tr>
+      <tr><td><code class="inline">saldo</code></td><td>Atributo: el dato que cada cuenta guarda.</td></tr>
+      <tr><td><code class="inline">depositar()</code>, <code class="inline">mostrarSaldo()</code></td><td>Métodos: lo que la cuenta sabe hacer.</td></tr>
+    </table></div>
+  </div>
+
+  <h3>Crear y usar objetos</h3>
+  <p>Una vez definida la clase, creas objetos a partir de ella y los usas con el punto (<code class="inline">.</code>):</p>
+  <pre class="cpp">int main() {
+    Cuenta cuentaDeAna;          // crear un objeto de la clase Cuenta
+    cuentaDeAna.depositar(1500); // usar un método del objeto
+    cuentaDeAna.mostrarSaldo();  // Saldo: $1500
+    return 0;
+}</pre>
+
+  <h3>Control de acceso: <code class="inline">public</code>, <code class="inline">private</code>, <code class="inline">protected</code></h3>
+  <p>Aquí está la gran ventaja de las clases sobre las estructuras: pueden <strong>proteger</strong> sus datos. Esto se llama <strong>encapsulamiento</strong>.</p>
+  <div class="card">
+    <div class="tbl-wrap"><table class="data">
+      <tr><th>Modificador</th><th>¿Quién puede acceder?</th><th>Uso típico</th></tr>
+      <tr><td><code class="inline">private</code></td><td>Solo la propia clase, desde adentro</td><td>Los datos sensibles (saldo, NIP)</td></tr>
+      <tr><td><code class="inline">public</code></td><td>Cualquiera, desde afuera</td><td>Los métodos que el usuario usa (depositar)</td></tr>
+      <tr><td><code class="inline">protected</code></td><td>La clase y sus "hijas" (herencia)</td><td>Se verá a fondo en la Unidad 2</td></tr>
+    </table></div>
+  </div>
+  <div class="callout warn">
+    <div class="c-title">🔒 ¿Por qué hacer <code class="inline">saldo</code> privado?</div>
+    <p>Si el saldo fuera <code class="inline">public</code>, cualquiera podría escribir <code class="inline">cuentaDeAna.saldo = 999999;</code> y robar dinero sin control. Al hacerlo <code class="inline">private</code>, la única forma de cambiarlo es a través de métodos como <code class="inline">depositar()</code> y <code class="inline">retirar()</code>, que pueden <strong>validar</strong> (¿hay fondos?, ¿el monto es positivo?). Eso es proteger la integridad de los datos — justo lo que un cajero real debe hacer.</p>
+  </div>
+
+  <div class="pager"><button class="btn ghost" onclick="go('arreglos')">← Arreglos y estructuras</button><button class="btn" onclick="go('constructor')">Continuar: Constructor y destructor →</button></div>
+</section>
+
+<!-- 6. CONSTRUCTOR Y DESTRUCTOR -->
+<section class="page" id="sec-constructor">
+  <div class="eyebrow">Sección 6 · El corazón de la POO</div>
+  <h2 class="page-title">Constructor y destructor</h2>
+  <p class="page-lead">Cuando abres una cuenta, no empieza "en blanco": tiene un titular y un saldo inicial. El <strong>constructor</strong> es el método especial que da esos valores iniciales al nacer el objeto. El <strong>destructor</strong> es lo que ocurre cuando el objeto deja de existir.</p>
+  <button class="btn ghost" onclick="descargarApuntes()" style="margin-bottom:22px">⬇ Descargar apuntes para imprimir (PDF compacto)</button>
+
+  <h3>El constructor — dar vida al objeto</h3>
+  <p>El constructor es un método que <strong>se llama igual que la clase</strong> y <strong>no devuelve nada</strong> (ni siquiera void). Se ejecuta automáticamente al crear el objeto.</p>
+  <pre class="cpp">class Cuenta {
+  private:
+    string titular;
+    double saldo;
+
+  public:
+    // CONSTRUCTOR: mismo nombre que la clase
+    Cuenta(string nombre, double saldoInicial) {
+        titular = nombre;
+        saldo = saldoInicial;
+        cout &lt;&lt; "Cuenta creada para " &lt;&lt; titular &lt;&lt; endl;
+    }
+
+    void mostrarSaldo() {
+        cout &lt;&lt; titular &lt;&lt; ": $" &lt;&lt; saldo &lt;&lt; endl;
+    }
+};</pre>
+  <p>Ahora, al crear el objeto, le pasas los datos iniciales entre paréntesis:</p>
+  <pre class="cpp">int main() {
+    Cuenta cuentaDeAna("Ana López", 1500.0);  // el constructor corre aquí
+    cuentaDeAna.mostrarSaldo();                // Ana López: $1500
+    return 0;
+}</pre>
+
+  <h3>El destructor — la despedida del objeto</h3>
+  <p>El destructor se llama igual que la clase pero con una <strong>virgulilla</strong> <code class="inline">~</code> adelante. Se ejecuta automáticamente cuando el objeto deja de existir (al terminar el programa o salir de su ámbito). Sirve para "limpiar" antes de irse.</p>
+  <pre class="cpp">class Cuenta {
+    // ... atributos y constructor ...
+  public:
+    ~Cuenta() {     // DESTRUCTOR
+        cout &lt;&lt; "Cerrando la cuenta de " &lt;&lt; titular &lt;&lt; endl;
+    }
+};</pre>
+  <div class="callout info">
+    <div class="c-title">Constructor y destructor: el ciclo de vida</div>
+    <p>Piénsalo como abrir y cerrar una cuenta en el banco: el <strong>constructor</strong> es el papeleo de apertura (le das nombre y depósito inicial), y el <strong>destructor</strong> es el cierre (se ejecuta solo, al final). Tú no los llamas manualmente: C++ los dispara automáticamente al crear y destruir el objeto.</p>
+  </div>
+
+  <h3>Referencias y asignación de objetos</h3>
+  <p>Puedes tener varios objetos de la misma clase, cada uno con sus propios datos:</p>
+  <pre class="cpp">Cuenta cuentaAna("Ana López", 1500.0);
+Cuenta cuentaLuis("Luis Pérez", 800.0);
+// cuentaAna y cuentaLuis son objetos INDEPENDIENTES:
+// cada uno guarda su propio titular y su propio saldo.</pre>
+
+  <div class="pager"><button class="btn ghost" onclick="go('clases')">← Clases y objetos</button><button class="btn" onclick="go('ejemplo')">Continuar: Ejemplo guiado →</button></div>
+</section>
+
+<!-- 7. EJEMPLO GUIADO -->
+<section class="page" id="sec-ejemplo">
+  <div class="eyebrow">Sección 7 · Ejemplo guiado</div>
+  <h2 class="page-title">El Cajero completo, paso a paso</h2>
+  <p class="page-lead">Vamos a juntar TODO lo repasado en un solo programa: una clase <code class="inline">Cuenta</code> con atributos privados, constructor, métodos con validación, y un <code class="inline">main</code> que usa un menú con <code class="inline">switch</code> y un ciclo <code class="inline">do-while</code>. Léelo despacio: cada pieza ya la conoces.</p>
+
+  <h3>El programa completo</h3>
+  <pre class="cpp">#include &lt;iostream&gt;
+#include &lt;iomanip&gt;   // para setprecision (formato de dinero)
+using namespace std;
+
+class Cuenta {
+  private:
+    string titular;
+    double saldo;
+
+  public:
+    // Constructor: da valores iniciales
+    Cuenta(string nombre, double saldoInicial) {
+        titular = nombre;
+        saldo = saldoInicial;
+    }
+
+    // Método con validación: solo deposita montos positivos
+    void depositar(double monto) {
+        if (monto &gt; 0) {
+            saldo = saldo + monto;
+            cout &lt;&lt; "Depósito exitoso." &lt;&lt; endl;
+        } else {
+            cout &lt;&lt; "Monto inválido." &lt;&lt; endl;
+        }
+    }
+
+    // Método con validación: no permite sobregiro
+    void retirar(double monto) {
+        if (monto &gt; saldo) {
+            cout &lt;&lt; "Fondos insuficientes." &lt;&lt; endl;
+        } else if (monto &lt;= 0) {
+            cout &lt;&lt; "Monto inválido." &lt;&lt; endl;
+        } else {
+            saldo = saldo - monto;
+            cout &lt;&lt; "Retiro exitoso." &lt;&lt; endl;
+        }
+    }
+
+    void consultar() {
+        cout &lt;&lt; fixed &lt;&lt; setprecision(2);
+        cout &lt;&lt; titular &lt;&lt; ", su saldo es: $" &lt;&lt; saldo &lt;&lt; endl;
+    }
+};
+
+int main() {
+    Cuenta miCuenta("Ana López", 1500.0);
+    int opcion;
+    double monto;
+
+    do {
+        cout &lt;&lt; "\n--- CAJERO ---" &lt;&lt; endl;
+        cout &lt;&lt; "1) Consultar saldo" &lt;&lt; endl;
+        cout &lt;&lt; "2) Depositar" &lt;&lt; endl;
+        cout &lt;&lt; "3) Retirar" &lt;&lt; endl;
+        cout &lt;&lt; "4) Salir" &lt;&lt; endl;
+        cout &lt;&lt; "Opción: ";
+        cin &gt;&gt; opcion;
+
+        switch (opcion) {
+            case 1:
+                miCuenta.consultar();
+                break;
+            case 2:
+                cout &lt;&lt; "Monto a depositar: ";
+                cin &gt;&gt; monto;
+                miCuenta.depositar(monto);
+                break;
+            case 3:
+                cout &lt;&lt; "Monto a retirar: ";
+                cin &gt;&gt; monto;
+                miCuenta.retirar(monto);
+                break;
+            case 4:
+                cout &lt;&lt; "Gracias por su preferencia." &lt;&lt; endl;
+                break;
+            default:
+                cout &lt;&lt; "Opción no válida." &lt;&lt; endl;
+        }
+    } while (opcion != 4);
+
+    return 0;
+}</pre>
+
+  <h3>¿Ves cómo todo encaja?</h3>
+  <div class="card">
+    <div class="tbl-wrap"><table class="data">
+      <tr><th>Lo que repasaste</th><th>Dónde aparece en el cajero</th></tr>
+      <tr><td>Entrada/salida (cin, cout)</td><td>El menú que se muestra y lee la opción del usuario</td></tr>
+      <tr><td>Selección (if/else, switch)</td><td>El switch del menú y las validaciones de fondos</td></tr>
+      <tr><td>Repetición (do-while)</td><td>El menú se repite hasta que eligen "Salir"</td></tr>
+      <tr><td>Clase con atributos privados</td><td>titular y saldo, protegidos dentro de Cuenta</td></tr>
+      <tr><td>Constructor</td><td>Cuenta("Ana López", 1500.0) al crear el objeto</td></tr>
+      <tr><td>Métodos con validación</td><td>depositar() y retirar() cuidan la integridad del saldo</td></tr>
+    </table></div>
+  </div>
+
+  <div class="callout info">
+    <div class="c-title">💡 Pruébalo tú mismo</div>
+    <p>En la sección <strong>Editor C++ libre</strong> puedes pegar este programa completo, compilarlo y ejecutarlo de verdad. Como usa <code class="inline">cin</code>, escribe las opciones del menú (1, 2, 3...) en el cuadro de "Entrada" antes de ejecutar. ¡Experimenta!</p>
+  </div>
+
+  <div class="pager"><button class="btn ghost" onclick="go('constructor')">← Constructor y destructor</button><button class="btn" onclick="go('act1')">Comenzar las actividades →</button></div>
+</section>
+
+<!-- 8. ACTIVIDAD 1 -->
+<section class="page" id="sec-act1">
+  <div class="eyebrow">Sección 8 · Actividad práctica 1</div>
+  <h2 class="page-title">Entrada/salida y control · El menú del cajero</h2>
+  <div class="act-meta"><span class="badge">cin / cout</span><span class="badge">switch</span><span class="badge">do-while</span><span class="badge pts">30 puntos</span></div>
+
+  <div class="card">
+    <h4>📋 Lo que debes lograr</h4>
+    <p style="margin-bottom:0">Escribe un programa que muestre un menú de cajero con 3 opciones (1-Consultar, 2-Depositar, 3-Salir) usando <code class="inline">do-while</code> y <code class="inline">switch</code>. Por ahora, cada opción solo imprime un mensaje (ej. "Consultando saldo..."). El menú se repite hasta que el usuario teclee 3.</p>
+  </div>
+
+  <h3>Parte A · Análisis <span class="badge pts" style="font-size:11px">8 pts</span></h3>
+  <div class="card">
+    <div class="field">
+      <label>1. ¿Qué ciclo garantiza que el menú se muestre al menos una vez?</label>
+      <div class="radio-row">
+        <label class="radio-pill"><input type="radio" name="a1_ciclo" value="for" data-key="a1_ciclo">for</label>
+        <label class="radio-pill"><input type="radio" name="a1_ciclo" value="dowhile" data-key="a1_ciclo">do-while</label>
+        <label class="radio-pill"><input type="radio" name="a1_ciclo" value="while" data-key="a1_ciclo">while</label>
+      </div>
+    </div>
+    <div class="field" style="margin-bottom:0">
+      <label>2. ¿Qué instrucción evita que un <code class="inline">case</code> "se siga de largo" al siguiente?</label>
+      <div class="radio-row">
+        <label class="radio-pill"><input type="radio" name="a1_break" value="break" data-key="a1_break">break</label>
+        <label class="radio-pill"><input type="radio" name="a1_break" value="stop" data-key="a1_break">stop</label>
+        <label class="radio-pill"><input type="radio" name="a1_break" value="exit" data-key="a1_break">exit</label>
+      </div>
+    </div>
+  </div>
+
+  <h3>Parte B · Escribe y prueba tu código <span class="badge pts" style="font-size:11px">17 pts</span></h3>
+  <p style="font-size:13px;color:var(--gris)">Tip: en el cuadro de Entrada pon las opciones que "tecleará" el usuario, una por línea (por ejemplo: 1, luego 3). Compila para probarlo antes de entregar.</p>
+  <div class="editor-wrap">
+    <div class="editor-bar"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span><span class="fname">actividad1.cpp</span></div>
+    <textarea class="code-edit" id="a1_code" data-key="a1_code" spellcheck="false">#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    int opcion;
+    do {
+        // Muestra aquí el menú con cout...
+
+        cin &gt;&gt; opcion;
+        switch (opcion) {
+            // Completa los case 1, 2 y 3...
+
+        }
+    } while ( /* condición para repetir */ );
+    return 0;
+}</textarea>
+    <div class="stdin-wrap">
+      <div style="background:#121C2B;color:#7FA0B4;font-family:var(--mono);font-size:11px;padding:6px 16px 0">ENTRADA (opciones que teclea el usuario):</div>
+      <textarea class="stdin-edit" id="a1_stdin" spellcheck="false">1
+3</textarea>
+    </div>
+  </div>
+  <div class="run-bar">
+    <button class="btn ghost" onclick="ejecutarCodigo('a1_code','a1_stdin','a1_out')">▶ Compilar y probar</button>
+  </div>
+  <div class="run-out" id="a1_out"><span class="muted">Prueba tu código aquí antes de entregar…</span></div>
+
+  <h3>Parte C · Explica <span class="badge pts" style="font-size:11px">5 pts</span></h3>
+  <div class="field">
+    <label for="a1_expl">¿Por qué <code class="inline">do-while</code> es mejor que <code class="inline">while</code> para un menú? <span class="hint">Mínimo 2 líneas.</span></label>
+    <textarea id="a1_expl" data-key="a1_expl" placeholder="El do-while es mejor para un menú porque…"></textarea>
+  </div>
+  <p style="font-size:13px;color:var(--gris);max-width:70ch;margin-bottom:10px">Al entregar, el sistema revisará tu código y respuestas, y te mostrará la solución correcta. <strong>Solo tienes un intento</strong>: después de entregar ya no podrás modificar esta actividad.</p>
+  <button class="btn" id="btn-act1" onclick="entregar('act1')">Entregar Actividad 1 · intento único</button><span class="save-note" id="save-act1">✓</span>
+  <div class="fb-panel" id="fb-act1"></div>
+
+  <div class="pager"><button class="btn ghost" onclick="go('ejemplo')">← Ejemplo guiado</button><button class="btn" onclick="go('act2')">Actividad 2 →</button></div>
+</section>
+
+<!-- 9. ACTIVIDAD 2 -->
+<section class="page" id="sec-act2">
+  <div class="eyebrow">Sección 9 · Actividad práctica 2</div>
+  <h2 class="page-title">Tu primera clase · La clase Cuenta</h2>
+  <div class="act-meta"><span class="badge">class</span><span class="badge">private / public</span><span class="badge">métodos</span><span class="badge pts">30 puntos</span></div>
+
+  <div class="card">
+    <h4>📋 Lo que debes lograr</h4>
+    <p style="margin-bottom:0">Define una clase <code class="inline">Cuenta</code> con un atributo <strong>privado</strong> <code class="inline">saldo</code> y dos métodos <strong>públicos</strong>: <code class="inline">depositar(double monto)</code> (suma al saldo) y <code class="inline">mostrarSaldo()</code> (lo imprime). En <code class="inline">main</code>, crea un objeto, deposita 500 dos veces y muestra el saldo.</p>
+  </div>
+
+  <h3>Parte A · Análisis <span class="badge pts" style="font-size:11px">10 pts</span></h3>
+  <div class="card">
+    <div class="field">
+      <label>1. ¿Qué modificador protege el saldo para que no se cambie directamente desde afuera?</label>
+      <div class="radio-row">
+        <label class="radio-pill"><input type="radio" name="a2_acc" value="public" data-key="a2_acc">public</label>
+        <label class="radio-pill"><input type="radio" name="a2_acc" value="private" data-key="a2_acc">private</label>
+        <label class="radio-pill"><input type="radio" name="a2_acc" value="global" data-key="a2_acc">global</label>
+      </div>
+    </div>
+    <div class="field" style="margin-bottom:0">
+      <label>2. Los métodos que el usuario usa desde afuera (depositar, mostrarSaldo) deben ser…</label>
+      <div class="radio-row">
+        <label class="radio-pill"><input type="radio" name="a2_met" value="private" data-key="a2_met">private</label>
+        <label class="radio-pill"><input type="radio" name="a2_met" value="public" data-key="a2_met">public</label>
+        <label class="radio-pill"><input type="radio" name="a2_met" value="static" data-key="a2_met">static</label>
+      </div>
+    </div>
+  </div>
+
+  <h3>Parte B · Escribe tu clase <span class="badge pts" style="font-size:11px">15 pts</span></h3>
+  <div class="editor-wrap">
+    <div class="editor-bar"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span><span class="fname">actividad2.cpp</span></div>
+    <textarea class="code-edit" id="a2_code" data-key="a2_code" spellcheck="false">#include &lt;iostream&gt;
+using namespace std;
+
+class Cuenta {
+  private:
+    // declara aquí el atributo saldo (double)
+
+  public:
+    // método depositar(double monto)
+
+    // método mostrarSaldo()
+
+};
+
+int main() {
+    Cuenta c;
+    // deposita 500 dos veces y muestra el saldo
+
+    return 0;
+}</textarea>
+    <div class="stdin-wrap">
+      <div style="background:#121C2B;color:#7FA0B4;font-family:var(--mono);font-size:11px;padding:6px 16px 0">ENTRADA (esta actividad no necesita cin, deja vacío):</div>
+      <textarea class="stdin-edit" id="a2_stdin" spellcheck="false"></textarea>
+    </div>
+  </div>
+  <div class="run-bar">
+    <button class="btn ghost" onclick="ejecutarCodigo('a2_code','a2_stdin','a2_out')">▶ Compilar y probar</button>
+  </div>
+  <div class="run-out" id="a2_out"><span class="muted">Tu saldo final debería ser 1000…</span></div>
+
+  <h3>Parte C · Explica <span class="badge pts" style="font-size:11px">5 pts</span></h3>
+  <div class="field">
+    <label for="a2_expl">¿Por qué conviene que <code class="inline">saldo</code> sea privado y no público? <span class="hint">Mínimo 2 líneas.</span></label>
+    <textarea id="a2_expl" data-key="a2_expl" placeholder="Conviene que el saldo sea privado porque…"></textarea>
+  </div>
+  <p style="font-size:13px;color:var(--gris);max-width:70ch;margin-bottom:10px">Al entregar, el sistema revisará tu código y respuestas, y te mostrará la solución correcta. <strong>Solo tienes un intento</strong>: después de entregar ya no podrás modificar esta actividad.</p>
+  <button class="btn" id="btn-act2" onclick="entregar('act2')">Entregar Actividad 2 · intento único</button><span class="save-note" id="save-act2">✓</span>
+  <div class="fb-panel" id="fb-act2"></div>
+
+  <div class="pager"><button class="btn ghost" onclick="go('act1')">← Actividad 1</button><button class="btn" onclick="go('act3')">Actividad 3 →</button></div>
+</section>
+
+<!-- 10. ACTIVIDAD 3 -->
+<section class="page" id="sec-act3">
+  <div class="eyebrow">Sección 10 · Actividad práctica 3</div>
+  <h2 class="page-title">Constructor y métodos con validación</h2>
+  <div class="act-meta"><span class="badge">constructor</span><span class="badge">if / else</span><span class="badge">validación</span><span class="badge pts">30 puntos</span></div>
+
+  <div class="card">
+    <h4>📋 Lo que debes lograr</h4>
+    <p style="margin-bottom:0">Mejora tu clase <code class="inline">Cuenta</code>: agrégale un <strong>constructor</strong> que reciba el titular (string) y el saldo inicial (double). Agrega un método <code class="inline">retirar(double monto)</code> que <strong>valide</strong>: si el monto es mayor al saldo, imprime "Fondos insuficientes"; si no, descuenta. En <code class="inline">main</code>, crea una cuenta con $1000, intenta retirar $1500 (debe fallar) y luego $400 (debe funcionar).</p>
+  </div>
+
+  <h3>Parte A · Análisis <span class="badge pts" style="font-size:11px">8 pts</span></h3>
+  <div class="card">
+    <div class="field">
+      <label>1. El constructor de una clase Cuenta debe llamarse…</label>
+      <div class="radio-row">
+        <label class="radio-pill"><input type="radio" name="a3_ctor" value="constructor" data-key="a3_ctor">constructor()</label>
+        <label class="radio-pill"><input type="radio" name="a3_ctor" value="cuenta" data-key="a3_ctor">Cuenta()</label>
+        <label class="radio-pill"><input type="radio" name="a3_ctor" value="init" data-key="a3_ctor">init()</label>
+      </div>
+    </div>
+    <div class="field" style="margin-bottom:0">
+      <label>2. ¿Qué estructura de control usas para validar los fondos antes de retirar?</label>
+      <div class="radio-row">
+        <label class="radio-pill"><input type="radio" name="a3_val" value="for" data-key="a3_val">for</label>
+        <label class="radio-pill"><input type="radio" name="a3_val" value="ifelse" data-key="a3_val">if / else</label>
+        <label class="radio-pill"><input type="radio" name="a3_val" value="switch" data-key="a3_val">switch</label>
+      </div>
+    </div>
+  </div>
+
+  <h3>Parte B · Escribe tu programa <span class="badge pts" style="font-size:11px">17 pts</span></h3>
+  <div class="editor-wrap">
+    <div class="editor-bar"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span><span class="fname">actividad3.cpp</span></div>
+    <textarea class="code-edit" id="a3_code" data-key="a3_code" spellcheck="false">#include &lt;iostream&gt;
+using namespace std;
+
+class Cuenta {
+  private:
+    string titular;
+    double saldo;
+  public:
+    // CONSTRUCTOR: recibe nombre y saldoInicial
+
+    // método retirar(double monto) con validación if/else
+
+    void mostrarSaldo() {
+        cout &lt;&lt; titular &lt;&lt; ": $" &lt;&lt; saldo &lt;&lt; endl;
+    }
+};
+
+int main() {
+    Cuenta c("Ana Lopez", 1000.0);
+    c.retirar(1500);   // debe decir Fondos insuficientes
+    c.retirar(400);    // debe funcionar
+    c.mostrarSaldo();  // saldo final: 600
+    return 0;
+}</textarea>
+    <div class="stdin-wrap">
+      <div style="background:#121C2B;color:#7FA0B4;font-family:var(--mono);font-size:11px;padding:6px 16px 0">ENTRADA (no necesita cin, deja vacío):</div>
+      <textarea class="stdin-edit" id="a3_stdin" spellcheck="false"></textarea>
+    </div>
+  </div>
+  <div class="run-bar">
+    <button class="btn ghost" onclick="ejecutarCodigo('a3_code','a3_stdin','a3_out')">▶ Compilar y probar</button>
+  </div>
+  <div class="run-out" id="a3_out"><span class="muted">El saldo final debería ser 600…</span></div>
+
+  <h3>Parte C · Explica <span class="badge pts" style="font-size:11px">5 pts</span></h3>
+  <div class="field">
+    <label for="a3_expl">¿Qué hace el constructor y en qué momento se ejecuta? <span class="hint">Mínimo 2 líneas.</span></label>
+    <textarea id="a3_expl" data-key="a3_expl" placeholder="El constructor…"></textarea>
+  </div>
+  <p style="font-size:13px;color:var(--gris);max-width:70ch;margin-bottom:10px">Al entregar, el sistema revisará tu código y respuestas, y te mostrará la solución correcta. <strong>Solo tienes un intento</strong>: después de entregar ya no podrás modificar esta actividad.</p>
+  <button class="btn" id="btn-act3" onclick="entregar('act3')">Entregar Actividad 3 · intento único</button><span class="save-note" id="save-act3">✓</span>
+  <div class="fb-panel" id="fb-act3"></div>
+
+  <div class="pager"><button class="btn ghost" onclick="go('act2')">← Actividad 2</button><button class="btn" onclick="go('editor')">Editor C++ libre →</button></div>
+</section>
+
+<!-- EDITOR C++ LIBRE -->
+<section class="page" id="sec-editor">
+  <div class="eyebrow">Sección 11 · Práctica libre</div>
+  <h2 class="page-title">Editor de C++ — compila y ejecuta de verdad</h2>
+  <p class="page-lead">Aquí escribes C++ real y lo ejecutas en un servidor, sin instalar nada. Experimenta libremente: <strong>no cuenta para tu calificación</strong>. Prueba los ejemplos del cuaderno, modifícalos, rómpelos y arréglalos — así se aprende a programar.</p>
+
+  <div class="editor-wrap">
+    <div class="editor-bar"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span><span class="fname">main.cpp</span></div>
+    <textarea class="code-edit" id="editorCode" spellcheck="false">#include &lt;iostream&gt;
+using namespace std;
+
+class Cuenta {
+  private:
+    string titular;
+    double saldo;
+  public:
+    Cuenta(string nombre, double saldoInicial) {
+        titular = nombre;
+        saldo = saldoInicial;
+    }
+    void depositar(double monto) {
+        saldo = saldo + monto;
+    }
+    void consultar() {
+        cout &lt;&lt; titular &lt;&lt; ", saldo: $" &lt;&lt; saldo &lt;&lt; endl;
+    }
+};
+
+int main() {
+    Cuenta miCuenta("Ana Lopez", 1500.0);
+    miCuenta.consultar();
+    miCuenta.depositar(500);
+    miCuenta.consultar();
+    return 0;
+}</textarea>
+    <div class="stdin-wrap">
+      <div style="background:#121C2B;color:#7FA0B4;font-family:var(--mono);font-size:11px;padding:6px 16px 0">ENTRADA (lo que el programa pediría con cin, una línea por dato):</div>
+      <textarea class="stdin-edit" id="editorStdin" spellcheck="false" placeholder="Deja esto vacío si tu programa no usa cin."></textarea>
+    </div>
+  </div>
+  <div class="run-bar">
+    <button class="btn" id="btnRun" onclick="ejecutarCodigo('editorCode','editorStdin','editorOut')">▶ Compilar y ejecutar</button>
+    <button class="btn ghost" onclick="document.getElementById('editorCode').value=PLANTILLA_CPP;document.getElementById('editorOut').innerHTML='<span class=&quot;muted&quot;>Editor reiniciado.</span>'">↺ Reiniciar ejemplo</button>
+    <span style="font-size:12px;color:var(--gris)">La primera compilación puede tardar unos segundos.</span>
+  </div>
+  <div class="run-out" id="editorOut"><span class="muted">Aquí aparecerá la salida de tu programa…</span></div>
+
+  <div class="callout info" style="margin-top:20px">
+    <div class="c-title">Retos para practicar</div>
+    <p>1) Agrega un método <code class="inline">retirar(double monto)</code> que valide fondos. 2) Crea una segunda cuenta para otro titular. 3) Haz el saldo <code class="inline">private</code> e intenta cambiarlo directo desde main — lee el error del compilador. 4) Pega el cajero completo del ejemplo guiado y usa el menú (recuerda poner las opciones en el cuadro de Entrada).</p>
+  </div>
+
+  <div class="pager"><button class="btn ghost" onclick="go('act3')">← Actividades</button><button class="btn" onclick="go('bitacora')">Continuar: Bitácora →</button></div>
+</section>
+
+<!-- 8. BITÁCORA -->
+<section class="page" id="sec-bitacora">
+  <div class="eyebrow">Sección 10 · Bitácora del alumno</div>
+  <h2 class="page-title">Reflexiona sobre tu aprendizaje</h2>
+  <p class="page-lead">La bitácora es tu espacio de metacognición: escribir lo que aprendiste consolida el conocimiento. Responde con honestidad y con tus propias palabras; forma parte de tu evaluación (10 puntos).</p>
+
+  <div class="card">
+    <div class="field">
+      <label for="bit1">1. ¿Qué aprendí en este Resultado de Aprendizaje?</label>
+      <textarea id="bit1" data-key="bit1" placeholder="En este RA aprendí a…"></textarea>
+    </div>
+    <div class="field">
+      <label for="bit2">2. ¿Qué dificultades encontré y cómo las resolví?</label>
+      <textarea id="bit2" data-key="bit2" placeholder="Lo que más se me dificultó fue…"></textarea>
+    </div>
+    <div class="field" style="margin-bottom:0">
+      <label for="bit3">3. ¿Cómo aplicarías la Programación Orientada a Objetos en un proyecto real?</label>
+      <textarea id="bit3" data-key="bit3" placeholder="En un sistema escolar real, SQL serviría para…"></textarea>
+    </div>
+  </div>
+  <button class="btn" id="btn-bitacora" onclick="guardar('bitacora')">Guardar bitácora</button><span class="save-note" id="save-bitacora">✓ Avance guardado</span>
+
+  <div class="pager"><button class="btn ghost" onclick="go('simulador')">← Simulador SQL</button><button class="btn" onclick="go('evaluacion')">Ir a Evaluación →</button></div>
+</section>
+
+<!-- 8. EVALUACIÓN -->
+<section class="page" id="sec-evaluacion">
+  <div class="eyebrow">Sección 11 · Evaluación</div>
+  <h2 class="page-title">Resultados de tu cuaderno</h2>
+  <p class="page-lead">Cada actividad se califica en el momento en que la entregas (intento único) y ahí mismo ves tu retroalimentación y la solución. Esta pantalla reúne los resultados de tus entregas, suma tu bitácora y genera el reporte final para tu docente.</p>
+
+  <button class="btn" onclick="calificarTodo()" style="margin-bottom:24px">Generar mi resultado final</button>
+
+  <div id="resultados" style="display:none">
+    <div class="score-hero">
+      <div><div class="score-num" id="scoreTotal">0</div><div style="font-size:13px;opacity:.85">de 100 puntos</div></div>
+      <div class="detail" id="scoreDetalle"></div>
+    </div>
+
+    <h3 style="margin-top:8px">Desglose por actividad</h3>
+    <div class="tbl-wrap"><table class="data rubrica" id="tablaRubrica">
+      <tr><th>Componente</th><th style="width:110px">Puntos</th><th>Retroalimentación</th></tr>
+    </table></div>
+
+    <div class="callout info">
+      <div class="c-title">Nota sobre la calificación automática</div>
+      <p>Esta revisión verifica la <strong>estructura</strong> de tu código (clases, métodos, control y validaciones clave). Tu docente realizará la revisión final de la lógica completa, las explicaciones y la bitácora a partir del reporte que entregues. Este cuaderno es un <strong>repaso del R.A. 1.2</strong> del programa PROO-20, que te prepara para la Unidad 2.</p>
+    </div>
+
+    <h3>Entrega tu reporte</h3>
+    <p>Cuando estés conforme con tu resultado, envíalo a tu docente con el botón azul. El envío es <strong>único y definitivo</strong>: tu calificación llega directamente al correo del docente con fecha, hora y folio, y el cuaderno queda <strong>sellado</strong> — las actividades y la bitácora pasan a solo lectura. Los apuntes, las instrucciones de cada práctica y el simulador <strong>seguirán disponibles para consulta</strong>.</p>
+    <div class="callout warn">
+      <div class="c-title">Antes de enviar, verifica</div>
+      <p>Que tus 4 actividades estén entregadas y tu bitácora guardada. Después del envío ya no podrás modificar nada que genere calificación. Tu docente recibe cada envío con folio y hora: los envíos duplicados desde otro equipo se detectan y <strong>solo cuenta el primero</strong>.</p>
+    </div>
+    <button class="btn" id="btnEnviar" onclick="enviarReporte()">📨 Enviar reporte a mi docente · envío único</button>
+    <button class="btn ghost" onclick="descargarPDF()">⬇ Descargar mi boleta (PDF · 1 hoja)</button>
+    <div class="sim-status" id="envio_status" style="padding:10px 0 0"></div>
+    <div id="envio_ok" class="callout info" style="display:none;margin-top:16px"></div>
+  </div>
+
+  <div class="pager"><button class="btn ghost" onclick="go('bitacora')">← Bitácora</button><span></span></div>
+</section>
+
+</main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+/* =========================================================
+   POO Classroom · RA 1.2 · Lógica del cuaderno
+   Estado en localStorage (diseñado para migrar a Supabase:
+   usuarios, alumnos, actividades, respuestas, calificaciones, bitacoras)
+   ========================================================= */
+const LS_KEY = 'proo_ra12_v1';
+const CUADERNO = 'ra12';
+let state = { alumno:null, respuestas:{}, visitadas:{}, guardadas:{}, entregas:{} };
+
+/* ---------- Supabase ---------- */
+const SUPABASE_URL = 'https://cmhnuuxgwrpkhutylnzs.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_8A2VQZa5N2NBP1li532sJQ_AACo-3_v';
+let sb = null, modoRegistro = false, syncTimer = null;
+function initSB(){
+  try{ sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY); return true; }
+  catch(e){ return false; }
+}
+
+/* Caché local: guardado instantáneo a cada tecla (sin esperar a la nube) */
+function load(){ try{ const raw = localStorage.getItem(LS_KEY+'_'+(state.alumno?state.alumno.correo:'tmp')); if(raw) state = Object.assign(state, JSON.parse(raw)); }catch(e){} }
+function persist(){
+  if(state.alumno){ localStorage.setItem(LS_KEY+'_'+state.alumno.correo, JSON.stringify(state)); }
+  programarSync();
+}
+
+/* Sincronización con la nube (debounce de 1.5 s para no saturar) */
+function programarSync(){
+  if(!sb || !state.alumno) return;
+  clearTimeout(syncTimer);
+  syncTimer = setTimeout(subirAvance, 1500);
+}
+async function subirAvance(){
+  if(!sb || !state.alumno) return;
+  try{
+    await sb.from('avances').upsert({
+      user_id: state.alumno.id, cuaderno: CUADERNO,
+      estado: { respuestas:state.respuestas, visitadas:state.visitadas, guardadas:state.guardadas, evaluacion:state.evaluacion||null },
+      actualizado: new Date().toISOString()
+    }, { onConflict:'user_id,cuaderno' });
+    setSyncBadge('ok');
+  }catch(e){ setSyncBadge('err'); }
+}
+function setSyncBadge(estado){
+  const b = document.getElementById('syncBadge'); if(!b) return;
+  if(estado==='ok'){ b.textContent='☁ Guardado en la nube'; b.style.color='var(--ok)'; }
+  else if(estado==='err'){ b.textContent='⚠ Sin conexión — se reintentará'; b.style.color='var(--amber)'; }
+  else { b.textContent='☁ Sincronizando…'; b.style.color='var(--gris)'; }
+}
+
+/* ---------- Autenticación ---------- */
+function toggleModoUI(){
+  modoRegistro = !modoRegistro;
+  document.getElementById('camposRegistro').style.display = modoRegistro ? 'block' : 'none';
+  document.getElementById('gateTitulo').textContent = modoRegistro ? 'Crear mi cuenta' : 'Iniciar sesión';
+  document.getElementById('gateSub').textContent = modoRegistro
+    ? 'Regístrate una sola vez con tus datos. Después entrarás solo con tu correo y tu matrícula.'
+    : 'Entra con tu correo institucional y tu matrícula. Tu avance se guarda en la nube: puedes continuar desde cualquier computadora.';
+  document.getElementById('btnEntrar').textContent = modoRegistro ? 'Crear cuenta y comenzar' : 'Entrar a mi cuaderno';
+  document.getElementById('toggleModo').textContent = modoRegistro ? 'Ya tengo cuenta, iniciar sesión' : 'Crear mi cuenta';
+  document.querySelector('#gate p[style*="text-align:center"]').firstChild.textContent = modoRegistro ? '¿Ya te registraste? ' : '¿Primera vez? ';
+  document.getElementById('r_err').style.display='none';
+}
+
+async function autenticar(){
+  const err = document.getElementById('r_err');
+  const correo = document.getElementById('r_correo').value.trim().toLowerCase();
+  const pass   = document.getElementById('r_pass').value.trim();
+  const btn = document.getElementById('btnEntrar');
+  const mostrarErr = m => { err.textContent=m; err.style.display='block'; btn.disabled=false; btn.textContent = modoRegistro?'Crear cuenta y comenzar':'Entrar a mi cuaderno'; };
+
+  if(!/^[a-z0-9._%+-]+@tam\.conalep\.edu\.mx$/.test(correo)) return mostrarErr('Usa tu correo institucional CONALEP (termina en @tam.conalep.edu.mx).');
+  if(pass.length < 6) return mostrarErr('Tu matrícula debe tener al menos 6 caracteres.');
+  if(!sb && !initSB()) return mostrarErr('No se pudo conectar al servidor. Revisa tu conexión a internet.');
+
+  err.style.display='none'; btn.disabled=true; btn.textContent='Conectando…';
+
+  if(modoRegistro){
+    const nombre = document.getElementById('r_nombre').value.trim();
+    const grupo  = document.getElementById('r_grupo').value;
+    const turno  = document.getElementById('r_turno').value;
+    if(!nombre || !grupo || !turno) return mostrarErr('Completa nombre, grupo y turno para registrarte.');
+    const { data, error } = await sb.auth.signUp({ email:correo, password:pass });
+    if(error){
+      if((error.message||'').toLowerCase().includes('already')) return mostrarErr('Ese correo ya tiene cuenta. Cambia a "Iniciar sesión".');
+      return mostrarErr('No se pudo crear la cuenta: '+error.message);
+    }
+    const uid = data.user.id;
+    const { error: perr } = await sb.from('perfiles').insert({ id:uid, correo, nombre, grupo, turno, matricula:pass });
+    if(perr && !(perr.message||'').includes('duplicate')) return mostrarErr('Cuenta creada, pero falló el perfil: '+perr.message);
+    state.alumno = { id:uid, nombre, grupo, turno, correo, matricula:pass, registro:new Date().toLocaleString('es-MX') };
+    persist(); await subirAvance();
+    entrarApp();
+  } else {
+    const { data, error } = await sb.auth.signInWithPassword({ email:correo, password:pass });
+    if(error) return mostrarErr('Correo o matrícula incorrectos. Si es tu primera vez, crea tu cuenta.');
+    const uid = data.user.id;
+    const { data: perfil } = await sb.from('perfiles').select('*').eq('id', uid).single();
+    state.alumno = perfil ? { id:uid, nombre:perfil.nombre, grupo:perfil.grupo, turno:perfil.turno, correo:perfil.correo, matricula:perfil.matricula||'', registro:'' } : { id:uid, nombre:correo, grupo:'', turno:'', correo };
+    await descargarAvance(uid);
+    entrarApp();
+  }
+}
+
+async function descargarAvance(uid){
+  load(); /* primero la caché local de este equipo, por si la nube falla */
+  try{
+    const { data: av } = await sb.from('avances').select('estado').eq('user_id', uid).eq('cuaderno', CUADERNO).single();
+    if(av && av.estado){
+      state.respuestas = av.estado.respuestas || state.respuestas || {};
+      state.visitadas  = av.estado.visitadas  || state.visitadas  || {};
+      state.guardadas  = av.estado.guardadas  || state.guardadas  || {};
+      if(av.estado.evaluacion) state.evaluacion = av.estado.evaluacion;
+    }
+    const { data: ents } = await sb.from('entregas').select('*').eq('user_id', uid).eq('cuaderno', CUADERNO);
+    state.entregas = {};
+    (ents||[]).forEach(e=>{ state.entregas[e.actividad] = { pts:e.pts, max:e.max, fb:e.fb, fecha:new Date(e.fecha).toLocaleString('es-MX') }; });
+    const { data: env } = await sb.from('envios').select('*').eq('user_id', uid).eq('cuaderno', CUADERNO).single();
+    if(env) state.enviado = { folio:env.folio, total:env.total, fecha:new Date(env.fecha).toLocaleString('es-MX') };
+  }catch(e){}
+  persist();
+}
+
+function entrarApp(){
+  document.getElementById('gate').style.display='none';
+  pintarAlumno();
+  bindInputs();
+  highlightSQL();
+  state.visitadas['intro']=true; persist();
+  Object.keys(state.entregas||{}).forEach(a=>{ lockAct(a); renderFB(a); });
+  if(state.enviado){ sellarCuaderno(); }
+  if(state.evaluacion){ calificarTodo(); }
+  marcarTOC(); actualizarProgreso();
+  go('intro');
+  setSyncBadge('ok');
+}
+
+async function cerrarSesion(){
+  if(!confirm('¿Cerrar sesión? Tu avance ya está guardado en la nube.')) return;
+  if(sb) await sb.auth.signOut();
+  location.reload();
+}
+
+function pintarAlumno(){
+  if(!state.alumno) return;
+  const chip = document.getElementById('studentChip');
+  chip.style.display='block';
+  document.getElementById('sc_nombre').textContent = state.alumno.nombre;
+  document.getElementById('sc_detalle').textContent = 'Grupo '+state.alumno.grupo+' · Turno '+state.alumno.turno;
+}
+
+/* ---------- Navegación ---------- */
+const ORDEN = ['intro','es','control','arreglos','clases','constructor','ejemplo','act1','act2','act3','editor','bitacora','evaluacion'];
+function go(sec){
+  document.querySelectorAll('section.page').forEach(s=>s.classList.remove('visible'));
+  document.getElementById('sec-'+sec).classList.add('visible');
+  document.querySelectorAll('.toc a').forEach(a=>a.classList.toggle('active', a.dataset.sec===sec));
+  state.visitadas[sec]=true; persist(); actualizarProgreso();
+  document.querySelector('.sidebar').classList.remove('open');
+  window.scrollTo({top:0});
+}
+document.querySelectorAll('.toc a').forEach(a=> a.addEventListener('click', ()=>go(a.dataset.sec)) );
+document.querySelector('.main').addEventListener('click', ()=>document.querySelector('.sidebar').classList.remove('open'));
+
+/* ---------- Auto-guardado de respuestas ---------- */
+function bindInputs(){
+  document.querySelectorAll('[data-key]').forEach(el=>{
+    const k = el.dataset.key;
+    if(el.type==='radio'){
+      if(state.respuestas[k]===el.value) el.checked=true;
+      el.addEventListener('change',()=>{ state.respuestas[k]=el.value; persist(); });
+    }else{
+      if(state.respuestas[k]) el.value=state.respuestas[k];
+      el.addEventListener('input',()=>{ state.respuestas[k]=el.value; persist(); });
+    }
+  });
+}
+const MINIMOS = {
+  act1:['a1_code','a1_expl'], act2:['a2_code','a2_expl'],
+  act3:['a3_code','a3_expl'], bitacora:['bit1','bit2','bit3']
+};
+function guardar(act){
+  persist();
+  const faltan = (MINIMOS[act]||[]).filter(k=>(state.respuestas[k]||'').trim().length < 10);
+  const note=document.getElementById('save-'+act);
+  if(faltan.length){
+    state.guardadas[act]=false; persist();
+    if(note){ note.textContent='✗ Para registrar la entrega, completa todas las respuestas de esta sección'; note.style.color='var(--rojo)'; note.classList.add('show'); setTimeout(()=>note.classList.remove('show'),3500); }
+    actualizarProgreso(); marcarTOC(); return;
+  }
+  state.guardadas[act]=true; persist();
+  if(note){ note.textContent='✓ Avance guardado'; note.style.color='var(--ok)'; note.classList.add('show'); setTimeout(()=>note.classList.remove('show'),2200); }
+  actualizarProgreso(); marcarTOC();
+}
+
+/* ---------- Progreso ---------- */
+function actualizarProgreso(){
+  const visit = ORDEN.filter(s=>state.visitadas[s]).length;
+  const acts  = ['act1','act2','act3','bitacora'].filter(a=>state.guardadas[a]).length; // 4 entregas = 60%
+  const pct = Math.round( (visit/ORDEN.length)*40 + (acts/4)*60 );
+  document.getElementById('progPct').textContent = pct+'%';
+  document.getElementById('progFill').style.width = pct+'%';
+}
+function marcarTOC(){
+  document.querySelectorAll('.toc a').forEach(a=>{
+    const s=a.dataset.sec;
+    const done = ['act1','act2','act3','bitacora'].includes(s) ? state.guardadas[s] : state.visitadas[s];
+    a.classList.toggle('done', !!done);
+  });
+}
+
+/* ---------- Resaltado de sintaxis C++ ---------- */
+function highlightSQL(root){
+  const KW=/\b(include|using|namespace|int|double|float|char|bool|void|string|class|struct|public|private|protected|return|if|else|switch|case|break|default|for|while|do|cout|cin|endl|const|true|false|new|delete|this)\b/g;
+  (root||document).querySelectorAll('pre.cpp:not([data-hl]), pre.sql:not([data-hl])').forEach(pre=>{
+    pre.dataset.hl='1';
+    const stash=[];
+    const keep=(html)=>{ stash.push(html); return '\u0001S'+(stash.length-1)+'\u0001'; };
+    let h = pre.innerHTML  /* ya viene con &lt; &gt; escapados en el HTML fuente */
+      .replace(/\/\/.*$/gm, m=>keep('<span class="cm">'+m+'</span>'))
+      .replace(/"[^"]*"/g, m=>keep('<span class="str">'+m+'</span>'))
+      .replace(/'[^']*'/g, m=>keep('<span class="str">'+m+'</span>'))
+      .replace(/#\w+/g, m=>keep('<span class="kw">'+m+'</span>'))
+      .replace(/\b\d+(\.\d+)?\b/g, m=>'<span class="num">'+m+'</span>')
+      .replace(KW, m=>'<span class="kw">'+m+'</span>');
+    h = h.replace(/\u0001S(\d+)\u0001/g,(m,i)=>stash[+i]);
+    pre.innerHTML = h;
+  });
+}
+
+/* ---------- Calificación ---------- */
+function norm(s){ return (s||'').toLowerCase().replace(/\s+/g,' '); }
+function checkSQL(sql, reglas){
+  const s = norm(sql); const det=[]; let pts=0;
+  reglas.forEach(r=>{ const ok = r.re.test(s); if(ok) pts+=r.pts; det.push({ok, label:r.label, pts:r.pts}); });
+  return {pts, det};
+}
+function lenOK(txt, min){ return (txt||'').trim().length >= min; }
+
+/* ---------- Editor C++ (compila vía proxy Supabase → Wandbox) ---------- */
+// URL de la Edge Function "compilar". Se completa tras desplegar el proxy.
+const EDGE_COMPILAR_URL = 'https://cmhnuuxgwrpkhutylnzs.supabase.co/functions/v1/compilar';
+
+const PLANTILLA_CPP = `#include <iostream>
+using namespace std;
+
+class Cuenta {
+  private:
+    string titular;
+    double saldo;
+  public:
+    Cuenta(string nombre, double saldoInicial) {
+        titular = nombre;
+        saldo = saldoInicial;
+    }
+    void depositar(double monto) {
+        saldo = saldo + monto;
+    }
+    void consultar() {
+        cout << titular << ", saldo: $" << saldo << endl;
+    }
+};
+
+int main() {
+    Cuenta miCuenta("Ana Lopez", 1500.0);
+    miCuenta.consultar();
+    miCuenta.depositar(500);
+    miCuenta.consultar();
+    return 0;
+}`;
+
+async function ejecutarCodigo(codeId, stdinId, outId){
+  const out = document.getElementById(outId);
+  const code = document.getElementById(codeId).value;
+  const stdin = stdinId ? (document.getElementById(stdinId)?.value || '') : '';
+  if(!code.trim()){ out.innerHTML = '<span class="err-line">Escribe algo de código primero.</span>'; return; }
+
+  // Botón que disparó: deshabilitar mientras compila
+  const botones = document.querySelectorAll('[onclick*="'+codeId+'"]');
+  botones.forEach(b=> b.disabled = true);
+  out.innerHTML = '<span class="muted">⏳ Compilando y ejecutando en el servidor… (la primera vez puede tardar unos segundos)</span>';
+
+  try{
+    const resp = await fetch(EDGE_COMPILAR_URL, {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      body: JSON.stringify({ code, stdin })
+    });
+    if(!resp.ok){
+      const txt = await resp.text();
+      throw new Error('El servidor respondió ' + resp.status + (txt?(': '+txt.slice(0,120)):''));
+    }
+    const data = await resp.json();
+    if(data.error){ out.innerHTML = '<span class="err-line">⚠ '+escHtml(data.error)+'</span>'; return; }
+
+    let h = '';
+    const compErr = (data.compiler_output||'').trim();
+    const progOut = (data.program_output||'');
+    const progErr = (data.program_error||'').trim();
+    const exito = String(data.status) === '0';
+
+    if(compErr){
+      // Hay errores o advertencias de compilación
+      const esError = !exito;
+      h += '<span class="'+(esError?'err-line':'muted')+'">'+(esError?'✗ Errores de compilación:':'⚠ Advertencias:')+'</span>\n';
+      h += '<span class="'+(esError?'err-line':'muted')+'">'+escHtml(compErr)+'</span>';
+      if(!esError && (progOut||progErr)) h += '\n\n';
+    }
+    if(exito || progOut || progErr){
+      if(progOut){ h += '<span class="ok-line">▶ Salida del programa:</span>\n' + escHtml(progOut); }
+      if(progErr){ h += '\n<span class="err-line">'+escHtml(progErr)+'</span>'; }
+      if(exito && !progOut && !progErr){ h += '<span class="muted">▶ El programa terminó sin imprimir nada.</span>'; }
+    }
+    if(!h.trim()){ h = '<span class="muted">Sin salida.</span>'; }
+    out.innerHTML = h;
+  }catch(e){
+    out.innerHTML = '<span class="err-line">⚠ No se pudo compilar: '+escHtml(e.message)+'</span>\n<span class="muted">Si el problema persiste, avisa a tu docente: puede que el servicio de compilación no esté disponible en este momento.</span>';
+  }finally{
+    botones.forEach(b=> b.disabled = false);
+  }
+}
+function escHtml(v){ return String(v==null?'':v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+const SOLUCIONES = {
+act1: '<p style="font-size:14px"><strong>Análisis:</strong> el ciclo <code class="inline">do-while</code> garantiza mostrar el menú al menos una vez, y <code class="inline">break</code> evita que un <code class="inline">case</code> se siga de largo.</p>'+
+'<pre class="cpp solo">#include &lt;iostream&gt;\nusing namespace std;\n\nint main() {\n    int opcion;\n    do {\n        cout &lt;&lt; "1) Consultar  2) Depositar  3) Salir\\n";\n        cin &gt;&gt; opcion;\n        switch (opcion) {\n            case 1: cout &lt;&lt; "Consultando saldo...\\n"; break;\n            case 2: cout &lt;&lt; "Depositando...\\n"; break;\n            case 3: cout &lt;&lt; "Gracias por su preferencia.\\n"; break;\n            default: cout &lt;&lt; "Opcion no valida.\\n";\n        }\n    } while (opcion != 3);\n    return 0;\n}</pre>'+
+'<p style="font-size:13px;color:var(--gris)">Lo esencial: el do-while con la condición <code class="inline">opcion != 3</code>, el switch con sus tres case y el break en cada uno. Si tu código compiló y el menú se repetía hasta teclear 3, vas muy bien.</p>',
+
+act2: '<p style="font-size:14px"><strong>Análisis:</strong> el atributo <code class="inline">saldo</code> debe ser <code class="inline">private</code> (protegido) y los métodos <code class="inline">public</code> (usables desde afuera).</p>'+
+'<pre class="cpp solo">#include &lt;iostream&gt;\nusing namespace std;\n\nclass Cuenta {\n  private:\n    double saldo = 0;\n  public:\n    void depositar(double monto) {\n        saldo = saldo + monto;\n    }\n    void mostrarSaldo() {\n        cout &lt;&lt; "Saldo: $" &lt;&lt; saldo &lt;&lt; endl;\n    }\n};\n\nint main() {\n    Cuenta c;\n    c.depositar(500);\n    c.depositar(500);\n    c.mostrarSaldo();   // Saldo: $1000\n    return 0;\n}</pre>'+
+'<p style="font-size:13px;color:var(--gris)">La idea de la justificación: si el saldo fuera público, cualquiera podría asignarle un valor directamente sin control; al ser privado, solo se modifica a través de métodos que pueden validar. Eso protege la integridad del dato.</p>',
+
+act3: '<p style="font-size:14px"><strong>Análisis:</strong> el constructor se llama igual que la clase (<code class="inline">Cuenta</code>) y la validación de fondos se hace con <code class="inline">if / else</code>.</p>'+
+'<pre class="cpp solo">#include &lt;iostream&gt;\nusing namespace std;\n\nclass Cuenta {\n  private:\n    string titular;\n    double saldo;\n  public:\n    Cuenta(string nombre, double saldoInicial) {\n        titular = nombre;\n        saldo = saldoInicial;\n    }\n    void retirar(double monto) {\n        if (monto &gt; saldo) {\n            cout &lt;&lt; "Fondos insuficientes" &lt;&lt; endl;\n        } else {\n            saldo = saldo - monto;\n            cout &lt;&lt; "Retiro exitoso" &lt;&lt; endl;\n        }\n    }\n    void mostrarSaldo() {\n        cout &lt;&lt; titular &lt;&lt; ": $" &lt;&lt; saldo &lt;&lt; endl;\n    }\n};\n\nint main() {\n    Cuenta c("Ana Lopez", 1000.0);\n    c.retirar(1500);   // Fondos insuficientes\n    c.retirar(400);    // Retiro exitoso\n    c.mostrarSaldo();  // Ana Lopez: $600\n    return 0;\n}</pre>'+
+'<p style="font-size:13px;color:var(--gris)">El constructor recibe el nombre y el saldo inicial y se ejecuta automáticamente al crear el objeto con <code class="inline">Cuenta c("Ana Lopez", 1000.0)</code>. La validación con if/else evita dejar el saldo en negativo.</p>'
+};
+
+// Calificación de código C++: busca patrones clave en el texto del alumno (normalizado)
+function normCode(s){ return (s||'').toLowerCase().replace(/\s+/g,' '); }
+function checkCode(code, reglas){
+  const s = normCode(code); const det=[]; let pts=0;
+  reglas.forEach(r=>{ const ok = r.re.test(s); if(ok) pts+=r.pts; det.push({ok, label:r.label, pts:r.pts}); });
+  return {pts, det};
+}
+
+const GRADERS = {
+act1(){
+  const R = state.respuestas; let p=0; const fb=[];
+  p += R.a1_ciclo==='dowhile' ?4:0; fb.push({ok:R.a1_ciclo==='dowhile', label:'Identificó do-while como el ciclo del menú', pts:4});
+  p += R.a1_break==='break' ?4:0;   fb.push({ok:R.a1_break==='break', label:'Identificó break para cerrar cada case', pts:4});
+  const c = checkCode(R.a1_code,[
+    {re:/do\s*\{/, pts:4, label:'Usa el ciclo do { ... }'},
+    {re:/switch\s*\(/, pts:4, label:'Usa switch para el menú'},
+    {re:/case\s+1[\s\S]*case\s+2[\s\S]*case\s+3/, pts:5, label:'Define los tres case (1, 2 y 3)'},
+    {re:/while\s*\(\s*opcion\s*!=\s*3/, pts:4, label:'Repite el menú hasta opcion != 3'}
+  ]);
+  p += c.pts; fb.push(...c.det);
+  const j = lenOK(R.a1_expl,40); p += j?5:0; fb.push({ok:j, label:'Explicación del do-while (mín. 2 líneas)', pts:5});
+  return {pts:p, max:30, fb};
+},
+act2(){
+  const R = state.respuestas; let p=0; const fb=[];
+  p += R.a2_acc==='private' ?5:0; fb.push({ok:R.a2_acc==='private', label:'El saldo debe ser private', pts:5});
+  p += R.a2_met==='public' ?5:0;  fb.push({ok:R.a2_met==='public', label:'Los métodos deben ser public', pts:5});
+  const c = checkCode(R.a2_code,[
+    {re:/class\s+cuenta/, pts:3, label:'Define la clase Cuenta'},
+    {re:/private\s*:/, pts:2, label:'Tiene sección private'},
+    {re:/public\s*:/, pts:2, label:'Tiene sección public'},
+    {re:/void\s+depositar\s*\(\s*double/, pts:3, label:'Método depositar(double monto)'},
+    {re:/void\s+mostrarsaldo\s*\(/, pts:3, label:'Método mostrarSaldo()'},
+    {re:/saldo\s*=\s*saldo\s*\+|saldo\s*\+=/, pts:2, label:'depositar suma al saldo'}
+  ]);
+  p += c.pts; fb.push(...c.det);
+  const j = lenOK(R.a2_expl,40); p += j?5:0; fb.push({ok:j, label:'Explicación del encapsulamiento (mín. 2 líneas)', pts:5});
+  return {pts:p, max:30, fb};
+},
+act3(){
+  const R = state.respuestas; let p=0; const fb=[];
+  p += R.a3_ctor==='cuenta' ?4:0;  fb.push({ok:R.a3_ctor==='cuenta', label:'El constructor se llama Cuenta()', pts:4});
+  p += R.a3_val==='ifelse' ?4:0;   fb.push({ok:R.a3_val==='ifelse', label:'La validación usa if / else', pts:4});
+  const c = checkCode(R.a3_code,[
+    {re:/cuenta\s*\(\s*string[^)]*double/, pts:5, label:'Constructor Cuenta(string, double)'},
+    {re:/titular\s*=/, pts:1, label:'El constructor asigna el titular'},
+    {re:/saldo\s*=/, pts:1, label:'El constructor asigna el saldo'},
+    {re:/void\s+retirar\s*\(\s*double/, pts:3, label:'Método retirar(double monto)'},
+    {re:/if\s*\([^)]*monto\s*>\s*saldo|if\s*\([^)]*saldo\s*<\s*monto/, pts:3, label:'Valida monto > saldo (fondos insuficientes)'},
+    {re:/else/, pts:2, label:'Tiene la rama else que descuenta'},
+    {re:/saldo\s*=\s*saldo\s*-|saldo\s*-=/, pts:2, label:'Descuenta del saldo al retirar'}
+  ]);
+  p += c.pts; fb.push(...c.det);
+  const j = lenOK(R.a3_expl,40); p += j?5:0; fb.push({ok:j, label:'Explicación del constructor (mín. 2 líneas)', pts:5});
+  return {pts:p, max:30, fb};
+}
+};
+
+function entregar(act){
+  if(state.entregas[act]) return;
+  const note = document.getElementById('save-'+act);
+  const faltan = (MINIMOS[act]||[]).filter(k=>(state.respuestas[k]||'').trim().length < 10);
+  if(faltan.length){
+    if(note){ note.textContent='✗ Completa todas las respuestas de esta actividad antes de entregar'; note.style.color='var(--rojo)'; note.classList.add('show'); setTimeout(()=>note.classList.remove('show'),3500); }
+    return;
+  }
+  if(!confirm('Vas a ENTREGAR esta actividad.\n\n• Solo tienes UN intento.\n• Verás tu calificación y la solución correcta.\n• Ya no podrás modificar tus respuestas.\n\n¿Deseas entregar ahora?')) return;
+  const g = GRADERS[act]();
+  const fecha = new Date();
+  if(sb && state.alumno){
+    const R = state.respuestas;
+    const resp = {act1:['a1_ciclo','a1_break','a1_code','a1_expl'],act2:['a2_acc','a2_met','a2_code','a2_expl'],act3:['a3_ctor','a3_val','a3_code','a3_expl']}[act] || [];
+    const soloAct = {}; resp.forEach(k=> soloAct[k]=R[k]);
+    sb.from('entregas').insert({
+      user_id:state.alumno.id, cuaderno:CUADERNO, actividad:act,
+      pts:g.pts, max:g.max, fb:g.fb, respuestas:soloAct, fecha:fecha.toISOString()
+    }).then(({error})=>{
+      if(error && error.code==='23505'){ alert('Esta actividad ya fue entregada antes (registrada en el servidor). No es posible entregarla de nuevo.'); }
+    });
+  }
+  state.entregas[act] = { pts:g.pts, max:g.max, fb:g.fb, fecha:fecha.toLocaleString('es-MX') };
+  state.guardadas[act] = true; persist();
+  lockAct(act); renderFB(act);
+  actualizarProgreso(); marcarTOC();
+}
+function lockAct(act){
+  document.querySelectorAll('#sec-'+act+' [data-key]').forEach(el=>el.disabled=true);
+  const btn = document.getElementById('btn-'+act);
+  if(btn){ btn.disabled=true; btn.textContent='✓ Actividad entregada'; }
+}
+function renderFB(act){
+  const e = state.entregas[act]; if(!e) return;
+  const panel = document.getElementById('fb-'+act); if(!panel) return;
+  const lista = e.fb.map(x=>'<li class="'+(x.ok?'ok':'miss')+'">'+(x.ok?'✓ ':'✗ ')+x.label+' ('+x.pts+' pts)</li>').join('');
+  panel.innerHTML =
+    '<div class="fb-head"><span>Resultado de tu entrega</span><span>'+e.pts+' / '+e.max+' pts · '+e.fecha+'</span></div>'+
+    '<div class="fb-body"><ul class="fb-list">'+lista+'</ul>'+
+    '<div class="solucion"><h5>Solución correcta</h5>'+SOLUCIONES[act]+'</div>'+
+    '<div class="fb-unlock"><button class="btn ghost" style="padding:6px 12px;font-size:12px" onclick="desbloquear(\''+act+'\')">Docente: liberar nuevo intento</button></div></div>';
+  panel.classList.add('show');
+  highlightSQL(panel);
+}
+function desbloquear(act){
+  const clave = prompt('Clave del docente para liberar un nuevo intento:');
+  if(clave === null) return;
+  if(clave.trim() !== CLAVE_DOCENTE){ alert('Clave incorrecta.'); return; }
+  if(state.enviado && !confirm('OJO: este cuaderno ya fue ENVIADO al docente (folio '+state.enviado.folio+'). ¿Liberar el intento de todos modos?')) return;
+  if(sb && state.alumno){ sb.from('entregas').delete().eq('user_id',state.alumno.id).eq('cuaderno',CUADERNO).eq('actividad',act); }
+  delete state.entregas[act]; state.guardadas[act]=false; persist();
+  document.querySelectorAll('#sec-'+act+' [data-key]').forEach(el=>el.disabled=false);
+  const nombres = {act1:'Actividad 1',act2:'Actividad 2',act3:'Actividad 3'};
+  const btn = document.getElementById('btn-'+act);
+  if(btn){ btn.disabled=false; btn.textContent='Entregar '+nombres[act]+' · intento único'; }
+  const panel = document.getElementById('fb-'+act);
+  if(panel){ panel.classList.remove('show'); panel.innerHTML=''; }
+  actualizarProgreso(); marcarTOC();
+}
+
+/* ---------- Resultado final ---------- */
+const ACTS_META = [
+  ['act1','Actividad 1 · Entrada/salida y control',30],
+  ['act2','Actividad 2 · Tu primera clase',30],
+  ['act3','Actividad 3 · Constructor y métodos',30]
+];
+function calificarTodo(){
+  const R = state.respuestas;
+  const filas=[]; let total=0; const pendientes=[];
+  ACTS_META.forEach(([a,nombre,max])=>{
+    const e = state.entregas[a];
+    if(e){ filas.push({nombre:nombre+' (entregada '+e.fecha+')', pts:e.pts, max:max, fb:e.fb}); total+=e.pts; }
+    else{ filas.push({nombre:nombre, pts:0, max:max, fb:[{ok:false, label:'Actividad sin entregar — entra a la sección y entrégala', pts:max}]}); pendientes.push(nombre.split(' ·')[0]); }
+  });
+  let b=0; const bfb=[];
+  [['bit1','¿Qué aprendí?',3],['bit2','Dificultades y solución',3],['bit3','Aplicación de la POO',4]].forEach(([k,l,p])=>{
+    const ok = lenOK(R[k],60); b += ok?p:0; bfb.push({ok, label:l+' respondida con desarrollo', pts:p});
+  });
+  filas.push({nombre:'Bitácora del alumno', pts:b, max:10, fb:bfb}); total+=b;
+
+  state.evaluacion = { total, filas, fecha:new Date().toLocaleString('es-MX') };
+  persist();
+  document.getElementById('resultados').style.display='block';
+  document.getElementById('scoreTotal').textContent = total;
+  const nivel = pendientes.length
+    ? '⚠ Tienes actividades sin entregar: '+pendientes.join(', ')+'. Entrégalas para completar tu calificación.'
+    : (total>=90?'Excelente dominio del repaso de C++.':total>=70?'Buen desempeño. Revisa la retroalimentación de cada entrega.':'Resultado en proceso: revisa la retroalimentación y coméntala con tu docente.');
+  document.getElementById('scoreDetalle').innerHTML = '<strong>'+(state.alumno?state.alumno.nombre:'Alumno')+'</strong> · Grupo '+(state.alumno?state.alumno.grupo:'—')+'<br>'+nivel+'<br><span style="opacity:.75">Repaso R.A. 1.2 · Programación Orientada a Objetos · Generado: '+state.evaluacion.fecha+'</span>';
+  const tabla = document.getElementById('tablaRubrica');
+  tabla.innerHTML = '<tr><th>Componente</th><th style="width:110px">Puntos</th><th>Retroalimentación</th></tr>';
+  filas.forEach(f=>{
+    const fb = '<ul class="fb-list">'+f.fb.map(x=>'<li class="'+(x.ok?'ok':'miss')+'">'+(x.ok?'✓ ':'✗ ')+x.label+' ('+x.pts+' pts)</li>').join('')+'</ul>';
+    tabla.insertAdjacentHTML('beforeend','<tr><td><strong>'+f.nombre+'</strong></td><td><strong>'+f.pts+'</strong> / '+f.max+'</td><td>'+fb+'</td></tr>');
+  });
+  window.scrollTo({top:0});
+}
+
+/* ---------- Envío al docente (FormSubmit) y sellado ---------- */
+const FORMSUBMIT_ENDPOINT = 'https://formsubmit.co/ajax/profesantiagomtzglez@gmail.com';
+
+function sellarCuaderno(){
+  ['bit1','bit2','bit3'].forEach(id=>{ const el=document.getElementById(id); if(el) el.disabled=true; });
+  const bb = document.getElementById('btn-bitacora');
+  if(bb){ bb.disabled=true; bb.textContent='✓ Bitácora sellada'; }
+  const be = document.getElementById('btnEnviar');
+  if(be){ be.disabled=true; be.textContent='✓ Reporte enviado'; }
+  const ok = document.getElementById('envio_ok');
+  if(ok && state.enviado){
+    ok.style.display='block';
+    ok.innerHTML = '<div class="c-title">✓ Cuaderno enviado y sellado</div><p>Folio: <strong>'+state.enviado.folio+'</strong> · Enviado: '+state.enviado.fecha+' · Calificación enviada: <strong>'+state.enviado.total+' / 100</strong>.<br>Conserva tu copia descargable como comprobante. Los apuntes, instrucciones y el simulador siguen disponibles para consulta.</p>';
+  }
+}
+
+async function enviarReporte(){
+  const st = document.getElementById('envio_status');
+  if(state.enviado){ st.style.color='var(--gris)'; st.textContent='Este cuaderno ya fue enviado (folio '+state.enviado.folio+').'; return; }
+  const nombres = {act1:'Actividad 1',act2:'Actividad 2',act3:'Actividad 3'};
+  const faltan = ACTS_META.filter(([a])=>!state.entregas[a]).map(([a])=>nombres[a]);
+  const bitOk = ['bit1','bit2','bit3'].every(k=>(state.respuestas[k]||'').trim().length >= 10);
+  if(!bitOk) faltan.push('Bitácora (responde y guarda sus 3 preguntas)');
+  if(faltan.length){
+    st.style.color='var(--rojo)';
+    st.textContent='✗ Antes de enviar debes completar: '+faltan.join(', ')+'.';
+    return;
+  }
+  if(!confirm('Vas a ENVIAR tu reporte al docente.\n\n• El envío es ÚNICO y definitivo.\n• Tu calificación llegará al correo del docente con fecha, hora y folio.\n• Las actividades y la bitácora quedarán selladas (solo lectura).\n• Los apuntes, instrucciones y el editor de C++ seguirán disponibles.\n\n¿Enviar ahora?')) return;
+  calificarTodo();
+  const ev = state.evaluacion, a = state.alumno||{}, R = state.respuestas;
+  const folio = 'PROO-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).slice(2,6).toUpperCase();
+  const btn = document.getElementById('btnEnviar'); if(btn) btn.disabled = true;
+  st.style.color='var(--gris)'; st.textContent='⏳ Enviando reporte al docente…';
+  const E = state.entregas;
+  const payload = {
+    _subject: 'PROO RA1.2 · '+(a.nombre||'Alumno')+' · Grupo '+(a.grupo||'?')+' · '+ev.total+'/100',
+    _captcha: 'false', _template: 'table',
+    Folio: folio,
+    Fecha_de_envio: new Date().toLocaleString('es-MX'),
+    Alumno: a.nombre||'', Grupo: a.grupo||'', Turno: a.turno||'', Correo_institucional: a.correo||'',
+    CALIFICACION_TOTAL: ev.total + ' / 100',
+    Actividad_1_ES_y_control: E.act1.pts+' / 30 · entregada: '+E.act1.fecha,
+    Actividad_2_Primera_clase: E.act2.pts+' / 30 · entregada: '+E.act2.fecha,
+    Actividad_3_Constructor: E.act3.pts+' / 30 · entregada: '+E.act3.fecha,
+    Bitacora_puntos: (ev.filas[3]?ev.filas[3].pts:0)+' / 10',
+    A1_analisis: 'ciclo: '+(R.a1_ciclo||'—')+' · break: '+(R.a1_break||'—'),
+    A1_codigo_Cpp: R.a1_code||'', A1_explicacion: R.a1_expl||'',
+    A2_analisis: 'acceso saldo: '+(R.a2_acc||'—')+' · metodos: '+(R.a2_met||'—'),
+    A2_codigo_Cpp: R.a2_code||'', A2_explicacion: R.a2_expl||'',
+    A3_analisis: 'constructor: '+(R.a3_ctor||'—')+' · validacion: '+(R.a3_val||'—'),
+    A3_codigo_Cpp: R.a3_code||'', A3_explicacion: R.a3_expl||'',
+    Bitacora_que_aprendi: R.bit1||'', Bitacora_dificultades: R.bit2||'', Bitacora_aplicacion: R.bit3||'',
+    Navegador: navigator.userAgent
+  };
+  try{
+    const r = await fetch(FORMSUBMIT_ENDPOINT, {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json', 'Accept':'application/json', 'X-Requested-With':'XMLHttpRequest' },
+      body: JSON.stringify(payload)
+    });
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    await r.json();
+    state.enviado = { folio, fecha:new Date().toLocaleString('es-MX'), total:ev.total };
+    if(sb && state.alumno){
+      try{ await sb.from('envios').insert({ user_id:state.alumno.id, cuaderno:CUADERNO, folio, total:ev.total, fecha:new Date().toISOString() }); }catch(e){}
+    }
+    persist(); await subirAvance();
+    st.textContent='';
+    sellarCuaderno();
+    window.scrollTo({top:0});
+  }catch(e){
+    if(btn) btn.disabled = false;
+    st.style.color='var(--rojo)';
+    st.textContent='✗ No se pudo enviar ('+e.message+'). Revisa tu conexión a internet e inténtalo de nuevo — tu cuaderno NO se ha sellado y tus respuestas están a salvo.';
+  }
+}
+
+/* ---------- Boleta PDF de UNA hoja (jsPDF) ---------- */
+function descargarPDF(){
+  if(!state.evaluacion) calificarTodo();
+  if(!window.jspdf || !window.jspdf.jsPDF){ alert('No se pudo cargar el generador de PDF. Verifica tu conexión a internet y recarga la página.'); return; }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit:'mm', format:'letter' });
+  const M = 14, W = 188;
+  const a = state.alumno||{}, ev = state.evaluacion;
+  let y = 16;
+
+  /* Encabezado */
+  doc.setFont('helvetica','bold'); doc.setFontSize(15); doc.setTextColor(21,34,48);
+  doc.text('POO Classroom · Boleta de Resultados', M, y); y += 5.5;
+  doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(90,107,120);
+  doc.text('Programación Orientada a Objetos (PROO-20) · Unidad 1 · RA 1.2 · Repaso de C++ · CONALEP', M, y); y += 3.8;
+  doc.text('Proyecto integrador: Cajero Automático en C++', M, y); y += 3;
+  doc.setDrawColor(14,134,196); doc.setLineWidth(0.7); doc.line(M, y, M+W, y); y += 6;
+
+  /* Datos del alumno */
+  doc.setFont('helvetica','bold'); doc.setFontSize(10.5); doc.setTextColor(21,34,48);
+  doc.text((a.nombre||'—'), M, y);
+  doc.setFont('helvetica','normal'); doc.setFontSize(9);
+  doc.text('Grupo '+(a.grupo||'—')+' · Turno '+(a.turno||'—'), M+W, y, {align:'right'}); y += 4.5;
+  doc.setFontSize(8); doc.setTextColor(90,107,120);
+  doc.text((a.correo||'—')+' · Generado: '+new Date().toLocaleString('es-MX'), M, y); y += 6;
+
+  /* Banda de calificación */
+  doc.setFillColor(8,79,117); doc.roundedRect(M, y, W, 13, 2, 2, 'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(14); doc.setTextColor(255,255,255);
+  doc.text('CALIFICACIÓN: '+ev.total+' / 100', M+5, y+8.7);
+  doc.setFontSize(8); doc.setFont('helvetica','normal');
+  const sello = state.enviado ? ('ENVIADO · Folio '+state.enviado.folio+' · '+state.enviado.fecha) : 'AÚN NO ENVIADO AL DOCENTE';
+  doc.text(sello, M+W-4, y+8.2, {align:'right'}); y += 19;
+
+  /* Tabla de componentes */
+  const comp = ev.filas.map(f=>[f.nombre.replace(/ \(entregada.*$/,''), f.pts+' / '+f.max, (f.nombre.match(/entregada (.+)\)$/)||[,'—'])[1]]);
+  doc.setFillColor(229,243,251); doc.rect(M, y, W, 6.2, 'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(8.5); doc.setTextColor(8,79,117);
+  doc.text('Componente', M+2, y+4.2); doc.text('Puntos', M+106, y+4.2); doc.text('Fecha de entrega', M+130, y+4.2); y += 6.2;
+  doc.setFont('helvetica','normal'); doc.setTextColor(21,34,48);
+  comp.forEach(c=>{
+    doc.setDrawColor(216,229,238); doc.setLineWidth(0.2); doc.line(M, y+5.6, M+W, y+5.6);
+    doc.setFont('helvetica','bold'); doc.text(String(c[0]).slice(0,62), M+2, y+4);
+    doc.setFont('helvetica','normal'); doc.text(String(c[1]), M+106, y+4); doc.text(String(c[2]), M+130, y+4);
+    y += 5.8;
+  });
+  y += 5;
+
+  /* Detalle de criterios en dos columnas */
+  doc.setFont('helvetica','bold'); doc.setFontSize(9.5); doc.setTextColor(8,79,117);
+  doc.text('Detalle de criterios', M, y); y += 4.5;
+  const colW = 91, colX = [M, M+colW+6], topD = y, bottomD = 243;
+  let col = 0; let yy = topD;
+  const item = (txt, bold, ok) => {
+    doc.setFont('helvetica', bold?'bold':'normal'); doc.setFontSize(6.8);
+    if(bold) doc.setTextColor(21,34,48); else doc.setTextColor(ok?11:163, ok?107:59, ok?58:46);
+    const lines = doc.splitTextToSize(txt, colW - (bold?0:3));
+    const h = lines.length*2.7 + (bold?1.2:0.6);
+    if(yy + h > bottomD){ if(col===0){ col=1; yy=topD; } else { return false; } }
+    doc.text(lines, colX[col] + (bold?0:3), yy + 2.2);
+    yy += h; return true;
+  };
+  let completo = true;
+  ev.filas.forEach(f=>{
+    if(!item(f.nombre.replace(/ \(entregada.*$/,'')+'  ·  '+f.pts+'/'+f.max, true)) { completo=false; return; }
+    f.fb.forEach(x=>{ if(!item((x.ok?'[OK] ':'[ X ] ')+x.label+' ('+x.pts+')', false, x.ok)) completo=false; });
+  });
+  if(!completo){ doc.setFont('helvetica','italic'); doc.setFontSize(6.5); doc.setTextColor(90,107,120); doc.text('(detalle completo disponible en la plataforma)', colX[1], bottomD+2); }
+
+  /* Pie: firmas y leyenda */
+  let yf = 252;
+  doc.setDrawColor(21,34,48); doc.setLineWidth(0.3);
+  doc.line(M+8, yf, M+78, yf); doc.line(M+110, yf, M+180, yf);
+  doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(21,34,48);
+  doc.text('Firma del alumno', M+30, yf+3.8); doc.text('Firma del docente', M+132, yf+3.8);
+  doc.setFontSize(6.8); doc.setTextColor(90,107,120);
+  doc.text(doc.splitTextToSize('Boleta generada por POO Classroom · Cuaderno Digital de Aprendizaje. La calificación automática es estructural; la revisión final corresponde al docente. Las respuestas completas del alumno se conservan en la plataforma y en el correo de entrega.', W), M, yf+9);
+
+  const safe = (a.nombre||'alumno').trim().replace(/\s+/g,'_').replace(/[^\w\u00C0-\u017F_-]/g,'');
+  doc.save('Boleta_POO_RA1-2_'+safe+'.pdf');
+}
+
+/* ---------- Apuntes imprimibles a dos columnas (jsPDF) ---------- */
+const APUNTES_DATA = [
+ ['h1','ESQUELETO DE UN PROGRAMA C++'],
+ ['code','#include <iostream>\nusing namespace std;\n\nint main() {\n    cout << "Hola" << endl;\n    return 0;\n}'],
+ ['li','#include <iostream>: trae cin y cout · int main(): donde inicia el programa · return 0: termina bien'],
+ ['h1','ENTRADA Y SALIDA'],
+ ['code','double saldo = 1500.50;\ncout << "Saldo: $" << saldo << endl;  // mostrar\ncin >> saldo;                          // leer'],
+ ['li','cout << con el operador << para mostrar · cin >> para leer del usuario · endl salta de linea'],
+ ['li','Tipos: int (enteros) · double (decimales) · char (un caracter) · string (texto) · bool (true/false)'],
+ ['h1','SENTENCIAS DE CONTROL'],
+ ['h2','Seleccion: if / else'],
+ ['code','if (retiro <= saldo) {\n    saldo = saldo - retiro;\n} else {\n    cout << "Fondos insuficientes";\n}'],
+ ['li','Comparacion: == (igual) · != (distinto) · > · < · >= · <='],
+ ['h2','Seleccion: switch (menus)'],
+ ['code','switch (opcion) {\n    case 1: cout << "Consultar"; break;\n    case 2: cout << "Depositar"; break;\n    default: cout << "No valida";\n}'],
+ ['warn','No olvides el break en cada case, o el programa se sigue de largo al siguiente.'],
+ ['h2','Repeticion: for, while, do-while'],
+ ['code','for (int i = 0; i < 3; i++) { ... }   // sabes cuantas veces\n\nwhile (intentos < 3) { ... }          // mientras se cumpla\n\ndo { ...menu... } while (opcion != 4); // minimo una vez'],
+ ['li','for: numero conocido de vueltas · while: puede no correr ni una vez · do-while: corre minimo una vez (ideal para menus)'],
+ ['h1','ARREGLOS Y ESTRUCTURAS'],
+ ['code','double retiros[3] = {500, 1000, 200};\ncout << retiros[0];   // 500 (indice empieza en 0)\n\ndouble saldos[2][3];  // tabla: 2 filas, 3 columnas'],
+ ['code','struct Cuenta {\n    int numero;\n    string titular;\n    double saldo;\n};\nCuenta c1;\nc1.saldo = 1500;   // acceso con punto'],
+ ['li','Arreglo: muchos datos del MISMO tipo · struct: datos de DISTINTO tipo que describen una cosa'],
+ ['h1','CLASES Y OBJETOS (POO)'],
+ ['code','class Cuenta {\n  private:\n    double saldo;        // atributo (dato)\n  public:\n    void depositar(double m) {  // metodo (accion)\n        saldo = saldo + m;\n    }\n};\n\nCuenta c;            // crear objeto\nc.depositar(500);    // usar metodo'],
+ ['warn','La clase lleva punto y coma al final: class Cuenta { ... };'],
+ ['li','private: solo la clase accede (datos sensibles como saldo) · public: cualquiera (metodos que usa el usuario) · protected: clase e hijas (herencia)'],
+ ['li','Encapsulamiento: hacer saldo privado obliga a usar metodos que validan. Protege la integridad del dato.'],
+ ['h1','CONSTRUCTOR Y DESTRUCTOR'],
+ ['code','class Cuenta {\n    string titular;\n    double saldo;\n  public:\n    Cuenta(string n, double s) {  // CONSTRUCTOR\n        titular = n;\n        saldo = s;\n    }\n    ~Cuenta() {                   // DESTRUCTOR\n        cout << "Cerrando cuenta";\n    }\n};\nCuenta c("Ana", 1500.0);  // el constructor corre aqui'],
+ ['li','Constructor: mismo nombre que la clase, sin tipo de retorno. Da valores iniciales al crear el objeto.'],
+ ['li','Destructor: ~Clase(). Se ejecuta solo, al destruir el objeto. C++ los llama automaticamente.']
+];
+
+function descargarApuntes(){
+  if(!window.jspdf || !window.jspdf.jsPDF){ alert('No se pudo cargar el generador de PDF. Verifica tu conexión a internet y recarga la página.'); return; }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit:'mm', format:'letter' });
+  const M = 12, gut = 7, colW = (216 - 2*M - gut)/2, top = 26, bottom = 266;
+  const colX = [M, M + colW + gut];
+  let col = 0, y = top;
+
+  const deco = () => {
+    /* Encabezado tipográfico, sin rellenos */
+    doc.setFont('helvetica','bold'); doc.setFontSize(12.5); doc.setTextColor(0,0,0);
+    doc.text('POO · APUNTES DE BOLSILLO', M, 12.5);
+    doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(80,80,80);
+    doc.text('C++ · Repaso 1.2', 216-M, 12.5, {align:'right'});
+    doc.setFontSize(6.8);
+    doc.text('CONALEP · PROO-20 · Repaso RA 1.2 · C++ · Proyecto: Cajero Automático', M, 16.5);
+    doc.setDrawColor(0,0,0); doc.setLineWidth(0.8); doc.line(M, 19, 216-M, 19);
+    doc.setLineWidth(0.2); doc.line(M, 20.1, 216-M, 20.1);
+    /* Pie con firma */
+    doc.setLineWidth(0.2); doc.setDrawColor(120,120,120); doc.line(M, 270, 216-M, 270);
+    doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(100,100,100);
+    doc.text('POO Classroom · Cuaderno Digital de Aprendizaje · pág. '+doc.getNumberOfPages(), M, 274);
+    doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(0,0,0);
+    doc.text('Ing. Santiago Martínez González', 216-M, 274, {align:'right'});
+  };
+  deco();
+
+  const ensure = h => {
+    if(y + h > bottom){
+      if(col === 0){ col = 1; y = top; }
+      else { doc.addPage(); deco(); col = 0; y = top; }
+    }
+  };
+  APUNTES_DATA.forEach(([tipo, txt]) => {
+    if(tipo === 'h1'){
+      ensure(10);
+      doc.setDrawColor(0,0,0); doc.setLineWidth(0.5);
+      doc.rect(colX[col], y-3.2, colW, 6.6);
+      doc.setFont('helvetica','bold'); doc.setFontSize(7.6); doc.setTextColor(0,0,0);
+      doc.text(doc.splitTextToSize(txt, colW-4)[0], colX[col]+2.2, y+1);
+      y += 8.8;
+    } else if(tipo === 'h2'){
+      ensure(16); /* keep-with-next: el título nunca queda huérfano */
+      doc.setFont('helvetica','bold'); doc.setFontSize(8.4); doc.setTextColor(0,0,0);
+      const lines = doc.splitTextToSize(txt, colW);
+      doc.text(lines, colX[col], y); y += lines.length*3.5;
+      doc.setDrawColor(0,0,0); doc.setLineWidth(0.3);
+      doc.line(colX[col], y-2.1, colX[col]+colW, y-2.1); y += 1.4;
+    } else if(tipo === 'p'){
+      doc.setFont('helvetica','normal'); doc.setFontSize(7.4); doc.setTextColor(30,30,30);
+      const lines = doc.splitTextToSize(txt, colW);
+      ensure(lines.length*3.05 + 1);
+      doc.text(lines, colX[col], y); y += lines.length*3.05 + 1.8;
+    } else if(tipo === 'li'){
+      doc.setFont('helvetica','normal'); doc.setFontSize(7.4); doc.setTextColor(30,30,30);
+      const lines = doc.splitTextToSize(txt, colW-4);
+      ensure(lines.length*3.05 + 1);
+      doc.text('–', colX[col]+0.6, y); doc.text(lines, colX[col]+4, y);
+      y += lines.length*3.05 + 1.3;
+    } else if(tipo === 'code'){
+      doc.setFont('courier','bold'); doc.setFontSize(6.9); doc.setTextColor(0,0,0);
+      const raw = txt.split('\n'); let lines = [];
+      raw.forEach(r => { lines = lines.concat(doc.splitTextToSize(r, colW-6)); });
+      const h = lines.length*2.9;
+      ensure(h + 4);
+      doc.setDrawColor(0,0,0); doc.setLineWidth(0.7);
+      doc.line(colX[col]+0.6, y-2.2, colX[col]+0.6, y + h - 1.6);
+      doc.text(lines, colX[col]+4, y);
+      y += h + 2.6;
+    } else if(tipo === 'warn'){
+      doc.setFont('helvetica','bold'); doc.setFontSize(7.2); doc.setTextColor(0,0,0);
+      const lines = doc.splitTextToSize(txt, colW-13);
+      const h = lines.length*3 + 3.4;
+      ensure(h + 2);
+      doc.setDrawColor(0,0,0); doc.setLineWidth(0.5);
+      doc.rect(colX[col], y-2.6, colW, h);
+      doc.setFontSize(8.5); doc.text('¡!', colX[col]+2.6, y+1.4);
+      doc.setLineWidth(0.3); doc.line(colX[col]+8.2, y-2.6, colX[col]+8.2, y-2.6+h);
+      doc.setFontSize(7.2); doc.text(lines, colX[col]+10.6, y);
+      y += h + 1.6;
+    }
+  });
+  doc.save('Apuntes_POO_Cpp.pdf');
+}
+
+/* ---------- Respaldo portátil del avance ---------- */
+function exportarAvance(){
+  persist();
+  const data = { app: LS_KEY, fecha: new Date().toISOString(), state: state };
+  const blob = new Blob([JSON.stringify(data)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  const safe = ((state.alumno && state.alumno.nombre) || 'alumno').trim().replace(/\s+/g,'_').replace(/[^\w\u00C0-\u017F_-]/g,'');
+  a.download = 'Respaldo_' + LS_KEY + '_' + safe + '.json';
+  document.body.appendChild(a); a.click(); a.remove();
+}
+function importarAvance(file){
+  if(!file) return;
+  const r = new FileReader();
+  r.onload = () => {
+    try{
+      const data = JSON.parse(r.result);
+      if(!data || data.app !== LS_KEY || !data.state){
+        alert('Este archivo no es un respaldo de ESTE cuaderno (revisa que sea el RA correcto).');
+        return;
+      }
+      const quien = (data.state.alumno && data.state.alumno.nombre) || '(sin registro)';
+      const cuando = new Date(data.fecha).toLocaleString('es-MX');
+      if(!confirm('Se restaurará el avance de:\n\n' + quien + '\nguardado el ' + cuando + '\n\nEl avance actual en esta computadora será REEMPLAZADO. ¿Continuar?')) return;
+      localStorage.setItem(LS_KEY, JSON.stringify(data.state));
+      location.reload();
+    }catch(e){
+      alert('Archivo de respaldo inválido o dañado.');
+    }
+  };
+  r.readAsText(file);
+}
+
+/* ---------- Inicio ---------- */
+document.getElementById('toggleModo').addEventListener('click', toggleModoUI);
+document.getElementById('r_pass').addEventListener('keydown', e=>{ if(e.key==='Enter') autenticar(); });
+
+async function arranque(){
+  highlightSQL();
+  if(!initSB()){ document.getElementById('gate').style.display='flex'; return; }
+  try{
+    const { data:{ session } } = await sb.auth.getSession();
+    if(session && session.user){
+      const uid = session.user.id;
+      const { data: perfil } = await sb.from('perfiles').select('*').eq('id', uid).single();
+      state.alumno = perfil ? { id:uid, nombre:perfil.nombre, grupo:perfil.grupo, turno:perfil.turno, correo:perfil.correo, matricula:perfil.matricula||'', registro:'' } : { id:uid, nombre:session.user.email, grupo:'', turno:'', correo:session.user.email };
+      await descargarAvance(uid);
+      entrarApp();
+      return;
+    }
+  }catch(e){}
+  document.getElementById('gate').style.display='flex';
+}
+arranque();
+</script>
+</body>
+</html>

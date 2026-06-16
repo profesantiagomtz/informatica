@@ -1,0 +1,1964 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>POO Classroom · Cuaderno Digital de Aprendizaje · RA 2.1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --azul:#6D28D9;
+  --azul-osc:#4C1D95;
+  --azul-tinte:#EDE7FB;
+  --ink:#152230;
+  --gris:#5A6B78;
+  --bg:#F1F6F9;
+  --surface:#FFFFFF;
+  --line:#D8E5EE;
+  --code-bg:#0A2233;
+  --code-ink:#D6ECF8;
+  --kw:#5BC8F5;
+  --str:#F0C674;
+  --num:#8FE3AC;
+  --amber-bg:#FFF4E0;
+  --amber:#8A5300;
+  --rojo:#A33B2E;
+  --rojo-bg:#FBEAE7;
+  --ok:#0B6B3A;
+  --radius:10px;
+  --sans:'IBM Plex Sans',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);font-size:16px;line-height:1.65}
+
+/* ===== LAYOUT ===== */
+.app{display:grid;grid-template-columns:292px 1fr;min-height:100vh}
+.sidebar{background:var(--surface);border-right:1px solid var(--line);padding:0;position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column}
+.main{padding:32px clamp(20px,5vw,64px) 96px;max-width:980px;width:100%}
+
+/* ===== SIDEBAR ===== */
+.brand{padding:22px 22px 18px;border-bottom:1px solid var(--line)}
+.brand .logo{display:flex;align-items:center;gap:10px}
+.logo-mark{width:38px;height:38px;border-radius:8px;background:var(--azul);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:600;font-size:14px;letter-spacing:-.5px}
+.brand h1{font-size:17px;font-weight:700;letter-spacing:-.2px}
+.brand .sub{font-size:12.5px;color:var(--gris);margin-top:2px}
+.brand .inst{margin-top:10px;font-size:11px;text-transform:uppercase;letter-spacing:1.2px;color:var(--azul);font-weight:600}
+
+.student-chip{margin:14px 18px 0;padding:10px 12px;background:var(--azul-tinte);border:1px solid #C9E2F2;border-radius:8px;font-size:13px;display:none}
+.student-chip strong{display:block;font-size:13.5px}
+.student-chip span{color:var(--gris);font-size:12px}
+.student-chip button{margin-top:6px;background:none;border:none;color:var(--azul);font-size:12px;font-weight:600;cursor:pointer;padding:0;font-family:var(--sans)}
+
+.progress-wrap{padding:16px 22px 6px}
+.progress-label{display:flex;justify-content:space-between;font-size:12px;color:var(--gris);margin-bottom:6px;font-weight:500}
+.progress-bar{height:7px;background:var(--line);border-radius:99px;overflow:hidden}
+.progress-fill{height:100%;width:0%;background:var(--azul);border-radius:99px;transition:width .4s ease}
+
+nav.toc{padding:12px 12px 24px;flex:1}
+.toc-group{font-size:11px;text-transform:uppercase;letter-spacing:1.1px;color:var(--gris);padding:14px 10px 6px;font-weight:600}
+.toc a{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:7px;color:var(--ink);text-decoration:none;font-size:14px;cursor:pointer}
+.toc a:hover{background:var(--bg)}
+.toc a.active{background:var(--azul-tinte);color:var(--azul-osc);font-weight:600}
+.toc .dot{width:8px;height:8px;border-radius:50%;border:2px solid var(--line);flex-shrink:0;background:#fff}
+.toc a.done .dot{background:var(--azul);border-color:var(--azul)}
+.sidebar-foot{padding:14px 22px;border-top:1px solid var(--line);font-size:11.5px;color:var(--gris)}
+
+/* ===== TOPBAR (mobile) ===== */
+.topbar{display:none;position:sticky;top:0;z-index:50;background:var(--surface);border-bottom:1px solid var(--line);padding:12px 16px;align-items:center;gap:12px}
+.topbar button{background:none;border:1px solid var(--line);border-radius:7px;padding:7px 11px;font-size:18px;cursor:pointer;line-height:1}
+.topbar .t-title{font-weight:700;font-size:15px}
+
+/* ===== SECTIONS ===== */
+section.page{display:none;animation:fadeIn .25s ease}
+section.page.visible{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:1.4px;color:var(--azul);font-weight:600;margin-bottom:8px}
+h2.page-title{font-size:clamp(24px,3.4vw,32px);font-weight:700;letter-spacing:-.5px;line-height:1.2;margin-bottom:10px}
+.page-lead{font-size:17px;color:var(--gris);max-width:64ch;margin-bottom:28px}
+h3{font-size:20px;font-weight:700;margin:34px 0 12px;letter-spacing:-.2px}
+h4{font-size:16px;font-weight:600;margin:22px 0 8px}
+p{margin-bottom:14px;max-width:72ch}
+ul.list,ol.list{margin:0 0 16px 22px;max-width:70ch}
+ul.list li,ol.list li{margin-bottom:7px}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:24px 26px;margin-bottom:18px}
+.card h4{margin-top:0}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+/* db-path chip: firma visual del cuaderno */
+.db-path{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:12.5px;background:var(--azul-osc);color:#CBE7F7;padding:6px 12px;border-radius:7px 7px 0 0;font-weight:500}
+.db-path .sep{opacity:.45}
+.db-path .tbl{color:#fff;font-weight:600}
+.db-path svg{flex-shrink:0}
+
+/* SQL blocks */
+pre.sql,pre.cpp{background:var(--code-bg);color:var(--code-ink);font-family:var(--mono);font-size:13.5px;line-height:1.65;padding:18px 20px;border-radius:var(--radius);overflow-x:auto;margin-bottom:18px;white-space:pre}
+pre.sql.solo{border-radius:var(--radius)}
+.kw{color:var(--kw);font-weight:600}
+.str{color:var(--str)}
+.num{color:var(--num)}
+.cm{color:#7FA0B4;font-style:italic}
+code.inline{font-family:var(--mono);font-size:.88em;background:var(--azul-tinte);color:var(--azul-osc);padding:2px 6px;border-radius:5px;font-weight:500}
+/* Editor C++ */
+.editor-wrap{border:1px solid var(--linea);border-radius:var(--radius);overflow:hidden;margin-bottom:16px}
+.editor-bar{background:#1A2433;color:#C7D6E5;padding:8px 14px;font-family:var(--mono);font-size:12px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #2A3850}
+.editor-bar .dot-r{width:11px;height:11px;border-radius:50%;background:#E06C5A}.editor-bar .dot-y{width:11px;height:11px;border-radius:50%;background:#E0B85A}.editor-bar .dot-g{width:11px;height:11px;border-radius:50%;background:#5AC07A}
+.editor-bar .fname{margin-left:6px;color:#8FA8BE}
+textarea.code-edit{width:100%;min-height:280px;background:#0E1726;color:#E6EDF3;font-family:var(--mono);font-size:13.5px;line-height:1.6;border:none;padding:14px 16px;resize:vertical;tab-size:4;outline:none;display:block}
+.stdin-wrap{border-top:1px solid #2A3850}
+textarea.stdin-edit{width:100%;min-height:60px;background:#121C2B;color:#C7D6E5;font-family:var(--mono);font-size:13px;border:none;padding:10px 16px;resize:vertical;outline:none;display:block}
+.run-out{background:#0A1220;color:#D6ECF8;font-family:var(--mono);font-size:13px;line-height:1.6;padding:14px 16px;border-radius:var(--radius);white-space:pre-wrap;margin-top:12px;min-height:48px;border:1px solid var(--linea)}
+.run-out .ok-line{color:#5AC07A}.run-out .err-line{color:#E89A8A}.run-out .muted{color:#7FA0B4}
+.run-bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}
+
+/* data tables */
+.tbl-wrap{overflow-x:auto;margin-bottom:18px}
+table.data{border-collapse:collapse;width:100%;background:var(--surface);font-size:14px;border-radius:0 var(--radius) var(--radius) var(--radius);overflow:hidden;border:1px solid var(--line)}
+table.data th{background:#F5FAFD;font-family:var(--mono);font-size:12.5px;font-weight:600;text-align:left;padding:10px 14px;border-bottom:2px solid var(--line);color:var(--azul-osc)}
+table.data td{padding:9px 14px;border-bottom:1px solid var(--line)}
+table.data tr:last-child td{border-bottom:none}
+table.data tr.hl td{background:#FFF9E8}
+
+/* callouts */
+.callout{border-radius:var(--radius);padding:16px 18px 14px;margin-bottom:18px;border:1px solid;font-size:15px}
+.callout .c-title{font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.callout.info{background:var(--azul-tinte);border-color:#C3DFF0;color:var(--azul-osc)}
+.callout.warn{background:var(--amber-bg);border-color:#EDD9AE;color:var(--amber)}
+.callout.danger{background:var(--rojo-bg);border-color:#EFC9C2;color:var(--rojo)}
+.callout p{margin-bottom:6px;color:inherit}
+.callout p:last-child{margin-bottom:0}
+
+/* método 4 pasos */
+.metodo{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0 24px}
+.metodo .paso{background:var(--surface);border:1px solid var(--line);border-top:3px solid var(--azul);border-radius:8px;padding:14px}
+.metodo .paso .n{font-family:var(--mono);font-size:12px;color:var(--azul);font-weight:600;margin-bottom:4px}
+.metodo .paso .q{font-size:13.5px;font-weight:600;line-height:1.4}
+
+/* forms */
+.field{margin-bottom:18px}
+.field label{display:block;font-weight:600;font-size:14px;margin-bottom:6px}
+.field .hint{font-weight:400;color:var(--gris);font-size:13px;display:block;margin-top:2px}
+input[type=text],input[type=email],select,textarea{width:100%;border:1px solid #C2D5E2;border-radius:8px;padding:11px 13px;font-size:15px;font-family:var(--sans);background:#fff;color:var(--ink)}
+textarea{min-height:110px;resize:vertical;line-height:1.6}
+textarea.sql-input{font-family:var(--mono);font-size:14px;background:#FAFCFE;min-height:130px}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--azul);outline-offset:1px;border-color:var(--azul)}
+.radio-row{display:flex;flex-wrap:wrap;gap:10px}
+.radio-pill{display:flex;align-items:center;gap:8px;border:1px solid #C2D5E2;border-radius:8px;padding:9px 14px;cursor:pointer;background:#fff;font-size:14.5px}
+.radio-pill:has(input:checked){border-color:var(--azul);background:var(--azul-tinte);font-weight:600;color:var(--azul-osc)}
+.radio-pill input{accent-color:var(--azul)}
+
+.btn{display:inline-flex;align-items:center;gap:8px;background:var(--azul);color:#fff;border:none;border-radius:8px;padding:11px 20px;font-size:15px;font-weight:600;font-family:var(--sans);cursor:pointer}
+.btn:hover{background:var(--azul-osc)}
+.btn.ghost{background:#fff;color:var(--azul-osc);border:1px solid #B6D3E6}
+.btn.ghost:hover{background:var(--azul-tinte)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.save-note{font-size:13px;color:var(--ok);margin-left:12px;opacity:0;transition:opacity .3s}
+.save-note.show{opacity:1}
+
+/* activity meta */
+.act-meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.badge{font-size:12px;font-weight:600;padding:5px 11px;border-radius:99px;background:var(--azul-tinte);color:var(--azul-osc);border:1px solid #C3DFF0}
+.badge.pts{background:#EEF3FB;color:#27466E;border-color:#CCDCF0}
+
+/* evaluación */
+.score-hero{background:var(--azul-osc);color:#fff;border-radius:var(--radius);padding:28px;display:flex;align-items:center;gap:28px;margin-bottom:22px;flex-wrap:wrap}
+.score-num{font-size:54px;font-weight:700;font-family:var(--mono);line-height:1}
+.score-hero .detail{font-size:14px;opacity:.9}
+.rubrica td .fb{font-size:13px;color:var(--gris)}
+.fb-list{margin:6px 0 0 18px;font-size:13.5px}
+.fb-list li.ok{color:var(--ok)}
+.fb-list li.miss{color:var(--rojo)}
+
+/* retroalimentación de entrega */
+.fb-panel{display:none;margin-top:18px;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.fb-panel.show{display:block;animation:fadeIn .25s ease}
+.fb-head{background:var(--azul-osc);color:#fff;padding:12px 18px;font-weight:600;display:flex;justify-content:space-between;align-items:center;font-size:14.5px;gap:12px;flex-wrap:wrap}
+.fb-body{background:var(--surface);padding:16px 18px}
+.fb-body ul.fb-list{margin:0 0 0 18px;font-size:14px}
+.solucion{margin-top:16px;border-top:1px dashed var(--line);padding-top:14px}
+.solucion h5{font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--azul-osc);margin-bottom:10px}
+.fb-unlock{margin-top:14px;text-align:right}
+textarea:disabled,input:disabled,select:disabled{background:#EDF2F6;color:#5A6B78;cursor:not-allowed}
+.radio-pill:has(input:disabled){opacity:.6;cursor:not-allowed}
+
+/* simulador SQL */
+.sim-console{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--surface)}
+.sim-console textarea{border:none;border-radius:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);min-height:140px;font-family:var(--mono);font-size:14px;background:#FAFCFE}
+.sim-console textarea:focus{outline:none;background:#fff}
+.sim-toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:12px 14px}
+.sim-status{font-size:13px;color:var(--gris);padding:0 14px 12px}
+.sim-result{border:1px solid var(--line);border-radius:10px;margin-top:14px;overflow:hidden}
+.sim-cmd{font-family:var(--mono);font-size:12.5px;background:#0A2233;color:#D6ECF8;padding:9px 14px;cursor:pointer;white-space:pre-wrap;word-break:break-word}
+.sim-cmd:hover{background:#103049}
+.sim-cmd::before{content:'sql> ';color:#5BC8F5;font-weight:600}
+.sim-body{padding:12px 14px;background:#fff;font-size:14px}
+.sim-ok{color:var(--ok);font-weight:600;font-size:13.5px}
+.sim-err{color:var(--rojo);font-family:var(--mono);font-size:13px;white-space:pre-wrap}
+.sim-body table.data{border-radius:8px;margin-bottom:6px}
+.reto{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px dashed var(--line);font-size:14.5px}
+.reto:last-child{border-bottom:none}
+.reto .r-num{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--azul);background:var(--azul-tinte);border-radius:6px;padding:3px 8px;flex-shrink:0;margin-top:1px}
+
+/* nav footer */
+.pager{display:flex;justify-content:space-between;margin-top:42px;gap:12px}
+
+/* registro: pantalla de bienvenida */
+.gate{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:18px;background:linear-gradient(150deg,#063A57 0%,#0A5D8C 55%,#0E86C4 100%)}
+.gate::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 80% 10%,rgba(255,255,255,.08),transparent 60%);pointer-events:none}
+.gate-card{position:relative;background:#fff;border-radius:16px;max-width:900px;width:100%;display:grid;grid-template-columns:1fr 1.15fr;overflow:hidden;box-shadow:0 30px 80px rgba(3,28,44,.5);max-height:94vh}
+.gate-brand{background:linear-gradient(165deg,#084F75,#0E86C4);color:#fff;padding:38px 34px 30px;display:flex;flex-direction:column}
+.gate-brand .logo-mark{width:52px;height:52px;font-size:18px;border-radius:12px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35)}
+.gate-brand h2{font-size:26px;margin:16px 0 2px;letter-spacing:-.4px;line-height:1.15}
+.g-sub{font-size:14px;opacity:.85}
+.g-divider{height:1px;background:rgba(255,255,255,.28);margin:20px 0 16px}
+.g-mod{font-size:11.5px;text-transform:uppercase;letter-spacing:1.4px;font-weight:600;opacity:.92;margin-bottom:14px}
+.g-list{list-style:none;display:flex;flex-direction:column;gap:10px;font-size:13.5px;line-height:1.5}
+.g-list li{padding-left:24px;position:relative;opacity:.96}
+.g-list li::before{content:'✓';position:absolute;left:0;top:0;font-weight:700;color:#9FDCFF}
+.g-groups{margin-top:auto;padding-top:22px;font-family:var(--mono);font-size:12.5px;opacity:.8;letter-spacing:.5px}
+.gate-form{padding:36px 38px 30px;overflow-y:auto}
+.gate-form h3{margin:0 0 4px;font-size:21px;letter-spacing:-.3px}
+.gate-form>p{color:var(--gris);font-size:13.5px;margin-bottom:20px}
+.err{color:var(--rojo);background:var(--rojo-bg);border:1px solid #EFC9C2;border-radius:8px;padding:9px 12px;font-size:13px;margin:0 0 12px;display:none}
+@media(max-width:760px){.gate{padding:0}.gate-card{grid-template-columns:1fr;border-radius:0;max-height:100vh;overflow-y:auto}.gate-brand{padding:26px 24px 20px}.g-list{display:none}.g-divider{margin:14px 0 10px}.g-groups{margin-top:12px;padding-top:0}.gate-form{padding:24px 24px 28px}}
+
+@media(max-width:920px){
+  .app{grid-template-columns:1fr}
+  .sidebar{position:fixed;left:-300px;width:292px;z-index:60;transition:left .25s ease;box-shadow:none}
+  .sidebar.open{left:0;box-shadow:0 0 40px rgba(0,0,0,.25)}
+  .topbar{display:flex}
+  .grid-2,.metodo{grid-template-columns:1fr}
+  .metodo{grid-template-columns:1fr 1fr}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media print{.sidebar,.topbar,.pager,.btn{display:none!important}.app{display:block}}
+</style>
+</head>
+<body>
+
+<!-- ===== REGISTRO (gate) ===== -->
+<div class="gate" id="gate" style="display:none">
+  <div class="gate-card">
+    <aside class="gate-brand">
+      <div class="logo-mark">SQL</div>
+      <h2>POO Classroom</h2>
+      <div class="g-sub">Cuaderno Digital de Aprendizaje</div>
+      <div class="g-divider"></div>
+      <div class="g-mod">Programación Orientada a Objetos · CONALEP</div>
+      <ul class="g-list">
+        <li>Unidad 2 · RA 2.1 · Evidencia 2.1.1 (35% del módulo)</li>
+        <li>Proyecto integrador: <strong>Sistema de Administración Estudiantil</strong></li>
+        <li>3 actividades prácticas con código C++ real</li>
+        <li>Bitácora de aprendizaje y reporte descargable para tu docente</li>
+      </ul>
+      <div class="g-groups">&raquo; Grupos 410 &middot; 411</div>
+    </aside>
+    <div class="gate-form">
+      <h3 id="gateTitulo">Iniciar sesión</h3>
+      <p id="gateSub">Entra con tu correo institucional y tu matrícula. Tu avance se guarda en la nube: puedes continuar desde cualquier computadora.</p>
+      <div id="camposRegistro" style="display:none">
+      <div class="field">
+        <label for="r_nombre">Nombre completo</label>
+        <input type="text" id="r_nombre" placeholder="Ej. María Fernanda López Torres" autocomplete="name">
+      </div>
+      <div class="grid-2">
+        <div class="field">
+          <label for="r_grupo">Grupo</label>
+          <select id="r_grupo">
+            <option value="">Selecciona…</option>
+            <option>410</option><option>411</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="r_turno">Turno</label>
+          <select id="r_turno">
+            <option value="">Selecciona…</option>
+            <option>Matutino</option><option>Vespertino</option>
+          </select>
+        </div>
+      </div>
+      </div>
+      <div class="field">
+        <label for="r_correo">Correo institucional</label>
+        <input type="email" id="r_correo" placeholder="nombre@tam.conalep.edu.mx" autocomplete="email">
+        <span class="hint">Debe terminar en <strong>@tam.conalep.edu.mx</strong>.</span>
+      </div>
+      <div class="field">
+        <label for="r_pass">Tu matrícula <span class="hint" style="display:inline">(es tu contraseña de acceso)</span></label>
+        <input type="text" id="r_pass" placeholder="Ej. 23100245" autocomplete="off" inputmode="numeric">
+      </div>
+      <p class="err" id="r_err"></p>
+      <button class="btn" id="btnEntrar" style="width:100%;justify-content:center;margin-top:4px" onclick="autenticar()">Entrar a mi cuaderno</button>
+      <p style="font-size:12.5px;color:var(--gris);text-align:center;margin-top:12px">¿Primera vez? <a id="toggleModo" style="color:var(--azul-osc);font-weight:600;cursor:pointer;text-decoration:underline">Crear mi cuenta</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TOPBAR móvil ===== -->
+<div class="topbar">
+  <button onclick="document.querySelector('.sidebar').classList.toggle('open')" aria-label="Abrir menú">☰</button>
+  <div class="t-title">POO Classroom</div>
+</div>
+
+<div class="app">
+<!-- ===== SIDEBAR ===== -->
+<aside class="sidebar">
+  <div class="brand">
+    <div class="logo">
+      <div class="logo-mark">SQL</div>
+      <div>
+        <h1>POO Classroom</h1>
+        <div class="sub">Cuaderno Digital de Aprendizaje</div>
+      </div>
+    </div>
+    <div class="inst">CONALEP · Programación Orientada a Objetos</div>
+  </div>
+
+  <div class="student-chip" id="studentChip">
+    <strong id="sc_nombre"></strong>
+    <span id="sc_detalle"></span><br>
+    <span id="syncBadge" style="font-size:11px;color:var(--ok);display:block;margin-top:4px">☁ Guardado en la nube</span>
+    <button onclick="cerrarSesion()">Cerrar sesión</button>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-label"><span>Avance del cuaderno</span><span id="progPct">0%</span></div>
+    <div class="progress-bar"><div class="progress-fill" id="progFill"></div></div>
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <button class="btn ghost" style="padding:5px 10px;font-size:11.5px;flex:1;justify-content:center" onclick="exportarAvance()" title="Descarga tu avance para llevarlo a otra computadora">⬇ Respaldo</button>
+      <button class="btn ghost" style="padding:5px 10px;font-size:11.5px;flex:1;justify-content:center" onclick="document.getElementById('impFile').click()" title="Carga un respaldo descargado en otra computadora">⬆ Restaurar</button>
+      <input type="file" id="impFile" accept=".json,application/json" style="display:none" onchange="importarAvance(this.files[0]);this.value=''">
+    </div>
+    <div style="font-size:10.5px;color:var(--gris);margin-top:6px;line-height:1.4">Tu avance se guarda solo en ESTA computadora. Si trabajarás en otra (o en casa), descarga tu respaldo antes de irte y restáuralo allá.</div>
+  </div>
+
+  <nav class="toc" id="toc">
+    <div class="toc-group">Inicio</div>
+    <a data-sec="intro" class="active"><span class="dot"></span>1 · Introducción</a>
+    <div class="toc-group">Repaso</div>
+    <a data-sec="repaso"><span class="dot"></span>2 · Clases (lo que ya dominas)</a>
+    <div class="toc-group">Herencia</div>
+    <a data-sec="herencia"><span class="dot"></span>3 · Herencia y reutilización</a>
+    <a data-sec="tiposher"><span class="dot"></span>4 · Tipos de herencia</a>
+    <div class="toc-group">Polimorfismo</div>
+    <a data-sec="sobrecarga"><span class="dot"></span>5 · Sobrecarga de operadores</a>
+    <a data-sec="polimorfismo"><span class="dot"></span>6 · Polimorfismo y virtuales</a>
+    <a data-sec="ejemplo"><span class="dot"></span>7 · Ejemplo guiado</a>
+    <div class="toc-group">Actividades prácticas</div>
+    <a data-sec="act1"><span class="dot"></span>8 · Herencia</a>
+    <a data-sec="act2"><span class="dot"></span>9 · Sobrecarga de operadores</a>
+    <a data-sec="act3"><span class="dot"></span>10 · Polimorfismo</a>
+    <div class="toc-group">Práctica libre</div>
+    <a data-sec="editor"><span class="dot"></span>11 · Editor C++ libre</a>
+    <div class="toc-group">Cierre</div>
+    <a data-sec="bitacora"><span class="dot"></span>12 · Bitácora del alumno</a>
+    <a data-sec="evaluacion"><span class="dot"></span>13 · Evaluación</a>
+  </nav>
+  <div class="sidebar-foot">Unidad 2 · Desarrollo de aplicaciones orientadas a objetos<br>RA 2.1 · 60 horas · Evidencia 2.1.1 (35%)</div>
+</aside>
+
+<!-- ===== MAIN ===== -->
+<main class="main">
+
+<!-- 1. INTRODUCCIÓN -->
+<section class="page visible" id="sec-intro">
+  <div class="eyebrow">Sección 1 · Introducción</div>
+  <h2 class="page-title">Herencia, sobrecarga y polimorfismo</h2>
+  <p class="page-lead">En el R.A. 1.2 aprendiste a crear clases y objetos. Ahora subimos de nivel: harás que unas clases <strong>hereden</strong> de otras (reutilizando código), que tus objetos respondan diferente al mismo mensaje (<strong>polimorfismo</strong>), y que los operadores como <code class="inline">+</code> funcionen con tus propios objetos (<strong>sobrecarga</strong>).</p>
+
+  <div class="card">
+    <h4>Los tres grandes temas de este RA</h4>
+    <ul class="list" style="margin-bottom:0">
+      <li><strong>Herencia:</strong> una clase "hija" reutiliza y extiende lo de una clase "padre". Una <code class="inline">CuentaAhorro</code> es una <code class="inline">Cuenta</code> que además gana intereses.</li>
+      <li><strong>Sobrecarga de operadores:</strong> darle significado a <code class="inline">+</code>, <code class="inline">==</code>, etc. para tus objetos. Sumar dos cuentas con <code class="inline">c1 + c2</code>.</li>
+      <li><strong>Polimorfismo:</strong> el mismo método (<code class="inline">mostrarTipo()</code>) se comporta distinto según el tipo real del objeto.</li>
+    </ul>
+  </div>
+
+  <h3>Seguimos con el Cajero Automático 🏧</h3>
+  <p>Nuestro cajero crece: ahora maneja <strong>distintos tipos de cuenta</strong> (ahorro, crédito, nómina). Aquí es donde la herencia y el polimorfismo brillan — en lugar de copiar y pegar código para cada tipo, defines una vez lo común y cada tipo agrega solo lo suyo.</p>
+
+  <div class="callout info">
+    <div class="c-title">Contexto del Resultado de Aprendizaje</div>
+    <p><strong>R.A. 2.1 (programa PROO-20):</strong> <em>"Elabora aplicaciones mediante la interacción de los objetos y actores del sistema"</em> (60 horas). Tu evidencia (Actividad de evaluación 2.1.1, <strong>35%</strong> del módulo) es la codificación de aplicaciones usando <strong>herencia y polimorfismo</strong>.</p>
+  </div>
+
+  <div class="callout warn">
+    <div class="c-title">🏧 Práctica con código real</div>
+    <p>Igual que en el repaso, vas a <strong>escribir y ejecutar C++ de verdad</strong> en el navegador. La herencia y el polimorfismo se entienden mucho mejor cuando ves la salida del programa con tus propios ojos.</p>
+  </div>
+
+  <div class="pager"><span></span><button class="btn" onclick="go('repaso')">Comenzar: repaso de clases →</button></div>
+</section>
+
+<!-- 2. REPASO -->
+<section class="page" id="sec-repaso">
+  <div class="eyebrow">Sección 2 · Repaso</div>
+  <h2 class="page-title">Clases: lo que ya dominas</h2>
+  <p class="page-lead">La herencia se construye sobre las clases. Repaso exprés de lo esencial del R.A. 1.2 antes de subir de nivel.</p>
+  <button class="btn ghost" onclick="descargarApuntes()" style="margin-bottom:22px">⬇ Descargar apuntes para imprimir (PDF compacto)</button>
+
+  <h3>Una clase con atributos privados, constructor y métodos</h3>
+  <pre class="cpp">#include &lt;iostream&gt;
+using namespace std;
+
+class Cuenta {
+  protected:                 // ¡ojo! protected en vez de private
+    string titular;
+    double saldo;
+  public:
+    Cuenta(string n, double s) {
+        titular = n;
+        saldo = s;
+    }
+    void depositar(double m) { saldo += m; }
+    void mostrar() {
+        cout &lt;&lt; titular &lt;&lt; ": $" &lt;&lt; saldo &lt;&lt; endl;
+    }
+};</pre>
+
+  <div class="callout warn">
+    <div class="c-title">🔑 La pieza clave para la herencia: <code class="inline">protected</code></div>
+    <p>¿Recuerdas los tres niveles de acceso? <code class="inline">private</code> (solo la clase), <code class="inline">public</code> (todos) y <code class="inline">protected</code>. Este último era "un misterio" en el R.A. 1.2 — ahora cobra sentido: <strong>protected permite que las clases hijas accedan al atributo, pero nadie de afuera</strong>. Es el nivel perfecto para herencia: el saldo está protegido del exterior, pero <code class="inline">CuentaAhorro</code> (la hija) sí puede usarlo.</p>
+  </div>
+
+  <h3>Crear y usar objetos</h3>
+  <pre class="cpp solo">int main() {
+    Cuenta c("Ana", 1000.0);
+    c.depositar(500);
+    c.mostrar();        // Ana: $1500
+    return 0;
+}</pre>
+
+  <div class="pager"><button class="btn ghost" onclick="go('intro')">← Introducción</button><button class="btn" onclick="go('herencia')">Continuar: Herencia →</button></div>
+</section>
+
+<!-- 3. HERENCIA -->
+<section class="page" id="sec-herencia">
+  <div class="eyebrow">Sección 3 · Herencia</div>
+  <h2 class="page-title">Herencia y reutilización de código</h2>
+  <p class="page-lead">La <strong>herencia</strong> permite crear una clase nueva (hija) a partir de una existente (padre), heredando sus atributos y métodos. La hija <strong>reutiliza</strong> lo que ya existe y <strong>agrega o cambia</strong> lo que necesita.</p>
+  <button class="btn ghost" onclick="descargarApuntes()" style="margin-bottom:22px">⬇ Descargar apuntes para imprimir (PDF compacto)</button>
+
+  <h3>La idea: "es un/una"</h3>
+  <p>Una <code class="inline">CuentaAhorro</code> <strong>es una</strong> <code class="inline">Cuenta</code> (con algo extra: intereses). Una <code class="inline">CuentaCredito</code> <strong>es una</strong> <code class="inline">Cuenta</code> (con límite de crédito). En lugar de repetir el código de titular, saldo, depositar... lo heredan de <code class="inline">Cuenta</code>.</p>
+
+  <h3>Sintaxis de la herencia</h3>
+  <pre class="cpp">class Cuenta {            // CLASE PADRE (base)
+  protected:
+    string titular;
+    double saldo;
+  public:
+    Cuenta(string n, double s) { titular = n; saldo = s; }
+    void mostrar() { cout &lt;&lt; titular &lt;&lt; ": $" &lt;&lt; saldo &lt;&lt; endl; }
+};
+
+class CuentaAhorro : public Cuenta {   // HIJA hereda de Cuenta
+  private:
+    double tasaInteres;
+  public:
+    // El constructor de la hija llama al del padre con ": Cuenta(...)"
+    CuentaAhorro(string n, double s, double tasa) : Cuenta(n, s) {
+        tasaInteres = tasa;
+    }
+    // MÉTODO NUEVO, propio de la hija:
+    void aplicarInteres() {
+        saldo += saldo * tasaInteres;   // usa 'saldo' heredado (protected)
+    }
+};</pre>
+  <div class="card">
+    <div class="tbl-wrap"><table class="data">
+      <tr><th>Parte</th><th>¿Qué significa?</th></tr>
+      <tr><td><code class="inline">class CuentaAhorro : public Cuenta</code></td><td>"CuentaAhorro hereda públicamente de Cuenta". Recibe todos sus miembros.</td></tr>
+      <tr><td><code class="inline">: Cuenta(n, s)</code></td><td>El constructor de la hija llama al constructor del padre para inicializar lo heredado.</td></tr>
+      <tr><td><code class="inline">saldo += ...</code></td><td>La hija usa <code class="inline">saldo</code>, que heredó del padre (por eso era <code class="inline">protected</code>).</td></tr>
+    </table></div>
+  </div>
+
+  <h3>Usar la clase hija</h3>
+  <pre class="cpp solo">int main() {
+    CuentaAhorro ca("Ana", 1000.0, 0.10);  // 10% de interés
+    ca.mostrar();         // Ana: $1000   (método HEREDADO de Cuenta)
+    ca.aplicarInteres();  // método PROPIO de CuentaAhorro
+    ca.mostrar();         // Ana: $1100
+    return 0;
+}</pre>
+  <p>Fíjate: <code class="inline">ca</code> puede usar <code class="inline">mostrar()</code> (heredado) <strong>y</strong> <code class="inline">aplicarInteres()</code> (propio). Eso es reutilización: no reescribimos <code class="inline">mostrar()</code>.</p>
+
+  <h3>Dos beneficios clave</h3>
+  <div class="card">
+    <ul class="list" style="margin-bottom:0">
+      <li><strong>Reutilización de código:</strong> el código común (titular, saldo, depositar, mostrar) se escribe UNA vez en el padre y todas las hijas lo aprovechan.</li>
+      <li><strong>Extensibilidad:</strong> si mañana necesitas una <code class="inline">CuentaNomina</code>, solo creas la hija con lo nuevo — sin tocar lo que ya funciona. El sistema crece sin romperse.</li>
+    </ul>
+  </div>
+
+  <div class="pager"><button class="btn ghost" onclick="go('repaso')">← Repaso</button><button class="btn" onclick="go('tiposher')">Continuar: Tipos de herencia →</button></div>
+</section>
+
+<!-- 4. TIPOS DE HERENCIA -->
+<section class="page" id="sec-tiposher">
+  <div class="eyebrow">Sección 4 · Herencia</div>
+  <h2 class="page-title">Tipos de herencia y ambigüedad</h2>
+  <p class="page-lead">La herencia puede ser <strong>simple</strong> (una hija, un padre) o <strong>múltiple</strong> (una hija, varios padres). La múltiple es poderosa pero trae un riesgo: la <strong>ambigüedad</strong>.</p>
+  <button class="btn ghost" onclick="descargarApuntes()" style="margin-bottom:22px">⬇ Descargar apuntes para imprimir (PDF compacto)</button>
+
+  <h3>Herencia simple</h3>
+  <p>Es la que ya viste: una clase hereda de <strong>un solo</strong> padre. <code class="inline">CuentaAhorro : public Cuenta</code>. Es la más común y la más clara.</p>
+  <pre class="cpp solo">class Cuenta { /* ... */ };
+class CuentaAhorro : public Cuenta { /* ... */ };   // 1 padre</pre>
+
+  <h3>Herencia múltiple</h3>
+  <p>Una clase hereda de <strong>dos o más</strong> padres a la vez, combinando sus capacidades. Por ejemplo, una <code class="inline">CuentaInversion</code> que es a la vez <code class="inline">Cuenta</code> (maneja saldo) y <code class="inline">Reportable</code> (sabe generar reportes):</p>
+  <pre class="cpp">class Cuenta {
+  protected:
+    double saldo;
+  public:
+    Cuenta(double s) { saldo = s; }
+    void mostrarSaldo() { cout &lt;&lt; "Saldo: " &lt;&lt; saldo &lt;&lt; endl; }
+};
+
+class Reportable {
+  public:
+    void generarReporte() { cout &lt;&lt; "Generando reporte..." &lt;&lt; endl; }
+};
+
+// Hereda de DOS padres, separados por coma:
+class CuentaInversion : public Cuenta, public Reportable {
+  public:
+    CuentaInversion(double s) : Cuenta(s) {}
+};
+
+int main() {
+    CuentaInversion ci(5000);
+    ci.mostrarSaldo();      // viene de Cuenta
+    ci.generarReporte();    // viene de Reportable
+    return 0;
+}</pre>
+
+  <h3>El problema de la ambigüedad</h3>
+  <p>¿Qué pasa si los dos padres tienen un método con <strong>el mismo nombre</strong>? El compilador no sabe cuál usar — eso es la <strong>ambigüedad</strong>.</p>
+  <pre class="cpp">class Cuenta {
+  public:
+    void info() { cout &lt;&lt; "Info de cuenta" &lt;&lt; endl; }
+};
+class Reportable {
+  public:
+    void info() { cout &lt;&lt; "Info de reporte" &lt;&lt; endl; }  // ¡mismo nombre!
+};
+class CuentaInversion : public Cuenta, public Reportable { };
+
+int main() {
+    CuentaInversion ci;
+    // ci.info();          // ❌ ERROR: ambiguo, ¿cuál info()?
+    ci.Cuenta::info();      // ✓ se resuelve indicando la clase
+    ci.Reportable::info();  // ✓ con el operador de ámbito ::
+    return 0;
+}</pre>
+  <div class="callout warn">
+    <div class="c-title">⚠ Cómo resolver la ambigüedad</div>
+    <p>Se usa el <strong>operador de resolución de ámbito</strong> <code class="inline">::</code> para decirle al compilador de qué clase quieres el método: <code class="inline">ci.Cuenta::info()</code>. Por eso muchos lenguajes evitan la herencia múltiple — C++ la permite, pero hay que usarla con cuidado.</p>
+  </div>
+
+  <div class="pager"><button class="btn ghost" onclick="go('herencia')">← Herencia</button><button class="btn" onclick="go('sobrecarga')">Continuar: Sobrecarga de operadores →</button></div>
+</section>
+
+<!-- 5. SOBRECARGA DE OPERADORES -->
+<section class="page" id="sec-sobrecarga">
+  <div class="eyebrow">Sección 5 · Polimorfismo</div>
+  <h2 class="page-title">Sobrecarga de operadores</h2>
+  <p class="page-lead">Normalmente <code class="inline">+</code> suma números. Pero, ¿y si quieres sumar dos cuentas, o comparar dos cuentas con <code class="inline">==</code>? La <strong>sobrecarga de operadores</strong> te deja darle un nuevo significado a los operadores para que funcionen con tus propios objetos.</p>
+  <button class="btn ghost" onclick="descargarApuntes()" style="margin-bottom:22px">⬇ Descargar apuntes para imprimir (PDF compacto)</button>
+
+  <h3>La idea</h3>
+  <p>Sobrecargar un operador es escribir un método especial llamado <code class="inline">operator</code> seguido del símbolo. Cuando C++ ve <code class="inline">c1 + c2</code> entre objetos, llama a tu método <code class="inline">operator+</code>.</p>
+
+  <h3>Operador binario: <code class="inline">+</code> (dos operandos)</h3>
+  <p>Un operador <strong>binario</strong> trabaja con dos valores (izquierda y derecha). Vamos a sumar los saldos de dos cuentas:</p>
+  <pre class="cpp">class Cuenta {
+  public:
+    double saldo;
+    Cuenta(double s) { saldo = s; }
+
+    // Sobrecarga del operador +
+    Cuenta operator+(Cuenta otra) {
+        return Cuenta(saldo + otra.saldo);
+    }
+};
+
+int main() {
+    Cuenta c1(1000), c2(500);
+    Cuenta total = c1 + c2;     // llama a operator+
+    cout &lt;&lt; total.saldo;        // 1500
+    return 0;
+}</pre>
+  <div class="card">
+    <div class="tbl-wrap"><table class="data">
+      <tr><th>Parte</th><th>¿Qué significa?</th></tr>
+      <tr><td><code class="inline">operator+</code></td><td>El nombre especial del método que sobrecarga el símbolo +.</td></tr>
+      <tr><td><code class="inline">Cuenta otra</code></td><td>El operando de la derecha (c2). El de la izquierda (c1) es el objeto actual.</td></tr>
+      <tr><td><code class="inline">return Cuenta(...)</code></td><td>Devuelve una nueva cuenta con la suma de los saldos.</td></tr>
+    </table></div>
+  </div>
+
+  <h3>Operador unario: <code class="inline">++</code> (un operando)</h3>
+  <p>Un operador <strong>unario</strong> trabaja con un solo valor. Por ejemplo, <code class="inline">++</code> para "premiar" una cuenta sumándole un bono fijo de $100:</p>
+  <pre class="cpp">class Cuenta {
+  public:
+    double saldo;
+    Cuenta(double s) { saldo = s; }
+
+    // Sobrecarga del operador ++ (unario)
+    void operator++() {
+        saldo += 100;     // bono de $100
+    }
+};
+
+int main() {
+    Cuenta c(1000);
+    ++c;                  // llama a operator++
+    cout &lt;&lt; c.saldo;      // 1100
+    return 0;
+}</pre>
+  <div class="callout info">
+    <div class="c-title">Binario vs unario</div>
+    <p><strong>Binario:</strong> necesita dos operandos (<code class="inline">c1 + c2</code>, <code class="inline">c1 == c2</code>). Su método recibe el otro objeto como parámetro. <strong>Unario:</strong> opera sobre un solo objeto (<code class="inline">++c</code>, <code class="inline">-c</code>). Su método no recibe parámetros (trabaja sobre sí mismo).</p>
+  </div>
+
+  <div class="pager"><button class="btn ghost" onclick="go('tiposher')">← Tipos de herencia</button><button class="btn" onclick="go('polimorfismo')">Continuar: Polimorfismo →</button></div>
+</section>
+
+<!-- 6. POLIMORFISMO -->
+<section class="page" id="sec-polimorfismo">
+  <div class="eyebrow">Sección 6 · Polimorfismo</div>
+  <h2 class="page-title">Polimorfismo y funciones virtuales</h2>
+  <p class="page-lead"><strong>Polimorfismo</strong> significa "muchas formas": el mismo método se comporta diferente según el tipo real del objeto. Un mensaje (<code class="inline">mostrarTipo()</code>) produce respuestas distintas en una cuenta de ahorro, una de crédito o una de nómina.</p>
+  <button class="btn ghost" onclick="descargarApuntes()" style="margin-bottom:22px">⬇ Descargar apuntes para imprimir (PDF compacto)</button>
+
+  <h3>Polimorfismo en funciones: sobrescribir métodos</h3>
+  <p>Cuando una clase hija define un método con el mismo nombre que el padre, lo <strong>sobrescribe</strong> (override). El objeto hijo usa su propia versión:</p>
+  <pre class="cpp">class Cuenta {
+  public:
+    void mostrarTipo() {
+        cout &lt;&lt; "Cuenta genérica" &lt;&lt; endl;
+    }
+};
+
+class CuentaAhorro : public Cuenta {
+  public:
+    void mostrarTipo() {        // sobrescribe el del padre
+        cout &lt;&lt; "Cuenta de Ahorro" &lt;&lt; endl;
+    }
+};
+
+int main() {
+    CuentaAhorro ca;
+    ca.mostrarTipo();           // Cuenta de Ahorro (su versión)
+    return 0;
+}</pre>
+
+  <h3>El verdadero poder: funciones virtuales</h3>
+  <p>El polimorfismo brilla cuando manejas objetos de distintos tipos a través de un puntero al padre. La palabra clave <code class="inline">virtual</code> le dice a C++: "decide en tiempo de ejecución cuál versión usar, según el tipo REAL del objeto".</p>
+  <pre class="cpp">class Cuenta {
+  public:
+    virtual void mostrarTipo() {     // ¡virtual!
+        cout &lt;&lt; "Cuenta genérica" &lt;&lt; endl;
+    }
+};
+
+class CuentaAhorro : public Cuenta {
+  public:
+    void mostrarTipo() override {
+        cout &lt;&lt; "Cuenta de Ahorro" &lt;&lt; endl;
+    }
+};
+
+class CuentaCredito : public Cuenta {
+  public:
+    void mostrarTipo() override {
+        cout &lt;&lt; "Cuenta de Crédito" &lt;&lt; endl;
+    }
+};
+
+int main() {
+    Cuenta* cuentas[2];               // arreglo de punteros al PADRE
+    cuentas[0] = new CuentaAhorro();
+    cuentas[1] = new CuentaCredito();
+
+    for (int i = 0; i &lt; 2; i++) {
+        cuentas[i]-&gt;mostrarTipo();    // cada uno usa SU versión
+    }
+    // Salida:
+    //   Cuenta de Ahorro
+    //   Cuenta de Crédito
+    return 0;
+}</pre>
+  <div class="callout warn">
+    <div class="c-title">⭐ ¿Por qué <code class="inline">virtual</code> es tan importante?</div>
+    <p>Sin <code class="inline">virtual</code>, al usar un puntero <code class="inline">Cuenta*</code> el programa siempre llamaría la versión del padre (decide por el tipo del puntero). Con <code class="inline">virtual</code>, C++ mira el tipo <strong>real</strong> del objeto en tiempo de ejecución y llama la versión correcta. Eso permite tratar muchos tipos distintos de forma uniforme — el corazón del polimorfismo.</p>
+  </div>
+
+  <div class="callout info">
+    <div class="c-title">El flujo completo de la POO</div>
+    <p>Herencia (CuentaAhorro hereda de Cuenta) + sobrescritura (cada hija define su mostrarTipo) + virtual (decisión en tiempo de ejecución) = un cajero que maneja cualquier tipo de cuenta con el mismo código. Agregar un tipo nuevo no rompe nada: pura extensibilidad.</p>
+  </div>
+
+  <div class="pager"><button class="btn ghost" onclick="go('sobrecarga')">← Sobrecarga</button><button class="btn" onclick="go('ejemplo')">Continuar: Ejemplo guiado →</button></div>
+</section>
+
+<!-- 7. EJEMPLO GUIADO -->
+<section class="page" id="sec-ejemplo">
+  <div class="eyebrow">Sección 7 · Ejemplo guiado</div>
+  <h2 class="page-title">El cajero con varios tipos de cuenta</h2>
+  <p class="page-lead">Juntamos todo: una clase base <code class="inline">Cuenta</code>, dos hijas que heredan y sobrescriben, y un <code class="inline">main</code> que las maneja polimórficamente. Léelo con calma: cada pieza ya la viste.</p>
+
+  <h3>El programa completo</h3>
+  <pre class="cpp">#include &lt;iostream&gt;
+using namespace std;
+
+// CLASE BASE
+class Cuenta {
+  protected:
+    string titular;
+    double saldo;
+  public:
+    Cuenta(string n, double s) {
+        titular = n;
+        saldo = s;
+    }
+    virtual void aplicarBeneficio() {     // virtual: las hijas lo cambian
+        cout &lt;&lt; "Cuenta sin beneficios" &lt;&lt; endl;
+    }
+    void mostrar() {
+        cout &lt;&lt; titular &lt;&lt; ": $" &lt;&lt; saldo &lt;&lt; endl;
+    }
+};
+
+// HIJA 1: gana intereses
+class CuentaAhorro : public Cuenta {
+  public:
+    CuentaAhorro(string n, double s) : Cuenta(n, s) {}
+    void aplicarBeneficio() override {
+        saldo += saldo * 0.10;            // 10% de interés
+        cout &lt;&lt; "Interés aplicado a " &lt;&lt; titular &lt;&lt; endl;
+    }
+};
+
+// HIJA 2: recibe un bono fijo
+class CuentaNomina : public Cuenta {
+  public:
+    CuentaNomina(string n, double s) : Cuenta(n, s) {}
+    void aplicarBeneficio() override {
+        saldo += 200;                     // bono de nómina
+        cout &lt;&lt; "Bono aplicado a " &lt;&lt; titular &lt;&lt; endl;
+    }
+};
+
+int main() {
+    // Un arreglo de punteros al PADRE, con objetos de distintas hijas
+    Cuenta* cuentas[2];
+    cuentas[0] = new CuentaAhorro("Ana", 1000);
+    cuentas[1] = new CuentaNomina("Luis", 800);
+
+    // POLIMORFISMO: el mismo bucle, cada cuenta hace lo suyo
+    for (int i = 0; i &lt; 2; i++) {
+        cuentas[i]-&gt;mostrar();
+        cuentas[i]-&gt;aplicarBeneficio();   // virtual: versión correcta
+        cuentas[i]-&gt;mostrar();
+        cout &lt;&lt; "---" &lt;&lt; endl;
+    }
+    return 0;
+}</pre>
+
+  <h3>¿Ves cómo todo encaja?</h3>
+  <div class="card">
+    <div class="tbl-wrap"><table class="data">
+      <tr><th>Concepto del RA 2.1</th><th>Dónde aparece</th></tr>
+      <tr><td>Herencia</td><td>CuentaAhorro y CuentaNomina heredan de Cuenta (titular, saldo, mostrar)</td></tr>
+      <tr><td>Constructor de la hija que llama al padre</td><td>CuentaAhorro(...) : Cuenta(n, s)</td></tr>
+      <tr><td>Sobrescritura de métodos</td><td>cada hija redefine aplicarBeneficio()</td></tr>
+      <tr><td>Funciones virtuales / polimorfismo</td><td>virtual + el bucle con punteros Cuenta* que llama la versión real</td></tr>
+      <tr><td>Extensibilidad</td><td>agregar CuentaCredito sería solo otra clase hija, sin tocar el main</td></tr>
+    </table></div>
+  </div>
+
+  <div class="callout info">
+    <div class="c-title">💡 Pruébalo tú mismo</div>
+    <p>Pega este programa en el <strong>Editor C++ libre</strong>, compílalo y observa cómo cada cuenta aplica su propio beneficio. Luego, como reto, agrega una tercera clase <code class="inline">CuentaCredito</code> con su propio beneficio y métela al arreglo.</p>
+  </div>
+
+  <div class="pager"><button class="btn ghost" onclick="go('polimorfismo')">← Polimorfismo</button><button class="btn" onclick="go('act1')">Comenzar las actividades →</button></div>
+</section>
+
+<!-- 8. ACTIVIDAD 1 -->
+<section class="page" id="sec-act1">
+  <div class="eyebrow">Sección 8 · Actividad práctica 1</div>
+  <h2 class="page-title">Herencia · La CuentaAhorro</h2>
+  <div class="act-meta"><span class="badge">herencia</span><span class="badge">: public</span><span class="badge">protected</span><span class="badge pts">30 puntos</span></div>
+
+  <div class="card">
+    <h4>📋 Lo que debes lograr</h4>
+    <p style="margin-bottom:0">Crea una clase base <code class="inline">Cuenta</code> con <code class="inline">saldo</code> (protected) y un método <code class="inline">mostrar()</code>. Luego crea <code class="inline">CuentaAhorro</code> que <strong>herede</strong> de Cuenta y agregue un método <code class="inline">aplicarInteres()</code> que sume el 10% al saldo. En <code class="inline">main</code>, crea una CuentaAhorro con $1000, aplica interés y muestra el saldo (debe quedar 1100).</p>
+  </div>
+
+  <h3>Parte A · Análisis <span class="badge pts" style="font-size:11px">8 pts</span></h3>
+  <div class="card">
+    <div class="field">
+      <label>1. ¿Qué nivel de acceso permite que la clase hija use el saldo, pero no el código externo?</label>
+      <div class="radio-row">
+        <label class="radio-pill"><input type="radio" name="a1_acc" value="private" data-key="a1_acc">private</label>
+        <label class="radio-pill"><input type="radio" name="a1_acc" value="protected" data-key="a1_acc">protected</label>
+        <label class="radio-pill"><input type="radio" name="a1_acc" value="public" data-key="a1_acc">public</label>
+      </div>
+    </div>
+    <div class="field" style="margin-bottom:0">
+      <label>2. ¿Cuál es la sintaxis correcta para que CuentaAhorro herede de Cuenta?</label>
+      <div class="radio-row">
+        <label class="radio-pill"><input type="radio" name="a1_sint" value="extends" data-key="a1_sint">class CuentaAhorro extends Cuenta</label>
+        <label class="radio-pill"><input type="radio" name="a1_sint" value="colon" data-key="a1_sint">class CuentaAhorro : public Cuenta</label>
+        <label class="radio-pill"><input type="radio" name="a1_sint" value="inherits" data-key="a1_sint">class CuentaAhorro inherits Cuenta</label>
+      </div>
+    </div>
+  </div>
+
+  <h3>Parte B · Escribe tu código <span class="badge pts" style="font-size:11px">17 pts</span></h3>
+  <div class="editor-wrap">
+    <div class="editor-bar"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span><span class="fname">actividad1.cpp</span></div>
+    <textarea class="code-edit" id="a1_code" data-key="a1_code" spellcheck="false">#include &lt;iostream&gt;
+using namespace std;
+
+class Cuenta {
+  protected:
+    double saldo;
+  public:
+    Cuenta(double s) { saldo = s; }
+    void mostrar() { cout &lt;&lt; "Saldo: $" &lt;&lt; saldo &lt;&lt; endl; }
+};
+
+// Crea aquí CuentaAhorro que herede de Cuenta
+// y agregue el método aplicarInteres()
+
+
+int main() {
+    CuentaAhorro ca(1000);
+    ca.aplicarInteres();
+    ca.mostrar();   // debe mostrar 1100
+    return 0;
+}</textarea>
+    <div class="stdin-wrap">
+      <div style="background:#121C2B;color:#7FA0B4;font-family:var(--mono);font-size:11px;padding:6px 16px 0">ENTRADA (no necesita cin, deja vacío):</div>
+      <textarea class="stdin-edit" id="a1_stdin" spellcheck="false"></textarea>
+    </div>
+  </div>
+  <div class="run-bar">
+    <button class="btn ghost" onclick="ejecutarCodigo('a1_code','a1_stdin','a1_out')">▶ Compilar y probar</button>
+  </div>
+  <div class="run-out" id="a1_out"><span class="muted">El saldo final debería ser 1100…</span></div>
+
+  <h3>Parte C · Explica <span class="badge pts" style="font-size:11px">5 pts</span></h3>
+  <div class="field">
+    <label for="a1_expl">¿Qué ventaja da la herencia frente a copiar y pegar el código de Cuenta en cada tipo? <span class="hint">Mínimo 2 líneas.</span></label>
+    <textarea id="a1_expl" data-key="a1_expl" placeholder="La herencia permite…"></textarea>
+  </div>
+  <p style="font-size:13px;color:var(--gris);max-width:70ch;margin-bottom:10px">Al entregar, el sistema revisará tu código y respuestas, y te mostrará la solución correcta. <strong>Solo tienes un intento</strong>: después de entregar ya no podrás modificar esta actividad.</p>
+  <button class="btn" id="btn-act1" onclick="entregar('act1')">Entregar Actividad 1 · intento único</button><span class="save-note" id="save-act1">✓</span>
+  <div class="fb-panel" id="fb-act1"></div>
+
+  <div class="pager"><button class="btn ghost" onclick="go('ejemplo')">← Ejemplo guiado</button><button class="btn" onclick="go('act2')">Actividad 2 →</button></div>
+</section>
+
+<!-- 9. ACTIVIDAD 2 -->
+<section class="page" id="sec-act2">
+  <div class="eyebrow">Sección 9 · Actividad práctica 2</div>
+  <h2 class="page-title">Sobrecarga de operadores · Sumar cuentas</h2>
+  <div class="act-meta"><span class="badge">operator+</span><span class="badge">binario</span><span class="badge pts">30 puntos</span></div>
+
+  <div class="card">
+    <h4>📋 Lo que debes lograr</h4>
+    <p style="margin-bottom:0">A la clase <code class="inline">Cuenta</code> (con <code class="inline">saldo</code> público), agrégale la <strong>sobrecarga del operador <code class="inline">+</code></strong> para que <code class="inline">c1 + c2</code> devuelva una nueva cuenta con la suma de los saldos. En <code class="inline">main</code>, suma una cuenta de $1000 y otra de $500, y muestra el saldo del resultado (1500).</p>
+  </div>
+
+  <h3>Parte A · Análisis <span class="badge pts" style="font-size:11px">8 pts</span></h3>
+  <div class="card">
+    <div class="field">
+      <label>1. El operador <code class="inline">+</code> que suma dos cuentas es de tipo…</label>
+      <div class="radio-row">
+        <label class="radio-pill"><input type="radio" name="a2_tipo" value="unario" data-key="a2_tipo">unario (1 operando)</label>
+        <label class="radio-pill"><input type="radio" name="a2_tipo" value="binario" data-key="a2_tipo">binario (2 operandos)</label>
+      </div>
+    </div>
+    <div class="field" style="margin-bottom:0">
+      <label>2. ¿Cómo se llama el método que sobrecarga el símbolo +?</label>
+      <div class="radio-row">
+        <label class="radio-pill"><input type="radio" name="a2_nom" value="operatorplus" data-key="a2_nom">operator+</label>
+        <label class="radio-pill"><input type="radio" name="a2_nom" value="sumar" data-key="a2_nom">sumar+</label>
+        <label class="radio-pill"><input type="radio" name="a2_nom" value="plus" data-key="a2_nom">plus()</label>
+      </div>
+    </div>
+  </div>
+
+  <h3>Parte B · Escribe tu código <span class="badge pts" style="font-size:11px">17 pts</span></h3>
+  <div class="editor-wrap">
+    <div class="editor-bar"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span><span class="fname">actividad2.cpp</span></div>
+    <textarea class="code-edit" id="a2_code" data-key="a2_code" spellcheck="false">#include &lt;iostream&gt;
+using namespace std;
+
+class Cuenta {
+  public:
+    double saldo;
+    Cuenta(double s) { saldo = s; }
+
+    // Sobrecarga aquí el operador + (binario)
+
+
+};
+
+int main() {
+    Cuenta c1(1000), c2(500);
+    Cuenta total = c1 + c2;
+    cout &lt;&lt; "Total: $" &lt;&lt; total.saldo &lt;&lt; endl;  // 1500
+    return 0;
+}</textarea>
+    <div class="stdin-wrap">
+      <div style="background:#121C2B;color:#7FA0B4;font-family:var(--mono);font-size:11px;padding:6px 16px 0">ENTRADA (no necesita cin, deja vacío):</div>
+      <textarea class="stdin-edit" id="a2_stdin" spellcheck="false"></textarea>
+    </div>
+  </div>
+  <div class="run-bar">
+    <button class="btn ghost" onclick="ejecutarCodigo('a2_code','a2_stdin','a2_out')">▶ Compilar y probar</button>
+  </div>
+  <div class="run-out" id="a2_out"><span class="muted">El total debería ser 1500…</span></div>
+
+  <h3>Parte C · Explica <span class="badge pts" style="font-size:11px">5 pts</span></h3>
+  <div class="field">
+    <label for="a2_expl">¿Para qué sirve sobrecargar operadores? Da un ejemplo distinto al de sumar cuentas. <span class="hint">Mínimo 2 líneas.</span></label>
+    <textarea id="a2_expl" data-key="a2_expl" placeholder="Sobrecargar operadores sirve para…"></textarea>
+  </div>
+  <p style="font-size:13px;color:var(--gris);max-width:70ch;margin-bottom:10px">Al entregar, el sistema revisará tu código y respuestas, y te mostrará la solución correcta. <strong>Solo tienes un intento</strong>: después de entregar ya no podrás modificar esta actividad.</p>
+  <button class="btn" id="btn-act2" onclick="entregar('act2')">Entregar Actividad 2 · intento único</button><span class="save-note" id="save-act2">✓</span>
+  <div class="fb-panel" id="fb-act2"></div>
+
+  <div class="pager"><button class="btn ghost" onclick="go('act1')">← Actividad 1</button><button class="btn" onclick="go('act3')">Actividad 3 →</button></div>
+</section>
+
+<!-- 10. ACTIVIDAD 3 -->
+<section class="page" id="sec-act3">
+  <div class="eyebrow">Sección 10 · Actividad práctica 3</div>
+  <h2 class="page-title">Polimorfismo · Tipos de cuenta</h2>
+  <div class="act-meta"><span class="badge">virtual</span><span class="badge">override</span><span class="badge">polimorfismo</span><span class="badge pts">30 puntos</span></div>
+
+  <div class="card">
+    <h4>📋 Lo que debes lograr</h4>
+    <p style="margin-bottom:0">Clase base <code class="inline">Cuenta</code> con un método <strong>virtual</strong> <code class="inline">mostrarTipo()</code> que imprima "Cuenta genérica". Dos hijas: <code class="inline">CuentaAhorro</code> (imprime "Cuenta de Ahorro") y <code class="inline">CuentaCredito</code> (imprime "Cuenta de Crédito"), cada una sobrescribiendo <code class="inline">mostrarTipo()</code>. En <code class="inline">main</code>, usa un arreglo de punteros <code class="inline">Cuenta*</code> y recórrelo llamando <code class="inline">mostrarTipo()</code>.</p>
+  </div>
+
+  <h3>Parte A · Análisis <span class="badge pts" style="font-size:11px">8 pts</span></h3>
+  <div class="card">
+    <div class="field">
+      <label>1. ¿Qué palabra clave permite que C++ elija la versión correcta del método en tiempo de ejecución?</label>
+      <div class="radio-row">
+        <label class="radio-pill"><input type="radio" name="a3_vir" value="static" data-key="a3_vir">static</label>
+        <label class="radio-pill"><input type="radio" name="a3_vir" value="virtual" data-key="a3_vir">virtual</label>
+        <label class="radio-pill"><input type="radio" name="a3_vir" value="const" data-key="a3_vir">const</label>
+      </div>
+    </div>
+    <div class="field" style="margin-bottom:0">
+      <label>2. Cuando una hija redefine un método del padre, decimos que lo…</label>
+      <div class="radio-row">
+        <label class="radio-pill"><input type="radio" name="a3_over" value="sobrescribe" data-key="a3_over">sobrescribe (override)</label>
+        <label class="radio-pill"><input type="radio" name="a3_over" value="elimina" data-key="a3_over">elimina</label>
+        <label class="radio-pill"><input type="radio" name="a3_over" value="oculta" data-key="a3_over">duplica sin relación</label>
+      </div>
+    </div>
+  </div>
+
+  <h3>Parte B · Escribe tu código <span class="badge pts" style="font-size:11px">17 pts</span></h3>
+  <div class="editor-wrap">
+    <div class="editor-bar"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span><span class="fname">actividad3.cpp</span></div>
+    <textarea class="code-edit" id="a3_code" data-key="a3_code" spellcheck="false">#include &lt;iostream&gt;
+using namespace std;
+
+class Cuenta {
+  public:
+    virtual void mostrarTipo() {
+        cout &lt;&lt; "Cuenta genérica" &lt;&lt; endl;
+    }
+};
+
+// Crea CuentaAhorro y CuentaCredito que sobrescriban mostrarTipo()
+
+
+int main() {
+    Cuenta* cuentas[2];
+    cuentas[0] = new CuentaAhorro();
+    cuentas[1] = new CuentaCredito();
+    for (int i = 0; i &lt; 2; i++) {
+        cuentas[i]-&gt;mostrarTipo();
+    }
+    return 0;
+}</textarea>
+    <div class="stdin-wrap">
+      <div style="background:#121C2B;color:#7FA0B4;font-family:var(--mono);font-size:11px;padding:6px 16px 0">ENTRADA (no necesita cin, deja vacío):</div>
+      <textarea class="stdin-edit" id="a3_stdin" spellcheck="false"></textarea>
+    </div>
+  </div>
+  <div class="run-bar">
+    <button class="btn ghost" onclick="ejecutarCodigo('a3_code','a3_stdin','a3_out')">▶ Compilar y probar</button>
+  </div>
+  <div class="run-out" id="a3_out"><span class="muted">Debe imprimir "Cuenta de Ahorro" y "Cuenta de Crédito"…</span></div>
+
+  <h3>Parte C · Explica <span class="badge pts" style="font-size:11px">5 pts</span></h3>
+  <div class="field">
+    <label for="a3_expl">¿Por qué es necesario <code class="inline">virtual</code> para que el polimorfismo funcione con punteros? <span class="hint">Mínimo 2 líneas.</span></label>
+    <textarea id="a3_expl" data-key="a3_expl" placeholder="virtual es necesario porque…"></textarea>
+  </div>
+  <p style="font-size:13px;color:var(--gris);max-width:70ch;margin-bottom:10px">Al entregar, el sistema revisará tu código y respuestas, y te mostrará la solución correcta. <strong>Solo tienes un intento</strong>: después de entregar ya no podrás modificar esta actividad.</p>
+  <button class="btn" id="btn-act3" onclick="entregar('act3')">Entregar Actividad 3 · intento único</button><span class="save-note" id="save-act3">✓</span>
+  <div class="fb-panel" id="fb-act3"></div>
+
+  <div class="pager"><button class="btn ghost" onclick="go('act2')">← Actividad 2</button><button class="btn" onclick="go('editor')">Editor C++ libre →</button></div>
+</section>
+
+<!-- EDITOR C++ LIBRE -->
+<section class="page" id="sec-editor">
+  <div class="eyebrow">Sección 11 · Práctica libre</div>
+  <h2 class="page-title">Editor de C++ — compila y ejecuta de verdad</h2>
+  <p class="page-lead">Aquí escribes C++ real y lo ejecutas en un servidor, sin instalar nada. Experimenta libremente: <strong>no cuenta para tu calificación</strong>. Prueba los ejemplos del cuaderno, modifícalos, rómpelos y arréglalos — así se aprende a programar.</p>
+
+  <div class="editor-wrap">
+    <div class="editor-bar"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span><span class="fname">main.cpp</span></div>
+    <textarea class="code-edit" id="editorCode" spellcheck="false">#include &lt;iostream&gt;
+using namespace std;
+
+class Cuenta {
+  private:
+    string titular;
+    double saldo;
+  public:
+    Cuenta(string nombre, double saldoInicial) {
+        titular = nombre;
+        saldo = saldoInicial;
+    }
+    void depositar(double monto) {
+        saldo = saldo + monto;
+    }
+    void consultar() {
+        cout &lt;&lt; titular &lt;&lt; ", saldo: $" &lt;&lt; saldo &lt;&lt; endl;
+    }
+};
+
+int main() {
+    Cuenta miCuenta("Ana Lopez", 1500.0);
+    miCuenta.consultar();
+    miCuenta.depositar(500);
+    miCuenta.consultar();
+    return 0;
+}</textarea>
+    <div class="stdin-wrap">
+      <div style="background:#121C2B;color:#7FA0B4;font-family:var(--mono);font-size:11px;padding:6px 16px 0">ENTRADA (lo que el programa pediría con cin, una línea por dato):</div>
+      <textarea class="stdin-edit" id="editorStdin" spellcheck="false" placeholder="Deja esto vacío si tu programa no usa cin."></textarea>
+    </div>
+  </div>
+  <div class="run-bar">
+    <button class="btn" id="btnRun" onclick="ejecutarCodigo('editorCode','editorStdin','editorOut')">▶ Compilar y ejecutar</button>
+    <button class="btn ghost" onclick="document.getElementById('editorCode').value=PLANTILLA_CPP;document.getElementById('editorOut').innerHTML='<span class=&quot;muted&quot;>Editor reiniciado.</span>'">↺ Reiniciar ejemplo</button>
+    <span style="font-size:12px;color:var(--gris)">La primera compilación puede tardar unos segundos.</span>
+  </div>
+  <div class="run-out" id="editorOut"><span class="muted">Aquí aparecerá la salida de tu programa…</span></div>
+
+  <div class="callout info" style="margin-top:20px">
+    <div class="c-title">Retos para practicar</div>
+    <p>1) Agrega un método <code class="inline">retirar(double monto)</code> que valide fondos. 2) Crea una segunda cuenta para otro titular. 3) Haz el saldo <code class="inline">private</code> e intenta cambiarlo directo desde main — lee el error del compilador. 4) Pega el cajero completo del ejemplo guiado y usa el menú (recuerda poner las opciones en el cuadro de Entrada).</p>
+  </div>
+
+  <div class="pager"><button class="btn ghost" onclick="go('act3')">← Actividades</button><button class="btn" onclick="go('bitacora')">Continuar: Bitácora →</button></div>
+</section>
+
+<!-- 8. BITÁCORA -->
+<section class="page" id="sec-bitacora">
+  <div class="eyebrow">Sección 10 · Bitácora del alumno</div>
+  <h2 class="page-title">Reflexiona sobre tu aprendizaje</h2>
+  <p class="page-lead">La bitácora es tu espacio de metacognición: escribir lo que aprendiste consolida el conocimiento. Responde con honestidad y con tus propias palabras; forma parte de tu evaluación (10 puntos).</p>
+
+  <div class="card">
+    <div class="field">
+      <label for="bit1">1. ¿Qué aprendí en este Resultado de Aprendizaje?</label>
+      <textarea id="bit1" data-key="bit1" placeholder="En este RA aprendí a…"></textarea>
+    </div>
+    <div class="field">
+      <label for="bit2">2. ¿Qué dificultades encontré y cómo las resolví?</label>
+      <textarea id="bit2" data-key="bit2" placeholder="Lo que más se me dificultó fue…"></textarea>
+    </div>
+    <div class="field" style="margin-bottom:0">
+      <label for="bit3">3. ¿Cómo aplicarías la Programación Orientada a Objetos en un proyecto real?</label>
+      <textarea id="bit3" data-key="bit3" placeholder="En un sistema escolar real, SQL serviría para…"></textarea>
+    </div>
+  </div>
+  <button class="btn" id="btn-bitacora" onclick="guardar('bitacora')">Guardar bitácora</button><span class="save-note" id="save-bitacora">✓ Avance guardado</span>
+
+  <div class="pager"><button class="btn ghost" onclick="go('simulador')">← Simulador SQL</button><button class="btn" onclick="go('evaluacion')">Ir a Evaluación →</button></div>
+</section>
+
+<!-- 8. EVALUACIÓN -->
+<section class="page" id="sec-evaluacion">
+  <div class="eyebrow">Sección 11 · Evaluación</div>
+  <h2 class="page-title">Resultados de tu cuaderno</h2>
+  <p class="page-lead">Cada actividad se califica en el momento en que la entregas (intento único) y ahí mismo ves tu retroalimentación y la solución. Esta pantalla reúne los resultados de tus entregas, suma tu bitácora y genera el reporte final para tu docente.</p>
+
+  <button class="btn" onclick="calificarTodo()" style="margin-bottom:24px">Generar mi resultado final</button>
+
+  <div id="resultados" style="display:none">
+    <div class="score-hero">
+      <div><div class="score-num" id="scoreTotal">0</div><div style="font-size:13px;opacity:.85">de 100 puntos</div></div>
+      <div class="detail" id="scoreDetalle"></div>
+    </div>
+
+    <h3 style="margin-top:8px">Desglose por actividad</h3>
+    <div class="tbl-wrap"><table class="data rubrica" id="tablaRubrica">
+      <tr><th>Componente</th><th style="width:110px">Puntos</th><th>Retroalimentación</th></tr>
+    </table></div>
+
+    <div class="callout info">
+      <div class="c-title">Nota sobre la calificación automática</div>
+      <p>Esta revisión verifica la <strong>estructura</strong> de tu código (clases, métodos, control y validaciones clave). Tu docente realizará la revisión final de la lógica completa, las explicaciones y la bitácora a partir del reporte que entregues. Este cuaderno es un <strong>repaso del R.A. 1.2</strong> del programa PROO-20, que te prepara para la Unidad 2.</p>
+    </div>
+
+    <h3>Entrega tu reporte</h3>
+    <p>Cuando estés conforme con tu resultado, envíalo a tu docente con el botón azul. El envío es <strong>único y definitivo</strong>: tu calificación llega directamente al correo del docente con fecha, hora y folio, y el cuaderno queda <strong>sellado</strong> — las actividades y la bitácora pasan a solo lectura. Los apuntes, las instrucciones de cada práctica y el simulador <strong>seguirán disponibles para consulta</strong>.</p>
+    <div class="callout warn">
+      <div class="c-title">Antes de enviar, verifica</div>
+      <p>Que tus 4 actividades estén entregadas y tu bitácora guardada. Después del envío ya no podrás modificar nada que genere calificación. Tu docente recibe cada envío con folio y hora: los envíos duplicados desde otro equipo se detectan y <strong>solo cuenta el primero</strong>.</p>
+    </div>
+    <button class="btn" id="btnEnviar" onclick="enviarReporte()">📨 Enviar reporte a mi docente · envío único</button>
+    <button class="btn ghost" onclick="descargarPDF()">⬇ Descargar mi boleta (PDF · 1 hoja)</button>
+    <div class="sim-status" id="envio_status" style="padding:10px 0 0"></div>
+    <div id="envio_ok" class="callout info" style="display:none;margin-top:16px"></div>
+  </div>
+
+  <div class="pager"><button class="btn ghost" onclick="go('bitacora')">← Bitácora</button><span></span></div>
+</section>
+
+</main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+/* =========================================================
+   POO Classroom · RA 2.1 · Lógica del cuaderno
+   Estado en localStorage (diseñado para migrar a Supabase:
+   usuarios, alumnos, actividades, respuestas, calificaciones, bitacoras)
+   ========================================================= */
+const LS_KEY = 'proo_ra21_v1';
+const CUADERNO = 'ra21';
+let state = { alumno:null, respuestas:{}, visitadas:{}, guardadas:{}, entregas:{} };
+
+/* ---------- Supabase ---------- */
+const SUPABASE_URL = 'https://cmhnuuxgwrpkhutylnzs.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_8A2VQZa5N2NBP1li532sJQ_AACo-3_v';
+let sb = null, modoRegistro = false, syncTimer = null;
+function initSB(){
+  try{ sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY); return true; }
+  catch(e){ return false; }
+}
+
+/* Caché local: guardado instantáneo a cada tecla (sin esperar a la nube) */
+function load(){ try{ const raw = localStorage.getItem(LS_KEY+'_'+(state.alumno?state.alumno.correo:'tmp')); if(raw) state = Object.assign(state, JSON.parse(raw)); }catch(e){} }
+function persist(){
+  if(state.alumno){ localStorage.setItem(LS_KEY+'_'+state.alumno.correo, JSON.stringify(state)); }
+  programarSync();
+}
+
+/* Sincronización con la nube (debounce de 1.5 s para no saturar) */
+function programarSync(){
+  if(!sb || !state.alumno) return;
+  clearTimeout(syncTimer);
+  syncTimer = setTimeout(subirAvance, 1500);
+}
+async function subirAvance(){
+  if(!sb || !state.alumno) return;
+  try{
+    await sb.from('avances').upsert({
+      user_id: state.alumno.id, cuaderno: CUADERNO,
+      estado: { respuestas:state.respuestas, visitadas:state.visitadas, guardadas:state.guardadas, evaluacion:state.evaluacion||null },
+      actualizado: new Date().toISOString()
+    }, { onConflict:'user_id,cuaderno' });
+    setSyncBadge('ok');
+  }catch(e){ setSyncBadge('err'); }
+}
+function setSyncBadge(estado){
+  const b = document.getElementById('syncBadge'); if(!b) return;
+  if(estado==='ok'){ b.textContent='☁ Guardado en la nube'; b.style.color='var(--ok)'; }
+  else if(estado==='err'){ b.textContent='⚠ Sin conexión — se reintentará'; b.style.color='var(--amber)'; }
+  else { b.textContent='☁ Sincronizando…'; b.style.color='var(--gris)'; }
+}
+
+/* ---------- Autenticación ---------- */
+function toggleModoUI(){
+  modoRegistro = !modoRegistro;
+  document.getElementById('camposRegistro').style.display = modoRegistro ? 'block' : 'none';
+  document.getElementById('gateTitulo').textContent = modoRegistro ? 'Crear mi cuenta' : 'Iniciar sesión';
+  document.getElementById('gateSub').textContent = modoRegistro
+    ? 'Regístrate una sola vez con tus datos. Después entrarás solo con tu correo y tu matrícula.'
+    : 'Entra con tu correo institucional y tu matrícula. Tu avance se guarda en la nube: puedes continuar desde cualquier computadora.';
+  document.getElementById('btnEntrar').textContent = modoRegistro ? 'Crear cuenta y comenzar' : 'Entrar a mi cuaderno';
+  document.getElementById('toggleModo').textContent = modoRegistro ? 'Ya tengo cuenta, iniciar sesión' : 'Crear mi cuenta';
+  document.querySelector('#gate p[style*="text-align:center"]').firstChild.textContent = modoRegistro ? '¿Ya te registraste? ' : '¿Primera vez? ';
+  document.getElementById('r_err').style.display='none';
+}
+
+async function autenticar(){
+  const err = document.getElementById('r_err');
+  const correo = document.getElementById('r_correo').value.trim().toLowerCase();
+  const pass   = document.getElementById('r_pass').value.trim();
+  const btn = document.getElementById('btnEntrar');
+  const mostrarErr = m => { err.textContent=m; err.style.display='block'; btn.disabled=false; btn.textContent = modoRegistro?'Crear cuenta y comenzar':'Entrar a mi cuaderno'; };
+
+  if(!/^[a-z0-9._%+-]+@tam\.conalep\.edu\.mx$/.test(correo)) return mostrarErr('Usa tu correo institucional CONALEP (termina en @tam.conalep.edu.mx).');
+  if(pass.length < 6) return mostrarErr('Tu matrícula debe tener al menos 6 caracteres.');
+  if(!sb && !initSB()) return mostrarErr('No se pudo conectar al servidor. Revisa tu conexión a internet.');
+
+  err.style.display='none'; btn.disabled=true; btn.textContent='Conectando…';
+
+  if(modoRegistro){
+    const nombre = document.getElementById('r_nombre').value.trim();
+    const grupo  = document.getElementById('r_grupo').value;
+    const turno  = document.getElementById('r_turno').value;
+    if(!nombre || !grupo || !turno) return mostrarErr('Completa nombre, grupo y turno para registrarte.');
+    const { data, error } = await sb.auth.signUp({ email:correo, password:pass });
+    if(error){
+      if((error.message||'').toLowerCase().includes('already')) return mostrarErr('Ese correo ya tiene cuenta. Cambia a "Iniciar sesión".');
+      return mostrarErr('No se pudo crear la cuenta: '+error.message);
+    }
+    const uid = data.user.id;
+    const { error: perr } = await sb.from('perfiles').insert({ id:uid, correo, nombre, grupo, turno, matricula:pass });
+    if(perr && !(perr.message||'').includes('duplicate')) return mostrarErr('Cuenta creada, pero falló el perfil: '+perr.message);
+    state.alumno = { id:uid, nombre, grupo, turno, correo, matricula:pass, registro:new Date().toLocaleString('es-MX') };
+    persist(); await subirAvance();
+    entrarApp();
+  } else {
+    const { data, error } = await sb.auth.signInWithPassword({ email:correo, password:pass });
+    if(error) return mostrarErr('Correo o matrícula incorrectos. Si es tu primera vez, crea tu cuenta.');
+    const uid = data.user.id;
+    const { data: perfil } = await sb.from('perfiles').select('*').eq('id', uid).single();
+    state.alumno = perfil ? { id:uid, nombre:perfil.nombre, grupo:perfil.grupo, turno:perfil.turno, correo:perfil.correo, matricula:perfil.matricula||'', registro:'' } : { id:uid, nombre:correo, grupo:'', turno:'', correo };
+    await descargarAvance(uid);
+    entrarApp();
+  }
+}
+
+async function descargarAvance(uid){
+  load(); /* primero la caché local de este equipo, por si la nube falla */
+  try{
+    const { data: av } = await sb.from('avances').select('estado').eq('user_id', uid).eq('cuaderno', CUADERNO).single();
+    if(av && av.estado){
+      state.respuestas = av.estado.respuestas || state.respuestas || {};
+      state.visitadas  = av.estado.visitadas  || state.visitadas  || {};
+      state.guardadas  = av.estado.guardadas  || state.guardadas  || {};
+      if(av.estado.evaluacion) state.evaluacion = av.estado.evaluacion;
+    }
+    const { data: ents } = await sb.from('entregas').select('*').eq('user_id', uid).eq('cuaderno', CUADERNO);
+    state.entregas = {};
+    (ents||[]).forEach(e=>{ state.entregas[e.actividad] = { pts:e.pts, max:e.max, fb:e.fb, fecha:new Date(e.fecha).toLocaleString('es-MX') }; });
+    const { data: env } = await sb.from('envios').select('*').eq('user_id', uid).eq('cuaderno', CUADERNO).single();
+    if(env) state.enviado = { folio:env.folio, total:env.total, fecha:new Date(env.fecha).toLocaleString('es-MX') };
+  }catch(e){}
+  persist();
+}
+
+function entrarApp(){
+  document.getElementById('gate').style.display='none';
+  pintarAlumno();
+  bindInputs();
+  highlightSQL();
+  state.visitadas['intro']=true; persist();
+  Object.keys(state.entregas||{}).forEach(a=>{ lockAct(a); renderFB(a); });
+  if(state.enviado){ sellarCuaderno(); }
+  if(state.evaluacion){ calificarTodo(); }
+  marcarTOC(); actualizarProgreso();
+  go('intro');
+  setSyncBadge('ok');
+}
+
+async function cerrarSesion(){
+  if(!confirm('¿Cerrar sesión? Tu avance ya está guardado en la nube.')) return;
+  if(sb) await sb.auth.signOut();
+  location.reload();
+}
+
+function pintarAlumno(){
+  if(!state.alumno) return;
+  const chip = document.getElementById('studentChip');
+  chip.style.display='block';
+  document.getElementById('sc_nombre').textContent = state.alumno.nombre;
+  document.getElementById('sc_detalle').textContent = 'Grupo '+state.alumno.grupo+' · Turno '+state.alumno.turno;
+}
+
+/* ---------- Navegación ---------- */
+const ORDEN = ['intro','repaso','herencia','tiposher','sobrecarga','polimorfismo','ejemplo','act1','act2','act3','editor','bitacora','evaluacion'];
+function go(sec){
+  document.querySelectorAll('section.page').forEach(s=>s.classList.remove('visible'));
+  document.getElementById('sec-'+sec).classList.add('visible');
+  document.querySelectorAll('.toc a').forEach(a=>a.classList.toggle('active', a.dataset.sec===sec));
+  state.visitadas[sec]=true; persist(); actualizarProgreso();
+  document.querySelector('.sidebar').classList.remove('open');
+  window.scrollTo({top:0});
+}
+document.querySelectorAll('.toc a').forEach(a=> a.addEventListener('click', ()=>go(a.dataset.sec)) );
+document.querySelector('.main').addEventListener('click', ()=>document.querySelector('.sidebar').classList.remove('open'));
+
+/* ---------- Auto-guardado de respuestas ---------- */
+function bindInputs(){
+  document.querySelectorAll('[data-key]').forEach(el=>{
+    const k = el.dataset.key;
+    if(el.type==='radio'){
+      if(state.respuestas[k]===el.value) el.checked=true;
+      el.addEventListener('change',()=>{ state.respuestas[k]=el.value; persist(); });
+    }else{
+      if(state.respuestas[k]) el.value=state.respuestas[k];
+      el.addEventListener('input',()=>{ state.respuestas[k]=el.value; persist(); });
+    }
+  });
+}
+const MINIMOS = {
+  act1:['a1_code','a1_expl'], act2:['a2_code','a2_expl'],
+  act3:['a3_code','a3_expl'], bitacora:['bit1','bit2','bit3']
+};
+function guardar(act){
+  persist();
+  const faltan = (MINIMOS[act]||[]).filter(k=>(state.respuestas[k]||'').trim().length < 10);
+  const note=document.getElementById('save-'+act);
+  if(faltan.length){
+    state.guardadas[act]=false; persist();
+    if(note){ note.textContent='✗ Para registrar la entrega, completa todas las respuestas de esta sección'; note.style.color='var(--rojo)'; note.classList.add('show'); setTimeout(()=>note.classList.remove('show'),3500); }
+    actualizarProgreso(); marcarTOC(); return;
+  }
+  state.guardadas[act]=true; persist();
+  if(note){ note.textContent='✓ Avance guardado'; note.style.color='var(--ok)'; note.classList.add('show'); setTimeout(()=>note.classList.remove('show'),2200); }
+  actualizarProgreso(); marcarTOC();
+}
+
+/* ---------- Progreso ---------- */
+function actualizarProgreso(){
+  const visit = ORDEN.filter(s=>state.visitadas[s]).length;
+  const acts  = ['act1','act2','act3','bitacora'].filter(a=>state.guardadas[a]).length; // 4 entregas = 60%
+  const pct = Math.round( (visit/ORDEN.length)*40 + (acts/4)*60 );
+  document.getElementById('progPct').textContent = pct+'%';
+  document.getElementById('progFill').style.width = pct+'%';
+}
+function marcarTOC(){
+  document.querySelectorAll('.toc a').forEach(a=>{
+    const s=a.dataset.sec;
+    const done = ['act1','act2','act3','bitacora'].includes(s) ? state.guardadas[s] : state.visitadas[s];
+    a.classList.toggle('done', !!done);
+  });
+}
+
+/* ---------- Resaltado de sintaxis C++ ---------- */
+function highlightSQL(root){
+  const KW=/\b(include|using|namespace|int|double|float|char|bool|void|string|class|struct|public|private|protected|return|if|else|switch|case|break|default|for|while|do|cout|cin|endl|const|true|false|new|delete|this)\b/g;
+  (root||document).querySelectorAll('pre.cpp:not([data-hl]), pre.sql:not([data-hl])').forEach(pre=>{
+    pre.dataset.hl='1';
+    const stash=[];
+    const keep=(html)=>{ stash.push(html); return '\u0001S'+(stash.length-1)+'\u0001'; };
+    let h = pre.innerHTML  /* ya viene con &lt; &gt; escapados en el HTML fuente */
+      .replace(/\/\/.*$/gm, m=>keep('<span class="cm">'+m+'</span>'))
+      .replace(/"[^"]*"/g, m=>keep('<span class="str">'+m+'</span>'))
+      .replace(/'[^']*'/g, m=>keep('<span class="str">'+m+'</span>'))
+      .replace(/#\w+/g, m=>keep('<span class="kw">'+m+'</span>'))
+      .replace(/\b\d+(\.\d+)?\b/g, m=>'<span class="num">'+m+'</span>')
+      .replace(KW, m=>'<span class="kw">'+m+'</span>');
+    h = h.replace(/\u0001S(\d+)\u0001/g,(m,i)=>stash[+i]);
+    pre.innerHTML = h;
+  });
+}
+
+/* ---------- Calificación ---------- */
+function norm(s){ return (s||'').toLowerCase().replace(/\s+/g,' '); }
+function checkSQL(sql, reglas){
+  const s = norm(sql); const det=[]; let pts=0;
+  reglas.forEach(r=>{ const ok = r.re.test(s); if(ok) pts+=r.pts; det.push({ok, label:r.label, pts:r.pts}); });
+  return {pts, det};
+}
+function lenOK(txt, min){ return (txt||'').trim().length >= min; }
+
+/* ---------- Editor C++ (compila vía proxy Supabase → Wandbox) ---------- */
+// URL de la Edge Function "compilar". Se completa tras desplegar el proxy.
+const EDGE_COMPILAR_URL = 'https://cmhnuuxgwrpkhutylnzs.supabase.co/functions/v1/compilar';
+
+const PLANTILLA_CPP = `#include <iostream>
+using namespace std;
+
+class Cuenta {
+  private:
+    string titular;
+    double saldo;
+  public:
+    Cuenta(string nombre, double saldoInicial) {
+        titular = nombre;
+        saldo = saldoInicial;
+    }
+    void depositar(double monto) {
+        saldo = saldo + monto;
+    }
+    void consultar() {
+        cout << titular << ", saldo: $" << saldo << endl;
+    }
+};
+
+int main() {
+    Cuenta miCuenta("Ana Lopez", 1500.0);
+    miCuenta.consultar();
+    miCuenta.depositar(500);
+    miCuenta.consultar();
+    return 0;
+}`;
+
+async function ejecutarCodigo(codeId, stdinId, outId){
+  const out = document.getElementById(outId);
+  const code = document.getElementById(codeId).value;
+  const stdin = stdinId ? (document.getElementById(stdinId)?.value || '') : '';
+  if(!code.trim()){ out.innerHTML = '<span class="err-line">Escribe algo de código primero.</span>'; return; }
+
+  // Botón que disparó: deshabilitar mientras compila
+  const botones = document.querySelectorAll('[onclick*="'+codeId+'"]');
+  botones.forEach(b=> b.disabled = true);
+  out.innerHTML = '<span class="muted">⏳ Compilando y ejecutando en el servidor… (la primera vez puede tardar unos segundos)</span>';
+
+  try{
+    const resp = await fetch(EDGE_COMPILAR_URL, {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      body: JSON.stringify({ code, stdin })
+    });
+    if(!resp.ok){
+      const txt = await resp.text();
+      throw new Error('El servidor respondió ' + resp.status + (txt?(': '+txt.slice(0,120)):''));
+    }
+    const data = await resp.json();
+    if(data.error){ out.innerHTML = '<span class="err-line">⚠ '+escHtml(data.error)+'</span>'; return; }
+
+    let h = '';
+    const compErr = (data.compiler_output||'').trim();
+    const progOut = (data.program_output||'');
+    const progErr = (data.program_error||'').trim();
+    const exito = String(data.status) === '0';
+
+    if(compErr){
+      // Hay errores o advertencias de compilación
+      const esError = !exito;
+      h += '<span class="'+(esError?'err-line':'muted')+'">'+(esError?'✗ Errores de compilación:':'⚠ Advertencias:')+'</span>\n';
+      h += '<span class="'+(esError?'err-line':'muted')+'">'+escHtml(compErr)+'</span>';
+      if(!esError && (progOut||progErr)) h += '\n\n';
+    }
+    if(exito || progOut || progErr){
+      if(progOut){ h += '<span class="ok-line">▶ Salida del programa:</span>\n' + escHtml(progOut); }
+      if(progErr){ h += '\n<span class="err-line">'+escHtml(progErr)+'</span>'; }
+      if(exito && !progOut && !progErr){ h += '<span class="muted">▶ El programa terminó sin imprimir nada.</span>'; }
+    }
+    if(!h.trim()){ h = '<span class="muted">Sin salida.</span>'; }
+    out.innerHTML = h;
+  }catch(e){
+    out.innerHTML = '<span class="err-line">⚠ No se pudo compilar: '+escHtml(e.message)+'</span>\n<span class="muted">Si el problema persiste, avisa a tu docente: puede que el servicio de compilación no esté disponible en este momento.</span>';
+  }finally{
+    botones.forEach(b=> b.disabled = false);
+  }
+}
+function escHtml(v){ return String(v==null?'':v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+const SOLUCIONES = {
+act1: '<p style="font-size:14px"><strong>Análisis:</strong> el saldo debe ser <code class="inline">protected</code> (la hija lo usa, el exterior no) y la herencia se escribe con <code class="inline">: public Cuenta</code>.</p>'+
+'<pre class="cpp solo">#include &lt;iostream&gt;\nusing namespace std;\n\nclass Cuenta {\n  protected:\n    double saldo;\n  public:\n    Cuenta(double s) { saldo = s; }\n    void mostrar() { cout &lt;&lt; "Saldo: $" &lt;&lt; saldo &lt;&lt; endl; }\n};\n\nclass CuentaAhorro : public Cuenta {\n  public:\n    CuentaAhorro(double s) : Cuenta(s) {}\n    void aplicarInteres() {\n        saldo += saldo * 0.10;\n    }\n};\n\nint main() {\n    CuentaAhorro ca(1000);\n    ca.aplicarInteres();\n    ca.mostrar();   // Saldo: $1100\n    return 0;\n}</pre>'+
+'<p style="font-size:13px;color:var(--gris)">Claves: el constructor de la hija llama al del padre con <code class="inline">: Cuenta(s)</code>, y <code class="inline">aplicarInteres()</code> usa el <code class="inline">saldo</code> heredado (posible porque es protected). La ventaja: no se reescribe mostrar() ni el saldo, se reutilizan.</p>',
+
+act2: '<p style="font-size:14px"><strong>Análisis:</strong> <code class="inline">+</code> entre dos cuentas es un operador <strong>binario</strong>, y el método se llama <code class="inline">operator+</code>.</p>'+
+'<pre class="cpp solo">#include &lt;iostream&gt;\nusing namespace std;\n\nclass Cuenta {\n  public:\n    double saldo;\n    Cuenta(double s) { saldo = s; }\n\n    Cuenta operator+(Cuenta otra) {\n        return Cuenta(saldo + otra.saldo);\n    }\n};\n\nint main() {\n    Cuenta c1(1000), c2(500);\n    Cuenta total = c1 + c2;\n    cout &lt;&lt; "Total: $" &lt;&lt; total.saldo &lt;&lt; endl;  // 1500\n    return 0;\n}</pre>'+
+'<p style="font-size:13px;color:var(--gris)">El método <code class="inline">operator+</code> recibe la otra cuenta como parámetro y devuelve una nueva con la suma. Otros ejemplos válidos de sobrecarga: <code class="inline">==</code> para comparar cuentas, <code class="inline">&lt;</code> para ordenarlas, o <code class="inline">-</code> para restar saldos.</p>',
+
+act3: '<p style="font-size:14px"><strong>Análisis:</strong> <code class="inline">virtual</code> permite la decisión en tiempo de ejecución, y cuando la hija redefine el método del padre lo <strong>sobrescribe (override)</strong>.</p>'+
+'<pre class="cpp solo">#include &lt;iostream&gt;\nusing namespace std;\n\nclass Cuenta {\n  public:\n    virtual void mostrarTipo() {\n        cout &lt;&lt; "Cuenta genérica" &lt;&lt; endl;\n    }\n};\n\nclass CuentaAhorro : public Cuenta {\n  public:\n    void mostrarTipo() override {\n        cout &lt;&lt; "Cuenta de Ahorro" &lt;&lt; endl;\n    }\n};\n\nclass CuentaCredito : public Cuenta {\n  public:\n    void mostrarTipo() override {\n        cout &lt;&lt; "Cuenta de Credito" &lt;&lt; endl;\n    }\n};\n\nint main() {\n    Cuenta* cuentas[2];\n    cuentas[0] = new CuentaAhorro();\n    cuentas[1] = new CuentaCredito();\n    for (int i = 0; i &lt; 2; i++) {\n        cuentas[i]-&gt;mostrarTipo();\n    }\n    return 0;\n}</pre>'+
+'<p style="font-size:13px;color:var(--gris)">Sin <code class="inline">virtual</code>, el arreglo de punteros <code class="inline">Cuenta*</code> llamaría siempre la versión del padre. Con virtual, C++ revisa el tipo real de cada objeto y ejecuta la versión correcta — eso es el polimorfismo en acción.</p>'
+};
+
+// Calificación de código C++: busca patrones clave en el texto del alumno (normalizado)
+function normCode(s){ return (s||'').toLowerCase().replace(/\s+/g,' '); }
+function checkCode(code, reglas){
+  const s = normCode(code); const det=[]; let pts=0;
+  reglas.forEach(r=>{ const ok = r.re.test(s); if(ok) pts+=r.pts; det.push({ok, label:r.label, pts:r.pts}); });
+  return {pts, det};
+}
+
+const GRADERS = {
+act1(){
+  const R = state.respuestas; let p=0; const fb=[];
+  p += R.a1_acc==='protected' ?4:0; fb.push({ok:R.a1_acc==='protected', label:'El saldo debe ser protected (lo usa la hija)', pts:4});
+  p += R.a1_sint==='colon' ?4:0;    fb.push({ok:R.a1_sint==='colon', label:'Sintaxis correcta: class CuentaAhorro : public Cuenta', pts:4});
+  const c = checkCode(R.a1_code,[
+    {re:/class\s+cuentaahorro\s*:\s*public\s+cuenta/, pts:6, label:'CuentaAhorro hereda de Cuenta (: public Cuenta)'},
+    {re:/:\s*cuenta\s*\(/, pts:4, label:'El constructor de la hija llama al del padre : Cuenta(...)'},
+    {re:/void\s+aplicarinteres\s*\(/, pts:3, label:'Define el método aplicarInteres()'},
+    {re:/saldo\s*[\+\*]?=\s*saldo\s*\*\s*0?\.?1|saldo\s*\*=\s*1\.1|saldo\s*\+=\s*saldo\s*\*/, pts:4, label:'Aplica el 10% de interés al saldo'}
+  ]);
+  p += c.pts; fb.push(...c.det);
+  const j = lenOK(R.a1_expl,40); p += j?5:0; fb.push({ok:j, label:'Explicación de la ventaja de la herencia (mín. 2 líneas)', pts:5});
+  return {pts:p, max:30, fb};
+},
+act2(){
+  const R = state.respuestas; let p=0; const fb=[];
+  p += R.a2_tipo==='binario' ?4:0; fb.push({ok:R.a2_tipo==='binario', label:'El operador + es binario (2 operandos)', pts:4});
+  p += R.a2_nom==='operatorplus' ?4:0; fb.push({ok:R.a2_nom==='operatorplus', label:'El método se llama operator+', pts:4});
+  const c = checkCode(R.a2_code,[
+    {re:/operator\s*\+/, pts:7, label:'Define la sobrecarga operator+'},
+    {re:/cuenta\s+operator\s*\+|operator\s*\+\s*\(\s*cuenta/, pts:4, label:'Recibe/devuelve un objeto Cuenta'},
+    {re:/saldo\s*\+\s*\w+\.saldo|return\s+cuenta\s*\(/, pts:6, label:'Suma los saldos y devuelve el resultado'}
+  ]);
+  p += c.pts; fb.push(...c.det);
+  const j = lenOK(R.a2_expl,40); p += j?5:0; fb.push({ok:j, label:'Explicación con ejemplo propio (mín. 2 líneas)', pts:5});
+  return {pts:p, max:30, fb};
+},
+act3(){
+  const R = state.respuestas; let p=0; const fb=[];
+  p += R.a3_vir==='virtual' ?4:0;       fb.push({ok:R.a3_vir==='virtual', label:'virtual permite la decisión en tiempo de ejecución', pts:4});
+  p += R.a3_over==='sobrescribe' ?4:0;  fb.push({ok:R.a3_over==='sobrescribe', label:'Redefinir el método del padre es sobrescribir (override)', pts:4});
+  const c = checkCode(R.a3_code,[
+    {re:/class\s+cuentaahorro\s*:\s*public\s+cuenta/, pts:5, label:'CuentaAhorro hereda de Cuenta'},
+    {re:/class\s+cuentacredito\s*:\s*public\s+cuenta/, pts:5, label:'CuentaCredito hereda de Cuenta'},
+    {re:/override|void\s+mostrartipo/, pts:3, label:'Las hijas sobrescriben mostrarTipo()'},
+    {re:/ahorro[\s\S]*cr[ée]dito|credito[\s\S]*ahorro|ahorro.*credito/, pts:4, label:'Cada hija imprime su tipo (Ahorro y Crédito)'}
+  ]);
+  p += c.pts; fb.push(...c.det);
+  const j = lenOK(R.a3_expl,40); p += j?5:0; fb.push({ok:j, label:'Explicación de por qué virtual es necesario (mín. 2 líneas)', pts:5});
+  return {pts:p, max:30, fb};
+}
+};
+
+function entregar(act){
+  if(state.entregas[act]) return;
+  const note = document.getElementById('save-'+act);
+  const faltan = (MINIMOS[act]||[]).filter(k=>(state.respuestas[k]||'').trim().length < 10);
+  if(faltan.length){
+    if(note){ note.textContent='✗ Completa todas las respuestas de esta actividad antes de entregar'; note.style.color='var(--rojo)'; note.classList.add('show'); setTimeout(()=>note.classList.remove('show'),3500); }
+    return;
+  }
+  if(!confirm('Vas a ENTREGAR esta actividad.\n\n• Solo tienes UN intento.\n• Verás tu calificación y la solución correcta.\n• Ya no podrás modificar tus respuestas.\n\n¿Deseas entregar ahora?')) return;
+  const g = GRADERS[act]();
+  const fecha = new Date();
+  if(sb && state.alumno){
+    const R = state.respuestas;
+    const resp = {act1:['a1_acc','a1_sint','a1_code','a1_expl'],act2:['a2_tipo','a2_nom','a2_code','a2_expl'],act3:['a3_vir','a3_over','a3_code','a3_expl']}[act] || [];
+    const soloAct = {}; resp.forEach(k=> soloAct[k]=R[k]);
+    sb.from('entregas').insert({
+      user_id:state.alumno.id, cuaderno:CUADERNO, actividad:act,
+      pts:g.pts, max:g.max, fb:g.fb, respuestas:soloAct, fecha:fecha.toISOString()
+    }).then(({error})=>{
+      if(error && error.code==='23505'){ alert('Esta actividad ya fue entregada antes (registrada en el servidor). No es posible entregarla de nuevo.'); }
+    });
+  }
+  state.entregas[act] = { pts:g.pts, max:g.max, fb:g.fb, fecha:fecha.toLocaleString('es-MX') };
+  state.guardadas[act] = true; persist();
+  lockAct(act); renderFB(act);
+  actualizarProgreso(); marcarTOC();
+}
+function lockAct(act){
+  document.querySelectorAll('#sec-'+act+' [data-key]').forEach(el=>el.disabled=true);
+  const btn = document.getElementById('btn-'+act);
+  if(btn){ btn.disabled=true; btn.textContent='✓ Actividad entregada'; }
+}
+function renderFB(act){
+  const e = state.entregas[act]; if(!e) return;
+  const panel = document.getElementById('fb-'+act); if(!panel) return;
+  const lista = e.fb.map(x=>'<li class="'+(x.ok?'ok':'miss')+'">'+(x.ok?'✓ ':'✗ ')+x.label+' ('+x.pts+' pts)</li>').join('');
+  panel.innerHTML =
+    '<div class="fb-head"><span>Resultado de tu entrega</span><span>'+e.pts+' / '+e.max+' pts · '+e.fecha+'</span></div>'+
+    '<div class="fb-body"><ul class="fb-list">'+lista+'</ul>'+
+    '<div class="solucion"><h5>Solución correcta</h5>'+SOLUCIONES[act]+'</div>'+
+    '<div class="fb-unlock"><button class="btn ghost" style="padding:6px 12px;font-size:12px" onclick="desbloquear(\''+act+'\')">Docente: liberar nuevo intento</button></div></div>';
+  panel.classList.add('show');
+  highlightSQL(panel);
+}
+function desbloquear(act){
+  const clave = prompt('Clave del docente para liberar un nuevo intento:');
+  if(clave === null) return;
+  if(clave.trim() !== CLAVE_DOCENTE){ alert('Clave incorrecta.'); return; }
+  if(state.enviado && !confirm('OJO: este cuaderno ya fue ENVIADO al docente (folio '+state.enviado.folio+'). ¿Liberar el intento de todos modos?')) return;
+  if(sb && state.alumno){ sb.from('entregas').delete().eq('user_id',state.alumno.id).eq('cuaderno',CUADERNO).eq('actividad',act); }
+  delete state.entregas[act]; state.guardadas[act]=false; persist();
+  document.querySelectorAll('#sec-'+act+' [data-key]').forEach(el=>el.disabled=false);
+  const nombres = {act1:'Actividad 1',act2:'Actividad 2',act3:'Actividad 3'};
+  const btn = document.getElementById('btn-'+act);
+  if(btn){ btn.disabled=false; btn.textContent='Entregar '+nombres[act]+' · intento único'; }
+  const panel = document.getElementById('fb-'+act);
+  if(panel){ panel.classList.remove('show'); panel.innerHTML=''; }
+  actualizarProgreso(); marcarTOC();
+}
+
+/* ---------- Resultado final ---------- */
+const ACTS_META = [
+  ['act1','Actividad 1 · Herencia',30],
+  ['act2','Actividad 2 · Sobrecarga de operadores',30],
+  ['act3','Actividad 3 · Polimorfismo',30]
+];
+function calificarTodo(){
+  const R = state.respuestas;
+  const filas=[]; let total=0; const pendientes=[];
+  ACTS_META.forEach(([a,nombre,max])=>{
+    const e = state.entregas[a];
+    if(e){ filas.push({nombre:nombre+' (entregada '+e.fecha+')', pts:e.pts, max:max, fb:e.fb}); total+=e.pts; }
+    else{ filas.push({nombre:nombre, pts:0, max:max, fb:[{ok:false, label:'Actividad sin entregar — entra a la sección y entrégala', pts:max}]}); pendientes.push(nombre.split(' ·')[0]); }
+  });
+  let b=0; const bfb=[];
+  [['bit1','¿Qué aprendí?',3],['bit2','Dificultades y solución',3],['bit3','Aplicación de la POO',4]].forEach(([k,l,p])=>{
+    const ok = lenOK(R[k],60); b += ok?p:0; bfb.push({ok, label:l+' respondida con desarrollo', pts:p});
+  });
+  filas.push({nombre:'Bitácora del alumno', pts:b, max:10, fb:bfb}); total+=b;
+
+  state.evaluacion = { total, filas, fecha:new Date().toLocaleString('es-MX') };
+  persist();
+  document.getElementById('resultados').style.display='block';
+  document.getElementById('scoreTotal').textContent = total;
+  const nivel = pendientes.length
+    ? '⚠ Tienes actividades sin entregar: '+pendientes.join(', ')+'. Entrégalas para completar tu calificación.'
+    : (total>=90?'Excelente dominio de la herencia y el polimorfismo.':total>=70?'Buen desempeño. Revisa la retroalimentación de cada entrega.':'Resultado en proceso: revisa la retroalimentación y coméntala con tu docente.');
+  document.getElementById('scoreDetalle').innerHTML = '<strong>'+(state.alumno?state.alumno.nombre:'Alumno')+'</strong> · Grupo '+(state.alumno?state.alumno.grupo:'—')+'<br>'+nivel+'<br><span style="opacity:.75">R.A. 2.1 · Herencia y polimorfismo · ponderación 35% · Generado: '+state.evaluacion.fecha+'</span>';
+  const tabla = document.getElementById('tablaRubrica');
+  tabla.innerHTML = '<tr><th>Componente</th><th style="width:110px">Puntos</th><th>Retroalimentación</th></tr>';
+  filas.forEach(f=>{
+    const fb = '<ul class="fb-list">'+f.fb.map(x=>'<li class="'+(x.ok?'ok':'miss')+'">'+(x.ok?'✓ ':'✗ ')+x.label+' ('+x.pts+' pts)</li>').join('')+'</ul>';
+    tabla.insertAdjacentHTML('beforeend','<tr><td><strong>'+f.nombre+'</strong></td><td><strong>'+f.pts+'</strong> / '+f.max+'</td><td>'+fb+'</td></tr>');
+  });
+  window.scrollTo({top:0});
+}
+
+/* ---------- Envío al docente (FormSubmit) y sellado ---------- */
+const FORMSUBMIT_ENDPOINT = 'https://formsubmit.co/ajax/profesantiagomtzglez@gmail.com';
+
+function sellarCuaderno(){
+  ['bit1','bit2','bit3'].forEach(id=>{ const el=document.getElementById(id); if(el) el.disabled=true; });
+  const bb = document.getElementById('btn-bitacora');
+  if(bb){ bb.disabled=true; bb.textContent='✓ Bitácora sellada'; }
+  const be = document.getElementById('btnEnviar');
+  if(be){ be.disabled=true; be.textContent='✓ Reporte enviado'; }
+  const ok = document.getElementById('envio_ok');
+  if(ok && state.enviado){
+    ok.style.display='block';
+    ok.innerHTML = '<div class="c-title">✓ Cuaderno enviado y sellado</div><p>Folio: <strong>'+state.enviado.folio+'</strong> · Enviado: '+state.enviado.fecha+' · Calificación enviada: <strong>'+state.enviado.total+' / 100</strong>.<br>Conserva tu copia descargable como comprobante. Los apuntes, instrucciones y el simulador siguen disponibles para consulta.</p>';
+  }
+}
+
+async function enviarReporte(){
+  const st = document.getElementById('envio_status');
+  if(state.enviado){ st.style.color='var(--gris)'; st.textContent='Este cuaderno ya fue enviado (folio '+state.enviado.folio+').'; return; }
+  const nombres = {act1:'Actividad 1',act2:'Actividad 2',act3:'Actividad 3'};
+  const faltan = ACTS_META.filter(([a])=>!state.entregas[a]).map(([a])=>nombres[a]);
+  const bitOk = ['bit1','bit2','bit3'].every(k=>(state.respuestas[k]||'').trim().length >= 10);
+  if(!bitOk) faltan.push('Bitácora (responde y guarda sus 3 preguntas)');
+  if(faltan.length){
+    st.style.color='var(--rojo)';
+    st.textContent='✗ Antes de enviar debes completar: '+faltan.join(', ')+'.';
+    return;
+  }
+  if(!confirm('Vas a ENVIAR tu reporte al docente.\n\n• El envío es ÚNICO y definitivo.\n• Tu calificación llegará al correo del docente con fecha, hora y folio.\n• Las actividades y la bitácora quedarán selladas (solo lectura).\n• Los apuntes, instrucciones y el editor de C++ seguirán disponibles.\n\n¿Enviar ahora?')) return;
+  calificarTodo();
+  const ev = state.evaluacion, a = state.alumno||{}, R = state.respuestas;
+  const folio = 'PROO-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).slice(2,6).toUpperCase();
+  const btn = document.getElementById('btnEnviar'); if(btn) btn.disabled = true;
+  st.style.color='var(--gris)'; st.textContent='⏳ Enviando reporte al docente…';
+  const E = state.entregas;
+  const payload = {
+    _subject: 'PROO RA2.1 · '+(a.nombre||'Alumno')+' · Grupo '+(a.grupo||'?')+' · '+ev.total+'/100',
+    _captcha: 'false', _template: 'table',
+    Folio: folio,
+    Fecha_de_envio: new Date().toLocaleString('es-MX'),
+    Alumno: a.nombre||'', Grupo: a.grupo||'', Turno: a.turno||'', Correo_institucional: a.correo||'',
+    CALIFICACION_TOTAL: ev.total + ' / 100',
+    Actividad_1_Herencia: E.act1.pts+' / 30 · entregada: '+E.act1.fecha,
+    Actividad_2_Sobrecarga: E.act2.pts+' / 30 · entregada: '+E.act2.fecha,
+    Actividad_3_Polimorfismo: E.act3.pts+' / 30 · entregada: '+E.act3.fecha,
+    Bitacora_puntos: (ev.filas[3]?ev.filas[3].pts:0)+' / 10',
+    A1_analisis: 'acceso: '+(R.a1_acc||'—')+' · sintaxis: '+(R.a1_sint||'—'),
+    A1_codigo_Cpp: R.a1_code||'', A1_explicacion: R.a1_expl||'',
+    A2_analisis: 'tipo operador: '+(R.a2_tipo||'—')+' · nombre: '+(R.a2_nom||'—'),
+    A2_codigo_Cpp: R.a2_code||'', A2_explicacion: R.a2_expl||'',
+    A3_analisis: 'palabra clave: '+(R.a3_vir||'—')+' · concepto: '+(R.a3_over||'—'),
+    A3_codigo_Cpp: R.a3_code||'', A3_explicacion: R.a3_expl||'',
+    Bitacora_que_aprendi: R.bit1||'', Bitacora_dificultades: R.bit2||'', Bitacora_aplicacion: R.bit3||'',
+    Navegador: navigator.userAgent
+  };
+  try{
+    const r = await fetch(FORMSUBMIT_ENDPOINT, {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json', 'Accept':'application/json', 'X-Requested-With':'XMLHttpRequest' },
+      body: JSON.stringify(payload)
+    });
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    await r.json();
+    state.enviado = { folio, fecha:new Date().toLocaleString('es-MX'), total:ev.total };
+    if(sb && state.alumno){
+      try{ await sb.from('envios').insert({ user_id:state.alumno.id, cuaderno:CUADERNO, folio, total:ev.total, fecha:new Date().toISOString() }); }catch(e){}
+    }
+    persist(); await subirAvance();
+    st.textContent='';
+    sellarCuaderno();
+    window.scrollTo({top:0});
+  }catch(e){
+    if(btn) btn.disabled = false;
+    st.style.color='var(--rojo)';
+    st.textContent='✗ No se pudo enviar ('+e.message+'). Revisa tu conexión a internet e inténtalo de nuevo — tu cuaderno NO se ha sellado y tus respuestas están a salvo.';
+  }
+}
+
+/* ---------- Boleta PDF de UNA hoja (jsPDF) ---------- */
+function descargarPDF(){
+  if(!state.evaluacion) calificarTodo();
+  if(!window.jspdf || !window.jspdf.jsPDF){ alert('No se pudo cargar el generador de PDF. Verifica tu conexión a internet y recarga la página.'); return; }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit:'mm', format:'letter' });
+  const M = 14, W = 188;
+  const a = state.alumno||{}, ev = state.evaluacion;
+  let y = 16;
+
+  /* Encabezado */
+  doc.setFont('helvetica','bold'); doc.setFontSize(15); doc.setTextColor(21,34,48);
+  doc.text('POO Classroom · Boleta de Resultados', M, y); y += 5.5;
+  doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(90,107,120);
+  doc.text('Programación Orientada a Objetos (PROO-20) · Unidad 2 · RA 2.1 · Evidencia 2.1.1 (35%) · CONALEP', M, y); y += 3.8;
+  doc.text('Proyecto integrador: Cajero Automático en C++', M, y); y += 3;
+  doc.setDrawColor(14,134,196); doc.setLineWidth(0.7); doc.line(M, y, M+W, y); y += 6;
+
+  /* Datos del alumno */
+  doc.setFont('helvetica','bold'); doc.setFontSize(10.5); doc.setTextColor(21,34,48);
+  doc.text((a.nombre||'—'), M, y);
+  doc.setFont('helvetica','normal'); doc.setFontSize(9);
+  doc.text('Grupo '+(a.grupo||'—')+' · Turno '+(a.turno||'—'), M+W, y, {align:'right'}); y += 4.5;
+  doc.setFontSize(8); doc.setTextColor(90,107,120);
+  doc.text((a.correo||'—')+' · Generado: '+new Date().toLocaleString('es-MX'), M, y); y += 6;
+
+  /* Banda de calificación */
+  doc.setFillColor(8,79,117); doc.roundedRect(M, y, W, 13, 2, 2, 'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(14); doc.setTextColor(255,255,255);
+  doc.text('CALIFICACIÓN: '+ev.total+' / 100', M+5, y+8.7);
+  doc.setFontSize(8); doc.setFont('helvetica','normal');
+  const sello = state.enviado ? ('ENVIADO · Folio '+state.enviado.folio+' · '+state.enviado.fecha) : 'AÚN NO ENVIADO AL DOCENTE';
+  doc.text(sello, M+W-4, y+8.2, {align:'right'}); y += 19;
+
+  /* Tabla de componentes */
+  const comp = ev.filas.map(f=>[f.nombre.replace(/ \(entregada.*$/,''), f.pts+' / '+f.max, (f.nombre.match(/entregada (.+)\)$/)||[,'—'])[1]]);
+  doc.setFillColor(229,243,251); doc.rect(M, y, W, 6.2, 'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(8.5); doc.setTextColor(8,79,117);
+  doc.text('Componente', M+2, y+4.2); doc.text('Puntos', M+106, y+4.2); doc.text('Fecha de entrega', M+130, y+4.2); y += 6.2;
+  doc.setFont('helvetica','normal'); doc.setTextColor(21,34,48);
+  comp.forEach(c=>{
+    doc.setDrawColor(216,229,238); doc.setLineWidth(0.2); doc.line(M, y+5.6, M+W, y+5.6);
+    doc.setFont('helvetica','bold'); doc.text(String(c[0]).slice(0,62), M+2, y+4);
+    doc.setFont('helvetica','normal'); doc.text(String(c[1]), M+106, y+4); doc.text(String(c[2]), M+130, y+4);
+    y += 5.8;
+  });
+  y += 5;
+
+  /* Detalle de criterios en dos columnas */
+  doc.setFont('helvetica','bold'); doc.setFontSize(9.5); doc.setTextColor(8,79,117);
+  doc.text('Detalle de criterios', M, y); y += 4.5;
+  const colW = 91, colX = [M, M+colW+6], topD = y, bottomD = 243;
+  let col = 0; let yy = topD;
+  const item = (txt, bold, ok) => {
+    doc.setFont('helvetica', bold?'bold':'normal'); doc.setFontSize(6.8);
+    if(bold) doc.setTextColor(21,34,48); else doc.setTextColor(ok?11:163, ok?107:59, ok?58:46);
+    const lines = doc.splitTextToSize(txt, colW - (bold?0:3));
+    const h = lines.length*2.7 + (bold?1.2:0.6);
+    if(yy + h > bottomD){ if(col===0){ col=1; yy=topD; } else { return false; } }
+    doc.text(lines, colX[col] + (bold?0:3), yy + 2.2);
+    yy += h; return true;
+  };
+  let completo = true;
+  ev.filas.forEach(f=>{
+    if(!item(f.nombre.replace(/ \(entregada.*$/,'')+'  ·  '+f.pts+'/'+f.max, true)) { completo=false; return; }
+    f.fb.forEach(x=>{ if(!item((x.ok?'[OK] ':'[ X ] ')+x.label+' ('+x.pts+')', false, x.ok)) completo=false; });
+  });
+  if(!completo){ doc.setFont('helvetica','italic'); doc.setFontSize(6.5); doc.setTextColor(90,107,120); doc.text('(detalle completo disponible en la plataforma)', colX[1], bottomD+2); }
+
+  /* Pie: firmas y leyenda */
+  let yf = 252;
+  doc.setDrawColor(21,34,48); doc.setLineWidth(0.3);
+  doc.line(M+8, yf, M+78, yf); doc.line(M+110, yf, M+180, yf);
+  doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(21,34,48);
+  doc.text('Firma del alumno', M+30, yf+3.8); doc.text('Firma del docente', M+132, yf+3.8);
+  doc.setFontSize(6.8); doc.setTextColor(90,107,120);
+  doc.text(doc.splitTextToSize('Boleta generada por POO Classroom · Cuaderno Digital de Aprendizaje. La calificación automática es estructural; la revisión final corresponde al docente. Las respuestas completas del alumno se conservan en la plataforma y en el correo de entrega.', W), M, yf+9);
+
+  const safe = (a.nombre||'alumno').trim().replace(/\s+/g,'_').replace(/[^\w\u00C0-\u017F_-]/g,'');
+  doc.save('Boleta_POO_RA2-1_'+safe+'.pdf');
+}
+
+/* ---------- Apuntes imprimibles a dos columnas (jsPDF) ---------- */
+const APUNTES_DATA = [
+ ['h1','HERENCIA'],
+ ['li','Una clase hija reutiliza y extiende lo de una clase padre. "CuentaAhorro ES UNA Cuenta".'],
+ ['code','class Cuenta {\n  protected:\n    double saldo;       // protected: la hija SI lo usa\n  public:\n    Cuenta(double s) { saldo = s; }\n    void mostrar() { cout << saldo; }\n};\n\nclass CuentaAhorro : public Cuenta {\n  public:\n    CuentaAhorro(double s) : Cuenta(s) {}  // llama al padre\n    void aplicarInteres() { saldo += saldo*0.10; }\n};'],
+ ['li',': public Cuenta = hereda · : Cuenta(s) = el constructor hijo inicializa lo del padre'],
+ ['li','protected: la hija accede, el exterior no. Es el nivel ideal para herencia.'],
+ ['li','Beneficios: REUTILIZACION (codigo comun una sola vez) y EXTENSIBILIDAD (agregar tipos sin tocar lo viejo)'],
+ ['h1','TIPOS DE HERENCIA'],
+ ['li','Simple: un solo padre (class B : public A)'],
+ ['li','Multiple: varios padres (class C : public A, public B)'],
+ ['warn','Ambiguedad: si dos padres tienen un metodo igual, se resuelve con :: → obj.ClasePadre::metodo()'],
+ ['h1','SOBRECARGA DE OPERADORES'],
+ ['li','Dar nuevo significado a +, ==, ++ para tus objetos. Metodo: operator seguido del simbolo.'],
+ ['h2','Binario (2 operandos)'],
+ ['code','class Cuenta {\n  public:\n    double saldo;\n    Cuenta(double s){ saldo=s; }\n    Cuenta operator+(Cuenta otra) {\n        return Cuenta(saldo + otra.saldo);\n    }\n};\nCuenta total = c1 + c2;   // llama operator+'],
+ ['h2','Unario (1 operando)'],
+ ['code','void operator++() {\n    saldo += 100;   // bono\n}\n++c;   // llama operator++'],
+ ['li','Binario: recibe el otro objeto como parametro. Unario: opera sobre si mismo, sin parametros.'],
+ ['h1','POLIMORFISMO'],
+ ['li','"Muchas formas": el mismo metodo se comporta distinto segun el tipo real del objeto.'],
+ ['li','Sobrescribir (override): la hija redefine un metodo del padre con el mismo nombre.'],
+ ['h2','Funciones virtuales'],
+ ['code','class Cuenta {\n  public:\n    virtual void mostrarTipo() {\n        cout << "Generica";\n    }\n};\nclass CuentaAhorro : public Cuenta {\n  public:\n    void mostrarTipo() override {\n        cout << "Ahorro";\n    }\n};\n\nCuenta* c[2];\nc[0] = new CuentaAhorro();\nc[1] = new CuentaCredito();\nfor (int i=0;i<2;i++)\n    c[i]->mostrarTipo();  // cada uno su version'],
+ ['warn','Sin virtual, un puntero Cuenta* siempre llama la version del PADRE. Con virtual, C++ mira el tipo REAL en tiempo de ejecucion. Eso es el polimorfismo.']
+];
+
+function descargarApuntes(){
+  if(!window.jspdf || !window.jspdf.jsPDF){ alert('No se pudo cargar el generador de PDF. Verifica tu conexión a internet y recarga la página.'); return; }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit:'mm', format:'letter' });
+  const M = 12, gut = 7, colW = (216 - 2*M - gut)/2, top = 26, bottom = 266;
+  const colX = [M, M + colW + gut];
+  let col = 0, y = top;
+
+  const deco = () => {
+    /* Encabezado tipográfico, sin rellenos */
+    doc.setFont('helvetica','bold'); doc.setFontSize(12.5); doc.setTextColor(0,0,0);
+    doc.text('POO · APUNTES DE BOLSILLO', M, 12.5);
+    doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(80,80,80);
+    doc.text('C++ · RA 2.1', 216-M, 12.5, {align:'right'});
+    doc.setFontSize(6.8);
+    doc.text('CONALEP · PROO-20 · RA 2.1 · Herencia y Polimorfismo · Proyecto: Cajero', M, 16.5);
+    doc.setDrawColor(0,0,0); doc.setLineWidth(0.8); doc.line(M, 19, 216-M, 19);
+    doc.setLineWidth(0.2); doc.line(M, 20.1, 216-M, 20.1);
+    /* Pie con firma */
+    doc.setLineWidth(0.2); doc.setDrawColor(120,120,120); doc.line(M, 270, 216-M, 270);
+    doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(100,100,100);
+    doc.text('POO Classroom · Cuaderno Digital de Aprendizaje · pág. '+doc.getNumberOfPages(), M, 274);
+    doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(0,0,0);
+    doc.text('Ing. Santiago Martínez González', 216-M, 274, {align:'right'});
+  };
+  deco();
+
+  const ensure = h => {
+    if(y + h > bottom){
+      if(col === 0){ col = 1; y = top; }
+      else { doc.addPage(); deco(); col = 0; y = top; }
+    }
+  };
+  APUNTES_DATA.forEach(([tipo, txt]) => {
+    if(tipo === 'h1'){
+      ensure(10);
+      doc.setDrawColor(0,0,0); doc.setLineWidth(0.5);
+      doc.rect(colX[col], y-3.2, colW, 6.6);
+      doc.setFont('helvetica','bold'); doc.setFontSize(7.6); doc.setTextColor(0,0,0);
+      doc.text(doc.splitTextToSize(txt, colW-4)[0], colX[col]+2.2, y+1);
+      y += 8.8;
+    } else if(tipo === 'h2'){
+      ensure(16); /* keep-with-next: el título nunca queda huérfano */
+      doc.setFont('helvetica','bold'); doc.setFontSize(8.4); doc.setTextColor(0,0,0);
+      const lines = doc.splitTextToSize(txt, colW);
+      doc.text(lines, colX[col], y); y += lines.length*3.5;
+      doc.setDrawColor(0,0,0); doc.setLineWidth(0.3);
+      doc.line(colX[col], y-2.1, colX[col]+colW, y-2.1); y += 1.4;
+    } else if(tipo === 'p'){
+      doc.setFont('helvetica','normal'); doc.setFontSize(7.4); doc.setTextColor(30,30,30);
+      const lines = doc.splitTextToSize(txt, colW);
+      ensure(lines.length*3.05 + 1);
+      doc.text(lines, colX[col], y); y += lines.length*3.05 + 1.8;
+    } else if(tipo === 'li'){
+      doc.setFont('helvetica','normal'); doc.setFontSize(7.4); doc.setTextColor(30,30,30);
+      const lines = doc.splitTextToSize(txt, colW-4);
+      ensure(lines.length*3.05 + 1);
+      doc.text('–', colX[col]+0.6, y); doc.text(lines, colX[col]+4, y);
+      y += lines.length*3.05 + 1.3;
+    } else if(tipo === 'code'){
+      doc.setFont('courier','bold'); doc.setFontSize(6.9); doc.setTextColor(0,0,0);
+      const raw = txt.split('\n'); let lines = [];
+      raw.forEach(r => { lines = lines.concat(doc.splitTextToSize(r, colW-6)); });
+      const h = lines.length*2.9;
+      ensure(h + 4);
+      doc.setDrawColor(0,0,0); doc.setLineWidth(0.7);
+      doc.line(colX[col]+0.6, y-2.2, colX[col]+0.6, y + h - 1.6);
+      doc.text(lines, colX[col]+4, y);
+      y += h + 2.6;
+    } else if(tipo === 'warn'){
+      doc.setFont('helvetica','bold'); doc.setFontSize(7.2); doc.setTextColor(0,0,0);
+      const lines = doc.splitTextToSize(txt, colW-13);
+      const h = lines.length*3 + 3.4;
+      ensure(h + 2);
+      doc.setDrawColor(0,0,0); doc.setLineWidth(0.5);
+      doc.rect(colX[col], y-2.6, colW, h);
+      doc.setFontSize(8.5); doc.text('¡!', colX[col]+2.6, y+1.4);
+      doc.setLineWidth(0.3); doc.line(colX[col]+8.2, y-2.6, colX[col]+8.2, y-2.6+h);
+      doc.setFontSize(7.2); doc.text(lines, colX[col]+10.6, y);
+      y += h + 1.6;
+    }
+  });
+  doc.save('Apuntes_POO_Cpp.pdf');
+}
+
+/* ---------- Respaldo portátil del avance ---------- */
+function exportarAvance(){
+  persist();
+  const data = { app: LS_KEY, fecha: new Date().toISOString(), state: state };
+  const blob = new Blob([JSON.stringify(data)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  const safe = ((state.alumno && state.alumno.nombre) || 'alumno').trim().replace(/\s+/g,'_').replace(/[^\w\u00C0-\u017F_-]/g,'');
+  a.download = 'Respaldo_' + LS_KEY + '_' + safe + '.json';
+  document.body.appendChild(a); a.click(); a.remove();
+}
+function importarAvance(file){
+  if(!file) return;
+  const r = new FileReader();
+  r.onload = () => {
+    try{
+      const data = JSON.parse(r.result);
+      if(!data || data.app !== LS_KEY || !data.state){
+        alert('Este archivo no es un respaldo de ESTE cuaderno (revisa que sea el RA correcto).');
+        return;
+      }
+      const quien = (data.state.alumno && data.state.alumno.nombre) || '(sin registro)';
+      const cuando = new Date(data.fecha).toLocaleString('es-MX');
+      if(!confirm('Se restaurará el avance de:\n\n' + quien + '\nguardado el ' + cuando + '\n\nEl avance actual en esta computadora será REEMPLAZADO. ¿Continuar?')) return;
+      localStorage.setItem(LS_KEY, JSON.stringify(data.state));
+      location.reload();
+    }catch(e){
+      alert('Archivo de respaldo inválido o dañado.');
+    }
+  };
+  r.readAsText(file);
+}
+
+/* ---------- Inicio ---------- */
+document.getElementById('toggleModo').addEventListener('click', toggleModoUI);
+document.getElementById('r_pass').addEventListener('keydown', e=>{ if(e.key==='Enter') autenticar(); });
+
+async function arranque(){
+  highlightSQL();
+  if(!initSB()){ document.getElementById('gate').style.display='flex'; return; }
+  try{
+    const { data:{ session } } = await sb.auth.getSession();
+    if(session && session.user){
+      const uid = session.user.id;
+      const { data: perfil } = await sb.from('perfiles').select('*').eq('id', uid).single();
+      state.alumno = perfil ? { id:uid, nombre:perfil.nombre, grupo:perfil.grupo, turno:perfil.turno, correo:perfil.correo, matricula:perfil.matricula||'', registro:'' } : { id:uid, nombre:session.user.email, grupo:'', turno:'', correo:session.user.email };
+      await descargarAvance(uid);
+      entrarApp();
+      return;
+    }
+  }catch(e){}
+  document.getElementById('gate').style.display='flex';
+}
+arranque();
+</script>
+</body>
+</html>
