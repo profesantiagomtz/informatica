@@ -87,6 +87,11 @@ ul.list li,ol.list li{margin-bottom:7px}
 
 .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:24px 26px;margin-bottom:18px}
 .card h4{margin-top:0}
+.enunciado{background:linear-gradient(135deg,var(--azul-tinte),#fff);border:1px solid var(--azul);border-left:5px solid var(--azul);border-radius:var(--radius);padding:18px 22px;margin-bottom:16px}
+.enunciado .et{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--azul-osc);margin-bottom:6px;display:flex;align-items:center;gap:7px}
+.enunciado .prob{font-size:16px;color:var(--ink);font-weight:600;line-height:1.5;margin:0}
+.enunciado .ejemplo-io{margin-top:12px;font-size:13px;color:var(--gris);border-top:1px dashed var(--azul);padding-top:10px}
+.enunciado .ejemplo-io code{font-family:var(--mono);background:#fff;padding:1px 5px;border-radius:4px;color:var(--azul-osc)}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 
 /* db-path chip: firma visual del cuaderno */
@@ -826,9 +831,10 @@ int main() {
   <h2 class="page-title">Patrón Singleton · Gestor único</h2>
   <div class="act-meta"><span class="badge">Singleton</span><span class="badge">static</span><span class="badge">constructor privado</span><span class="badge pts">30 puntos</span></div>
 
-  <div class="card">
-    <h4>📋 Lo que debes lograr</h4>
-    <p style="margin-bottom:0">Crea una clase <code class="inline">GestorSesion</code> que sea un <strong>Singleton</strong>: constructor privado, un atributo estático <code class="inline">instancia</code>, y un método <code class="inline">getInstancia()</code> que cree el objeto la primera vez y lo reutilice después. En <code class="inline">main</code>, llama <code class="inline">getInstancia()</code> dos veces y comprueba que devuelve el mismo objeto.</p>
+  <div class="enunciado">
+    <div class="et">🔒 Problema a resolver</div>
+    <p class="prob">Crea una clase <code>GestorSesion</code> que implemente el patrón <strong>Singleton</strong>: debe tener constructor <strong>privado</strong>, un atributo <strong>estático</strong> <code>instancia</code>, y un método <code>getInstancia()</code> que cree el objeto solo la primera vez y lo reutilice después. En el <code>main</code>, llama a <code>getInstancia()</code> dos veces y comprueba que ambas devuelven el mismo objeto.</p>
+    <div class="ejemplo-io">Salida esperada: <code>Gestor creado</code> (una sola vez) · luego <code>Misma instancia</code></div>
   </div>
 
   <h3>Parte A · Análisis <span class="badge pts" style="font-size:11px">8 pts</span></h3>
@@ -851,7 +857,8 @@ int main() {
     </div>
   </div>
 
-  <h3>Parte B · Escribe tu código <span class="badge pts" style="font-size:11px">17 pts</span></h3>
+  <h3>Parte B · Escribe tu solución <span class="badge pts" style="font-size:11px">17 pts</span></h3>
+  <p style="font-size:13px;color:var(--gris)">Completa el esqueleto de abajo. Estas actividades no piden datos al usuario, deja el cuadro de ENTRADA vacío.</p>
   <div class="editor-wrap">
     <div class="editor-bar"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span><span class="fname">actividad1.cpp</span></div>
     <textarea class="code-edit" id="a1_code" data-key="a1_code" spellcheck="false">#include &lt;iostream&gt;
@@ -904,9 +911,10 @@ int main() {
   <h2 class="page-title">Factory Method · Fábrica de cuentas</h2>
   <div class="act-meta"><span class="badge">Factory</span><span class="badge">polimorfismo</span><span class="badge pts">30 puntos</span></div>
 
-  <div class="card">
-    <h4>📋 Lo que debes lograr</h4>
-    <p style="margin-bottom:0">Crea una clase base <code class="inline">Cuenta</code> con un método virtual <code class="inline">tipo()</code>, y dos hijas (<code class="inline">CuentaAhorro</code>, <code class="inline">CuentaCredito</code>). Luego una clase <code class="inline">FabricaCuentas</code> con un método estático <code class="inline">crear(string)</code> que devuelva el objeto correcto según el parámetro. En <code class="inline">main</code>, crea una de ahorro y una de crédito usando la fábrica.</p>
+  <div class="enunciado">
+    <div class="et">🔒 Problema a resolver</div>
+    <p class="prob">Crea una clase base <code>Cuenta</code> con un método virtual <code>tipo()</code> y dos hijas: <code>CuentaAhorro</code> y <code>CuentaCredito</code>. Luego implementa el patrón <strong>Factory Method</strong>: una clase <code>FabricaCuentas</code> con un método estático <code>crear(string)</code> que devuelva el objeto correcto según el texto que reciba. En el <code>main</code>, usa la fábrica para crear una cuenta de ahorro y una de crédito, y muestra el tipo de cada una.</p>
+    <div class="ejemplo-io">Salida esperada: <code>Ahorro</code> · <code>Credito</code></div>
   </div>
 
   <h3>Parte A · Análisis <span class="badge pts" style="font-size:11px">8 pts</span></h3>
@@ -928,7 +936,8 @@ int main() {
     </div>
   </div>
 
-  <h3>Parte B · Escribe tu código <span class="badge pts" style="font-size:11px">17 pts</span></h3>
+  <h3>Parte B · Escribe tu solución <span class="badge pts" style="font-size:11px">17 pts</span></h3>
+  <p style="font-size:13px;color:var(--gris)">Completa el esqueleto de abajo. Estas actividades no piden datos al usuario, deja el cuadro de ENTRADA vacío.</p>
   <div class="editor-wrap">
     <div class="editor-bar"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span><span class="fname">actividad2.cpp</span></div>
     <textarea class="code-edit" id="a2_code" data-key="a2_code" spellcheck="false">#include &lt;iostream&gt;
@@ -980,9 +989,10 @@ int main() {
   <h2 class="page-title">Manejo de excepciones · Retiro seguro</h2>
   <div class="act-meta"><span class="badge">try / catch</span><span class="badge">throw</span><span class="badge pts">30 puntos</span></div>
 
-  <div class="card">
-    <h4>📋 Lo que debes lograr</h4>
-    <p style="margin-bottom:0">Crea una clase <code class="inline">Cuenta</code> con saldo y un método <code class="inline">retirar(double)</code> que <strong>lance una excepción</strong> con <code class="inline">throw</code> si el monto supera el saldo. En <code class="inline">main</code>, usa <code class="inline">try/catch</code> para intentar un retiro válido y uno inválido, atrapando el error sin que el programa se caiga.</p>
+  <div class="enunciado">
+    <div class="et">🔒 Problema a resolver</div>
+    <p class="prob">Crea una clase <code>Cuenta</code> con un saldo de $1000 y un método <code>retirar(double monto)</code> que <strong>lance una excepción</strong> con <code>throw</code> si el monto supera el saldo. En el <code>main</code>, usa un bloque <code>try/catch</code> para intentar primero un retiro válido ($500) y luego uno inválido ($2000), atrapando el error para que el programa <strong>no se caiga</strong> y pueda continuar.</p>
+    <div class="ejemplo-io">Salida esperada: retiro exitoso · luego <code>Error capturado: Fondos insuficientes</code> · luego <code>El programa continúa.</code></div>
   </div>
 
   <h3>Parte A · Análisis <span class="badge pts" style="font-size:11px">8 pts</span></h3>
@@ -1005,7 +1015,8 @@ int main() {
     </div>
   </div>
 
-  <h3>Parte B · Escribe tu código <span class="badge pts" style="font-size:11px">17 pts</span></h3>
+  <h3>Parte B · Escribe tu solución <span class="badge pts" style="font-size:11px">17 pts</span></h3>
+  <p style="font-size:13px;color:var(--gris)">Completa el esqueleto de abajo. Estas actividades no piden datos al usuario, deja el cuadro de ENTRADA vacío.</p>
   <div class="editor-wrap">
     <div class="editor-bar"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span><span class="fname">actividad3.cpp</span></div>
     <textarea class="code-edit" id="a3_code" data-key="a3_code" spellcheck="false">#include &lt;iostream&gt;

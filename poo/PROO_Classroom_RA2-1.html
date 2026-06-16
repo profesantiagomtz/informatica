@@ -87,6 +87,11 @@ ul.list li,ol.list li{margin-bottom:7px}
 
 .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:24px 26px;margin-bottom:18px}
 .card h4{margin-top:0}
+.enunciado{background:linear-gradient(135deg,var(--azul-tinte),#fff);border:1px solid var(--azul);border-left:5px solid var(--azul);border-radius:var(--radius);padding:18px 22px;margin-bottom:16px}
+.enunciado .et{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--azul-osc);margin-bottom:6px;display:flex;align-items:center;gap:7px}
+.enunciado .prob{font-size:16px;color:var(--ink);font-weight:600;line-height:1.5;margin:0}
+.enunciado .ejemplo-io{margin-top:12px;font-size:13px;color:var(--gris);border-top:1px dashed var(--azul);padding-top:10px}
+.enunciado .ejemplo-io code{font-family:var(--mono);background:#fff;padding:1px 5px;border-radius:4px;color:var(--azul-osc)}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 
 /* db-path chip: firma visual del cuaderno */
@@ -800,9 +805,10 @@ int main() {
   <h2 class="page-title">Herencia · La CuentaAhorro</h2>
   <div class="act-meta"><span class="badge">herencia</span><span class="badge">: public</span><span class="badge">protected</span><span class="badge pts">30 puntos</span></div>
 
-  <div class="card">
-    <h4>📋 Lo que debes lograr</h4>
-    <p style="margin-bottom:0">Crea una clase base <code class="inline">Cuenta</code> con <code class="inline">saldo</code> (protected) y un método <code class="inline">mostrar()</code>. Luego crea <code class="inline">CuentaAhorro</code> que <strong>herede</strong> de Cuenta y agregue un método <code class="inline">aplicarInteres()</code> que sume el 10% al saldo. En <code class="inline">main</code>, crea una CuentaAhorro con $1000, aplica interés y muestra el saldo (debe quedar 1100).</p>
+  <div class="enunciado">
+    <div class="et">🏧 Problema a resolver</div>
+    <p class="prob">Crea una clase base <code>Cuenta</code> con un atributo <code>saldo</code> (protected) y un método <code>mostrar()</code>. Luego crea una clase <code>CuentaAhorro</code> que <strong>herede</strong> de <code>Cuenta</code> y le agregue un método <code>aplicarInteres()</code> que sume el 10% al saldo. En el <code>main</code>, crea una CuentaAhorro con $1000, aplica el interés y muestra el saldo.</p>
+    <div class="ejemplo-io">Salida esperada: <code>Saldo: $1100</code></div>
   </div>
 
   <h3>Parte A · Análisis <span class="badge pts" style="font-size:11px">8 pts</span></h3>
@@ -825,7 +831,8 @@ int main() {
     </div>
   </div>
 
-  <h3>Parte B · Escribe tu código <span class="badge pts" style="font-size:11px">17 pts</span></h3>
+  <h3>Parte B · Escribe tu solución <span class="badge pts" style="font-size:11px">17 pts</span></h3>
+  <p style="font-size:13px;color:var(--gris)">Completa el esqueleto de abajo. Estas actividades no piden datos al usuario, deja el cuadro de ENTRADA vacío.</p>
   <div class="editor-wrap">
     <div class="editor-bar"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span><span class="fname">actividad1.cpp</span></div>
     <textarea class="code-edit" id="a1_code" data-key="a1_code" spellcheck="false">#include &lt;iostream&gt;
@@ -877,9 +884,10 @@ int main() {
   <h2 class="page-title">Sobrecarga de operadores · Sumar cuentas</h2>
   <div class="act-meta"><span class="badge">operator+</span><span class="badge">binario</span><span class="badge pts">30 puntos</span></div>
 
-  <div class="card">
-    <h4>📋 Lo que debes lograr</h4>
-    <p style="margin-bottom:0">A la clase <code class="inline">Cuenta</code> (con <code class="inline">saldo</code> público), agrégale la <strong>sobrecarga del operador <code class="inline">+</code></strong> para que <code class="inline">c1 + c2</code> devuelva una nueva cuenta con la suma de los saldos. En <code class="inline">main</code>, suma una cuenta de $1000 y otra de $500, y muestra el saldo del resultado (1500).</p>
+  <div class="enunciado">
+    <div class="et">🏧 Problema a resolver</div>
+    <p class="prob">A la clase <code>Cuenta</code> (con <code>saldo</code> público) agrégale la <strong>sobrecarga del operador <code>+</code></strong>, de modo que al escribir <code>c1 + c2</code> se obtenga una nueva cuenta cuyo saldo sea la suma de ambos. En el <code>main</code>, suma una cuenta de $1000 con otra de $500 y muestra el saldo del resultado.</p>
+    <div class="ejemplo-io">Salida esperada: <code>Total: $1500</code></div>
   </div>
 
   <h3>Parte A · Análisis <span class="badge pts" style="font-size:11px">8 pts</span></h3>
@@ -901,7 +909,8 @@ int main() {
     </div>
   </div>
 
-  <h3>Parte B · Escribe tu código <span class="badge pts" style="font-size:11px">17 pts</span></h3>
+  <h3>Parte B · Escribe tu solución <span class="badge pts" style="font-size:11px">17 pts</span></h3>
+  <p style="font-size:13px;color:var(--gris)">Completa el esqueleto de abajo. Estas actividades no piden datos al usuario, deja el cuadro de ENTRADA vacío.</p>
   <div class="editor-wrap">
     <div class="editor-bar"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span><span class="fname">actividad2.cpp</span></div>
     <textarea class="code-edit" id="a2_code" data-key="a2_code" spellcheck="false">#include &lt;iostream&gt;
@@ -951,9 +960,10 @@ int main() {
   <h2 class="page-title">Polimorfismo · Tipos de cuenta</h2>
   <div class="act-meta"><span class="badge">virtual</span><span class="badge">override</span><span class="badge">polimorfismo</span><span class="badge pts">30 puntos</span></div>
 
-  <div class="card">
-    <h4>📋 Lo que debes lograr</h4>
-    <p style="margin-bottom:0">Clase base <code class="inline">Cuenta</code> con un método <strong>virtual</strong> <code class="inline">mostrarTipo()</code> que imprima "Cuenta genérica". Dos hijas: <code class="inline">CuentaAhorro</code> (imprime "Cuenta de Ahorro") y <code class="inline">CuentaCredito</code> (imprime "Cuenta de Crédito"), cada una sobrescribiendo <code class="inline">mostrarTipo()</code>. En <code class="inline">main</code>, usa un arreglo de punteros <code class="inline">Cuenta*</code> y recórrelo llamando <code class="inline">mostrarTipo()</code>.</p>
+  <div class="enunciado">
+    <div class="et">🏧 Problema a resolver</div>
+    <p class="prob">Crea una clase base <code>Cuenta</code> con un método <strong>virtual</strong> <code>mostrarTipo()</code> que imprima "Cuenta genérica". Luego crea dos clases hijas que lo <strong>sobrescriban</strong>: <code>CuentaAhorro</code> (imprime "Cuenta de Ahorro") y <code>CuentaCredito</code> (imprime "Cuenta de Crédito"). En el <code>main</code>, usa un arreglo de punteros <code>Cuenta*</code> con un objeto de cada tipo y recórrelo llamando <code>mostrarTipo()</code>.</p>
+    <div class="ejemplo-io">Salida esperada: <code>Cuenta de Ahorro</code> · <code>Cuenta de Credito</code></div>
   </div>
 
   <h3>Parte A · Análisis <span class="badge pts" style="font-size:11px">8 pts</span></h3>
@@ -976,7 +986,8 @@ int main() {
     </div>
   </div>
 
-  <h3>Parte B · Escribe tu código <span class="badge pts" style="font-size:11px">17 pts</span></h3>
+  <h3>Parte B · Escribe tu solución <span class="badge pts" style="font-size:11px">17 pts</span></h3>
+  <p style="font-size:13px;color:var(--gris)">Completa el esqueleto de abajo. Estas actividades no piden datos al usuario, deja el cuadro de ENTRADA vacío.</p>
   <div class="editor-wrap">
     <div class="editor-bar"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span><span class="fname">actividad3.cpp</span></div>
     <textarea class="code-edit" id="a3_code" data-key="a3_code" spellcheck="false">#include &lt;iostream&gt;

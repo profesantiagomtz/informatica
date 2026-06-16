@@ -87,6 +87,11 @@ ul.list li,ol.list li{margin-bottom:7px}
 
 .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:24px 26px;margin-bottom:18px}
 .card h4{margin-top:0}
+.enunciado{background:linear-gradient(135deg,var(--azul-tinte),#fff);border:1px solid var(--azul);border-left:5px solid var(--azul);border-radius:var(--radius);padding:18px 22px;margin-bottom:16px}
+.enunciado .et{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--azul-osc);margin-bottom:6px;display:flex;align-items:center;gap:7px}
+.enunciado .prob{font-size:16px;color:var(--ink);font-weight:600;line-height:1.5;margin:0}
+.enunciado .ejemplo-io{margin-top:12px;font-size:13px;color:var(--gris);border-top:1px dashed var(--azul);padding-top:10px}
+.enunciado .ejemplo-io code{font-family:var(--mono);background:#fff;padding:1px 5px;border-radius:4px;color:var(--azul-osc)}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 
 /* db-path chip: firma visual del cuaderno */
@@ -832,9 +837,10 @@ int main() {
   <h2 class="page-title">Entrada/salida y control · El menú del cajero</h2>
   <div class="act-meta"><span class="badge">cin / cout</span><span class="badge">switch</span><span class="badge">do-while</span><span class="badge pts">30 puntos</span></div>
 
-  <div class="card">
-    <h4>📋 Lo que debes lograr</h4>
-    <p style="margin-bottom:0">Escribe un programa que muestre un menú de cajero con 3 opciones (1-Consultar, 2-Depositar, 3-Salir) usando <code class="inline">do-while</code> y <code class="inline">switch</code>. Por ahora, cada opción solo imprime un mensaje (ej. "Consultando saldo..."). El menú se repite hasta que el usuario teclee 3.</p>
+  <div class="enunciado">
+    <div class="et">🏧 Problema a resolver</div>
+    <p class="prob">Realiza un programa que muestre el menú de un cajero con 3 opciones: <strong>1) Consultar</strong>, <strong>2) Depositar</strong> y <strong>3) Salir</strong>. Según la opción que teclee el usuario, el programa imprime un mensaje (por ejemplo "Consultando saldo...") y vuelve a mostrar el menú. El programa termina cuando el usuario teclee <strong>3</strong>.</p>
+    <div class="ejemplo-io">Debes usar: un ciclo <code>do-while</code> para repetir el menú y un <code>switch</code> para las opciones.</div>
   </div>
 
   <h3>Parte A · Análisis <span class="badge pts" style="font-size:11px">8 pts</span></h3>
@@ -857,8 +863,8 @@ int main() {
     </div>
   </div>
 
-  <h3>Parte B · Escribe y prueba tu código <span class="badge pts" style="font-size:11px">17 pts</span></h3>
-  <p style="font-size:13px;color:var(--gris)">Tip: en el cuadro de Entrada pon las opciones que "tecleará" el usuario, una por línea (por ejemplo: 1, luego 3). Compila para probarlo antes de entregar.</p>
+  <h3>Parte B · Escribe tu solución <span class="badge pts" style="font-size:11px">17 pts</span></h3>
+  <p style="font-size:13px;color:var(--gris)">Completa el esqueleto de abajo. Cuando compiles, el programa te pedirá teclear opciones: ponlas en el cuadro <strong>ENTRADA</strong> (una por línea). Ya viene con <code class="inline">1</code> y <code class="inline">3</code> de ejemplo.</p>
   <div class="editor-wrap">
     <div class="editor-bar"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span><span class="fname">actividad1.cpp</span></div>
     <textarea class="code-edit" id="a1_code" data-key="a1_code" spellcheck="false">#include &lt;iostream&gt;
@@ -866,19 +872,25 @@ using namespace std;
 
 int main() {
     int opcion;
-    do {
-        // Muestra aquí el menú con cout...
 
+    do {
+        // 1. Muestra el menú con cout (las 3 opciones)
+
+
+        // 2. Lee la opción del usuario
         cin &gt;&gt; opcion;
+
+        // 3. Usa switch para responder a cada opción (1, 2, 3)
         switch (opcion) {
-            // Completa los case 1, 2 y 3...
 
         }
-    } while ( /* condición para repetir */ );
+
+    } while ( /* escribe la condición: repetir mientras la opción no sea 3 */ );
+
     return 0;
 }</textarea>
     <div class="stdin-wrap">
-      <div style="background:#121C2B;color:#7FA0B4;font-family:var(--mono);font-size:11px;padding:6px 16px 0">ENTRADA (opciones que teclea el usuario):</div>
+      <div style="background:#121C2B;color:#7FA0B4;font-family:var(--mono);font-size:11px;padding:6px 16px 0">ENTRADA · opciones que teclearás (una por línea):</div>
       <textarea class="stdin-edit" id="a1_stdin" spellcheck="false">1
 3</textarea>
     </div>
@@ -906,9 +918,10 @@ int main() {
   <h2 class="page-title">Tu primera clase · La clase Cuenta</h2>
   <div class="act-meta"><span class="badge">class</span><span class="badge">private / public</span><span class="badge">métodos</span><span class="badge pts">30 puntos</span></div>
 
-  <div class="card">
-    <h4>📋 Lo que debes lograr</h4>
-    <p style="margin-bottom:0">Define una clase <code class="inline">Cuenta</code> con un atributo <strong>privado</strong> <code class="inline">saldo</code> y dos métodos <strong>públicos</strong>: <code class="inline">depositar(double monto)</code> (suma al saldo) y <code class="inline">mostrarSaldo()</code> (lo imprime). En <code class="inline">main</code>, crea un objeto, deposita 500 dos veces y muestra el saldo.</p>
+  <div class="enunciado">
+    <div class="et">🏧 Problema a resolver</div>
+    <p class="prob">Crea una clase <code>Cuenta</code> que tenga un atributo <strong>privado</strong> <code>saldo</code> y dos métodos <strong>públicos</strong>: <code>depositar(double monto)</code> que suma un monto al saldo, y <code>mostrarSaldo()</code> que lo imprime en pantalla. Después, en el <code>main</code>, crea una cuenta, deposita $500 dos veces y muestra el saldo final.</p>
+    <div class="ejemplo-io">Salida esperada: <code>Saldo: $1000</code></div>
   </div>
 
   <h3>Parte A · Análisis <span class="badge pts" style="font-size:11px">10 pts</span></h3>
@@ -931,7 +944,8 @@ int main() {
     </div>
   </div>
 
-  <h3>Parte B · Escribe tu clase <span class="badge pts" style="font-size:11px">15 pts</span></h3>
+  <h3>Parte B · Escribe tu solución <span class="badge pts" style="font-size:11px">15 pts</span></h3>
+  <p style="font-size:13px;color:var(--gris)">Completa el esqueleto. Esta actividad no pide datos al usuario, así que deja el cuadro de ENTRADA vacío.</p>
   <div class="editor-wrap">
     <div class="editor-bar"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span><span class="fname">actividad2.cpp</span></div>
     <textarea class="code-edit" id="a2_code" data-key="a2_code" spellcheck="false">#include &lt;iostream&gt;
@@ -982,9 +996,10 @@ int main() {
   <h2 class="page-title">Constructor y métodos con validación</h2>
   <div class="act-meta"><span class="badge">constructor</span><span class="badge">if / else</span><span class="badge">validación</span><span class="badge pts">30 puntos</span></div>
 
-  <div class="card">
-    <h4>📋 Lo que debes lograr</h4>
-    <p style="margin-bottom:0">Mejora tu clase <code class="inline">Cuenta</code>: agrégale un <strong>constructor</strong> que reciba el titular (string) y el saldo inicial (double). Agrega un método <code class="inline">retirar(double monto)</code> que <strong>valide</strong>: si el monto es mayor al saldo, imprime "Fondos insuficientes"; si no, descuenta. En <code class="inline">main</code>, crea una cuenta con $1000, intenta retirar $1500 (debe fallar) y luego $400 (debe funcionar).</p>
+  <div class="enunciado">
+    <div class="et">🏧 Problema a resolver</div>
+    <p class="prob">Mejora la clase <code>Cuenta</code> agregándole un <strong>constructor</strong> que reciba el titular (string) y el saldo inicial (double). Agrega también un método <code>retirar(double monto)</code> que valide los fondos: si el monto es <strong>mayor</strong> al saldo, imprime "Fondos insuficientes"; si no, descuenta el monto. En el <code>main</code>, crea una cuenta de $1000, intenta retirar $1500 (debe fallar) y luego $400 (debe funcionar).</p>
+    <div class="ejemplo-io">Salida esperada: <code>Fondos insuficientes</code> · luego <code>Ana Lopez: $600</code></div>
   </div>
 
   <h3>Parte A · Análisis <span class="badge pts" style="font-size:11px">8 pts</span></h3>
@@ -1007,7 +1022,8 @@ int main() {
     </div>
   </div>
 
-  <h3>Parte B · Escribe tu programa <span class="badge pts" style="font-size:11px">17 pts</span></h3>
+  <h3>Parte B · Escribe tu solución <span class="badge pts" style="font-size:11px">17 pts</span></h3>
+  <p style="font-size:13px;color:var(--gris)">Completa el esqueleto. Esta actividad no pide datos al usuario, deja el cuadro de ENTRADA vacío.</p>
   <div class="editor-wrap">
     <div class="editor-bar"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span><span class="fname">actividad3.cpp</span></div>
     <textarea class="code-edit" id="a3_code" data-key="a3_code" spellcheck="false">#include &lt;iostream&gt;
