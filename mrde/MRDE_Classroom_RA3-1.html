@@ -1266,12 +1266,11 @@ function restaurarEntregas(){
 ══════════════════════════════════════════════════ */
 function actualizarProgreso(){
   let done=0;
-  if(perfil)                  done++;
   if(state.entregas.act1)     done++;
   if(state.entregas.act2)     done++;
   if(state.entregas.act3)     done++;
   if(state.guardadas.bitacora)done++;
-  const pct=Math.round((done/5)*100);
+  const pct=Math.round((done/4)*100);
   document.getElementById('progFill').style.width=pct+'%';
   document.getElementById('progPct').textContent=pct+'%';
 }
