@@ -1328,7 +1328,9 @@ Router# show ip interface brief</pre>
    Supabase Edition
    Ing. Santiago Martínez González
 ═══════════════════════════════════════ */
-const CUADERNO      = 'mrde_u3_eval';
+const CUADERNO = 'mrde_u3_eval';
+const MATERIA = 'MRDE';
+const UNIDAD = 'Unidad3';
 const CLAVE_DOCENTE = 'MRED2526INDEX';
 const SB_URL        = 'https://cmhnuuxgwrpkhutylnzs.supabase.co';
 const SB_KEY        = 'sb_publishable_8A2VQZa5N2NBP1li532sJQ_AACo-3_v';
@@ -1346,9 +1348,9 @@ function pd(){ clearTimeout(_pt); _pt=setTimeout(persist,1200); }
 async function persist(){
   if(!currentUser) return;
   try{
-    const { error } = await sb.from('avances').upsert({ user_id:currentUser.id, cuaderno:CUADERNO,
+    const { error } = await sb.from('avances').upsert({ user_id:currentUser.id, materia:MATERIA, unidad:UNIDAD, cuaderno:CUADERNO,
       estado:{ respuestas:state.respuestas, guardadas:state.guardadas, visitadas:state.visitadas, evaluacion:state.evaluacion, enviado:state.enviado }
-    },{ onConflict:'user_id,cuaderno' });
+    },{ onConflict:'user_id,materia,unidad,cuaderno' });
     if(error) throw error;
     setCloudStatus('ok','🟢 Guardado correctamente en la nube · '+new Date().toLocaleTimeString('es-MX'));
   }catch(e){
@@ -1359,18 +1361,18 @@ async function persist(){
 
 async function persistEntrega(act, datos){
   if(!currentUser) return;
-  const { error } = await sb.from('entregas').upsert({ user_id:currentUser.id, cuaderno:CUADERNO, actividad:act,
+  const { error } = await sb.from('entregas').upsert({ user_id:currentUser.id, materia:MATERIA, unidad:UNIDAD, cuaderno:CUADERNO, actividad:act,
     pts:datos.pts, max:datos.max, fb:datos.fb, fecha:datos.fecha, respuestas:datos.respuestas||{}
-  },{ onConflict:'user_id,cuaderno,actividad' });
+  },{ onConflict:'user_id,materia,unidad,cuaderno,actividad' });
   if(error) throw error;
 }
 
 
 async function persistEnvio(folio,total){
   if(!currentUser) return;
-  const { error } = await sb.from('envios').upsert({ user_id:currentUser.id, cuaderno:CUADERNO,
+  const { error } = await sb.from('envios').upsert({ user_id:currentUser.id, materia:MATERIA, unidad:UNIDAD, cuaderno:CUADERNO,
     folio, total, fecha:new Date().toISOString()
-  },{ onConflict:'user_id,cuaderno' });
+  },{ onConflict:'user_id,materia,unidad,cuaderno' });
   if(error) throw error;
 }
 
@@ -1573,7 +1575,7 @@ async function entregar(act){
   const lbl={ra31:'RA 3.1',ra32:'RA 3.2',ra33:'RA 3.3'};
   if(!confirm('Vas a entregar la evaluación '+lbl[act]+'.\n\nEsta es tu ÚNICA oportunidad. ¿Confirmas?')) return;
   const ev=GRADERS[act]();
-  const reg={...ev, fecha:new Date().toLocaleString('es-MX'), respuestas:{...state.respuestas}};
+  const reg={...ev, fecha:new Date().toISOString(), respuestas:{...state.respuestas}};
   state.entregas[act]=reg;
   const btn=document.getElementById('btn-'+act); if(btn){ btn.disabled=true; btn.textContent='Guardando…'; }
   try{
@@ -1582,7 +1584,7 @@ async function entregar(act){
   }catch(e){
     delete state.entregas[act];
     if(btn){ btn.disabled=false; btn.textContent='Entregar evaluación '+lbl[act]; }
-    alert('No se pudo guardar la entrega en la nube. Revisa tu internet y vuelve a presionar Entregar.');
+    const detalle=(e&&(e.message||e.details||e.hint||e.code))?'\n\nDetalle técnico: '+(e.message||e.details||e.hint||e.code):''; alert('No se pudo guardar la entrega.\n\nNo cierres la página. Toma captura de este mensaje y avisa al profesor.'+detalle);
   }
 }
 
@@ -1631,7 +1633,7 @@ function calificarTodo(){
     const ok=lenOK(R[k],30); b+=ok?p:0; bfb.push({ok,label:l+' (mín. 30 caracteres)',pts:p});
   });
   filas.push({nombre:'Bitácora de cierre',pts:b,max:25,fb:bfb}); total+=b;
-  state.evaluacion={total,filas,fecha:new Date().toLocaleString('es-MX')}; persist();
+  state.evaluacion={total,filas,fecha:new Date().toISOString()}; persist();
   document.getElementById('resultados').style.display='block';
   document.getElementById('scoreTotal').textContent=total;
   const pend=ACTS_META.filter(([a])=>!state.entregas[a]).map(([,n])=>n.split(' ·')[1]);
@@ -1681,7 +1683,7 @@ async function enviarReporte(){
   st2.style.color='var(--gris)'; st2.textContent='⏳ Guardando en el panel del docente…';
   try{
     await persistEnvio(folio,ev.total);
-    state.enviado={ folio, fecha:new Date().toLocaleString('es-MX'), total:ev.total };
+    state.enviado={ folio, fecha:new Date().toISOString(), total:ev.total };
     await persist();
   }catch(e){
     if(btn) btn.disabled=false;
