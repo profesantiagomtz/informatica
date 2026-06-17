@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MRDE · Unidad 3 · Evaluación Final</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700;800&display=swap');
+
+:root{
+  --bg:#07110d;
+  --bg2:#0c1b14;
+  --surface:#111f19;
+  --surface2:#172a21;
+  --line:#294237;
+  --accent:#00d4aa;
+  --accent2:#55f0c4;
+  --blue:#58a6ff;
+  --text:#eef8f4;
+  --muted:#9fb8ad;
+  --danger:#ff6b5f;
+  --warning:#f7c948;
+  --ok:#3fb950;
+  --radius:22px;
+  --sans:'IBM Plex Sans',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  min-height:100vh;
+  font-family:var(--sans);
+  color:var(--text);
+  background:
+    radial-gradient(circle at 10% 0%,rgba(0,212,170,.17),transparent 32%),
+    radial-gradient(circle at 92% 15%,rgba(88,166,255,.10),transparent 30%),
+    radial-gradient(circle at 50% 100%,rgba(0,212,170,.08),transparent 35%),
+    linear-gradient(160deg,#050907 0%,#07110d 45%,#0c1b14 100%);
+  line-height:1.65;
+}
+a{text-decoration:none;color:inherit}
+.page{width:min(1160px,calc(100% - 36px));margin:0 auto;padding:28px 0 54px}
+
+/* TOP */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:12px 0 30px;flex-wrap:wrap;
+}
+.breadcrumb{
+  display:flex;align-items:center;gap:8px;
+  font-family:var(--mono);font-size:12px;color:var(--muted);
+}
+.breadcrumb a{color:var(--accent)}
+.breadcrumb a:hover{text-decoration:underline}
+.credit{
+  display:flex;align-items:center;gap:12px;
+  background:rgba(17,31,25,.72);
+  border:1px solid rgba(0,212,170,.22);
+  border-radius:14px;
+  padding:10px 14px;
+}
+.credit-mark{
+  width:38px;height:38px;border-radius:11px;
+  display:grid;place-items:center;
+  background:rgba(0,212,170,.11);
+  border:1px solid rgba(0,212,170,.28);
+  color:var(--accent);
+  font-family:var(--mono);font-weight:700;font-size:12px;
+}
+.credit small{
+  display:block;
+  font-family:var(--mono);
+  color:var(--accent);
+  font-size:9.5px;
+  letter-spacing:1.4px;
+  text-transform:uppercase;
+}
+.credit strong{display:block;font-size:14px;color:#fff;line-height:1.2}
+
+/* HERO */
+.hero{
+  position:relative;overflow:hidden;
+  border:1px solid rgba(0,212,170,.28);
+  border-radius:30px;
+  background:
+    linear-gradient(135deg,rgba(0,212,170,.13),transparent 42%),
+    linear-gradient(155deg,#09130f 0%,#0f2119 55%,#07110d 100%);
+  box-shadow:0 30px 90px rgba(0,0,0,.35);
+  padding:46px clamp(22px,5vw,58px);
+  margin-bottom:26px;
+}
+.hero:before{
+  content:'U3';
+  position:absolute;
+  right:34px;top:12px;
+  font-family:var(--mono);
+  font-size:160px;font-weight:700;
+  letter-spacing:-10px;
+  color:rgba(255,255,255,.035);
+  line-height:1;
+}
+.hero:after{
+  content:'';
+  position:absolute;
+  right:-80px;bottom:-120px;
+  width:320px;height:320px;border-radius:50%;
+  border:70px solid rgba(0,212,170,.06);
+}
+.hero-content{position:relative;z-index:1;max-width:760px}
+.tag{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--mono);
+  color:var(--accent);
+  border:1px solid rgba(0,212,170,.25);
+  background:rgba(0,212,170,.08);
+  border-radius:999px;
+  padding:6px 12px;
+  font-size:11px;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  margin-bottom:18px;
+}
+.tag:before{
+  content:'';
+  width:7px;height:7px;border-radius:50%;
+  background:var(--ok);
+  box-shadow:0 0 18px rgba(63,185,80,.8);
+}
+h1{
+  font-size:clamp(34px,6vw,68px);
+  line-height:.98;
+  letter-spacing:-1.8px;
+  font-weight:800;
+  color:#fff;
+  max-width:720px;
+  margin-bottom:18px;
+}
+h1 span{color:var(--accent)}
+.lead{
+  color:var(--muted);
+  max-width:680px;
+  font-size:clamp(15px,2vw,18px);
+  font-weight:300;
+  margin-bottom:28px;
+}
+.cta-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.btn-main{
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#03110d;
+  border-radius:14px;
+  padding:15px 22px;
+  font-family:var(--mono);
+  font-weight:700;
+  font-size:13px;
+  box-shadow:0 18px 40px rgba(0,212,170,.18);
+  transition:transform .18s,filter .18s;
+}
+.btn-main:hover{transform:translateY(-2px);filter:brightness(1.06)}
+.btn-secondary{
+  display:inline-flex;align-items:center;justify-content:center;
+  color:var(--text);
+  border:1px solid var(--line);
+  background:rgba(17,31,25,.72);
+  border-radius:14px;
+  padding:14px 18px;
+  font-family:var(--mono);
+  font-size:12px;
+}
+.btn-secondary:hover{border-color:rgba(0,212,170,.35);background:rgba(0,212,170,.06)}
+
+/* QUICK INFO */
+.quick-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;
+  margin-bottom:26px;
+}
+.quick-card{
+  background:rgba(17,31,25,.82);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:18px 16px;
+}
+.quick-card .num{
+  font-family:var(--mono);
+  font-weight:700;
+  font-size:28px;
+  line-height:1;
+  color:var(--accent);
+  margin-bottom:6px;
+}
+.quick-card .label{font-size:12.5px;color:var(--muted);line-height:1.35}
+
+/* MAIN LAYOUT */
+.content{
+  display:grid;
+  grid-template-columns:1.25fr .75fr;
+  gap:22px;
+  align-items:start;
+}
+.panel{
+  background:rgba(17,31,25,.82);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:24px;
+}
+.panel h2{
+  font-size:20px;
+  color:#fff;
+  margin-bottom:12px;
+}
+.panel p{color:var(--muted);font-size:14.5px;margin-bottom:14px}
+.eval-table{
+  width:100%;
+  border-collapse:collapse;
+  overflow:hidden;
+  border-radius:14px;
+  border:1px solid var(--line);
+  margin-top:16px;
+}
+.eval-table th{
+  text-align:left;
+  color:var(--accent);
+  font-family:var(--mono);
+  font-size:11px;
+  letter-spacing:.7px;
+  text-transform:uppercase;
+  background:rgba(0,212,170,.06);
+  padding:11px 12px;
+  border-bottom:1px solid var(--line);
+}
+.eval-table td{
+  padding:12px;
+  border-bottom:1px solid rgba(41,66,55,.72);
+  color:var(--text);
+  font-size:13.5px;
+}
+.eval-table tr:last-child td{border-bottom:none}
+.eval-table td:last-child{
+  font-family:var(--mono);
+  color:var(--accent);
+  font-weight:700;
+  white-space:nowrap;
+}
+
+/* STEPS */
+.steps{
+  display:grid;
+  gap:12px;
+  margin-top:16px;
+}
+.step{
+  display:grid;
+  grid-template-columns:34px 1fr;
+  gap:12px;
+  align-items:start;
+}
+.step-num{
+  width:34px;height:34px;border-radius:11px;
+  display:grid;place-items:center;
+  background:rgba(0,212,170,.10);
+  border:1px solid rgba(0,212,170,.25);
+  color:var(--accent);
+  font-family:var(--mono);
+  font-weight:700;
+  font-size:12px;
+}
+.step strong{display:block;color:#fff;font-size:14px;margin-bottom:2px}
+.step span{display:block;color:var(--muted);font-size:13px;line-height:1.45}
+
+/* SIDE */
+.side-card{
+  background:rgba(17,31,25,.82);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:22px;
+  margin-bottom:16px;
+}
+.side-card.warning{
+  border-color:rgba(247,201,72,.35);
+  background:rgba(247,201,72,.07);
+}
+.side-card.danger{
+  border-color:rgba(255,107,95,.34);
+  background:rgba(255,107,95,.07);
+}
+.side-card h3{
+  font-size:15px;
+  color:#fff;
+  margin-bottom:8px;
+}
+.side-card p, .side-card li{
+  color:var(--muted);
+  font-size:13.5px;
+}
+.side-card ul{margin-left:18px}
+.side-card li{margin-bottom:5px}
+.login-example{
+  margin-top:10px;
+  padding:12px;
+  border-radius:12px;
+  background:rgba(0,0,0,.18);
+  border:1px dashed var(--line);
+  font-family:var(--mono);
+  font-size:12px;
+  color:var(--accent2);
+  word-break:break-all;
+}
+.notice{
+  margin-top:24px;
+  padding:16px 18px;
+  border-radius:16px;
+  border:1px solid rgba(0,212,170,.24);
+  background:rgba(0,212,170,.06);
+  color:var(--muted);
+  font-size:13.5px;
+}
+.notice b{color:#fff}
+
+/* FOOTER */
+footer{
+  margin-top:34px;
+  padding-top:18px;
+  border-top:1px solid var(--line);
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+  color:var(--muted);
+  font-family:var(--mono);
+  font-size:11px;
+}
+footer a{color:var(--accent)}
+
+@media(max-width:920px){
+  .quick-grid{grid-template-columns:repeat(2,1fr)}
+  .content{grid-template-columns:1fr}
+}
+@media(max-width:560px){
+  .page{width:min(100% - 24px,1160px);padding-top:18px}
+  .hero{padding:30px 20px;border-radius:22px}
+  .hero:before{font-size:100px;right:12px}
+  .quick-grid{grid-template-columns:1fr 1fr;gap:10px}
+  .quick-card{padding:14px 12px}
+  .quick-card .num{font-size:23px}
+  .cta-row a{width:100%}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="topbar">
+    <div class="breadcrumb">
+      <a href="../index.html">Mi Ruta de Aprendizaje</a>
+      <span>/</span>
+      <span>Manejo de Redes</span>
+      <span>/</span>
+      <span style="color:var(--accent)">Unidad 3</span>
+    </div>
+
+    <div class="credit">
+      <div class="credit-mark">MRDE</div>
+      <div>
+        <small>Material didáctico desarrollado por</small>
+        <strong>Ing. Santiago Martínez González</strong>
+      </div>
+    </div>
+  </div>
+
+  <header class="hero">
+    <div class="hero-content">
+      <div class="tag">Evaluación final disponible</div>
+      <h1>Unidad 3<br><span>Evaluación de cierre</span></h1>
+      <p class="lead">
+        Accede al cuaderno único de la Unidad 3 para evaluar VLANs, enlaces troncales,
+        protocolo VTP, enrutamiento inter-VLAN y bitácora final del módulo MRDE-20.
+      </p>
+      <div class="cta-row">
+        <a class="btn-main" href="MRDE_Classroom_Unidad3.html">Entrar a la evaluación →</a>
+        <a class="btn-secondary" href="#instrucciones">Ver instrucciones primero</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="quick-grid">
+    <div class="quick-card">
+      <div class="num">611</div>
+      <div class="label">Grupo asignado</div>
+    </div>
+    <div class="quick-card">
+      <div class="num">3</div>
+      <div class="label">Resultados de aprendizaje</div>
+    </div>
+    <div class="quick-card">
+      <div class="num">100%</div>
+      <div class="label">Calificación final del módulo</div>
+    </div>
+    <div class="quick-card">
+      <div class="num">1</div>
+      <div class="label">Intento único por sección</div>
+    </div>
+  </section>
+
+  <main class="content" id="instrucciones">
+    <section class="panel">
+      <h2>¿Qué contiene esta evaluación?</h2>
+      <p>
+        Este acceso sustituye los materiales separados de RA 3.1, RA 3.2 y RA 3.3.
+        Ahora trabajarás todo desde un solo cuaderno digital de cierre.
+      </p>
+
+      <table class="eval-table">
+        <thead>
+          <tr>
+            <th>Sección</th>
+            <th>Tema</th>
+            <th>Puntos</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>RA 3.1</td>
+            <td>VLANs y enlaces troncales</td>
+            <td>25 pts</td>
+          </tr>
+          <tr>
+            <td>RA 3.2</td>
+            <td>Protocolo VTP</td>
+            <td>25 pts</td>
+          </tr>
+          <tr>
+            <td>RA 3.3</td>
+            <td>Enrutamiento inter-VLAN</td>
+            <td>25 pts</td>
+          </tr>
+          <tr>
+            <td>Bitácora</td>
+            <td>Reflexión final de la Unidad 3</td>
+            <td>25 pts</td>
+          </tr>
+        </tbody>
+      </table>
+<h2 style="margin-top:26px">Ruta recomendada</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div>
+            <strong>Inicia sesión correctamente</strong>
+            <span>Usa tu correo institucional y tu matrícula. No uses correo personal.</span>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div>
+            <strong>Lee los conceptos mínimos antes de responder</strong>
+            <span>Cada RA trae resumen y ejemplos. No te saltes esa parte.</span>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div>
+            <strong>Entrega cada sección con cuidado</strong>
+            <span>Revisa tus respuestas antes de presionar Entregar. El intento queda registrado.</span>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div>
+            <strong>Confirma tu calificación final</strong>
+            <span>Al terminar, revisa la pantalla de calificación y verifica que el guardado esté correcto.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <aside>
+      <div class="side-card danger">
+        <h3>Antes de entrar</h3>
+        <ul>
+          <li>No cierres la página mientras trabajas.</li>
+          <li>No uses el botón Atrás del navegador.</li>
+          <li>No abras el cuaderno en varias pestañas.</li>
+          <li>No entregues hasta revisar tus respuestas.</li>
+        </ul>
+      </div>
+
+      <div class="side-card warning">
+        <h3>Datos de acceso</h3>
+        <p>El correo debe ser institucional y terminar así:</p>
+        <div class="login-example">@tam.conalep.edu.mx</div>
+        <p style="margin-top:10px">La matrícula se usa como contraseña.</p>
+      </div>
+
+      <div class="side-card">
+        <h3>Estado del material</h3>
+        <p>
+          Unidad 3 activa para evaluación final de cierre. 
+          El avance y la calificación se monitorean desde el panel docente.
+        </p>
+      </div>
+
+      <a class="btn-main" href="MRDE_Classroom_Unidad3.html" style="width:100%;margin-top:4px">Comenzar evaluación →</a>
+    </aside>
+  </main>
+
+  <footer>
+    <a href="../index.html">← Regresar al portal principal</a>
+    <span>Manejo de Redes · MRDE-20 · Unidad 3</span>
+    <span>CONALEP · Ciclo 2 · 2526</span>
+  </footer>
+
+</div>
+</body>
+</html>
