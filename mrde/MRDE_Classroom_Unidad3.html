@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MRDE · Evaluación Unidad 3 · Cuaderno de Cierre de Semestre</title>
+<!-- Versión corregida indicador nube · Supabase informatica -->
 <!-- Versión corregida: Supabase informatica · xccsagmlfnyfahhvptsi -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -1340,7 +1341,19 @@ let sb = null, currentUser = null, perfil = null;
 let state = { respuestas:{}, entregas:{}, guardadas:{}, visitadas:{intro:true}, evaluacion:null, enviado:null };
 
 function initSB(){ if(sb) return sb; sb=window.supabase.createClient(SB_URL,SB_KEY); return sb; }
-function setCloudStatus(tipo,msg){ const el=document.getElementById('cloudStatus'); if(!el) return; el.className='cloud-status '+(tipo||''); el.textContent=msg; }
+
+function setCloudStatus(tipo,msg){
+  const el=document.getElementById('cloudStatus');
+  if(!el) return;
+  el.className='cloud-status '+(tipo||'');
+  el.textContent=msg;
+}
+function marcarNubeConectada(){
+  setCloudStatus('ok','🟢 Conectado a la nube · '+new Date().toLocaleTimeString('es-MX'));
+}
+function marcarNubeError(msg){
+  setCloudStatus('err','🔴 '+(msg||'No se pudo conectar con la nube'));
+}
 
 /* ─── SUPABASE PERSIST ─── */
 let _pt=null;
@@ -1353,6 +1366,7 @@ async function persist(){
       estado:{ respuestas:state.respuestas, guardadas:state.guardadas, visitadas:state.visitadas, evaluacion:state.evaluacion, enviado:state.enviado }
     },{ onConflict:'user_id,materia,unidad,cuaderno' });
     if(error) throw error;
+    marcarNubeConectada();
     setCloudStatus('ok','🟢 Guardado correctamente en la nube · '+new Date().toLocaleTimeString('es-MX'));
   }catch(e){
     setCloudStatus('err','🔴 No se pudo guardar. Revisa internet y NO cierres la página.');
@@ -1436,7 +1450,7 @@ async function cerrarSesion(){ if(!confirm('¿Cerrar sesión?')) return; await s
 
 /* ─── APP ─── */
 function entrarApp(){
-  document.getElementById('gate').style.display='none';
+  document.getElementById('gate').style.display='none'; marcarNubeConectada();
   const chip=document.getElementById('studentChip'); chip.style.display='block';
   document.getElementById('sc_nombre').textContent=perfil.nombre;
   document.getElementById('sc_detalle').textContent='Grupo '+perfil.grupo+' · '+perfil.turno;
