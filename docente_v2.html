@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Panel Docente · CONALEP Classroom</title>
+<!-- Portal docente corregido para perfiles.rol=docente · Supabase informatica -->
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -348,11 +349,22 @@ async function login(){
   btn.disabled=true; btn.textContent='Conectando…'; err.style.display='none';
   const { data, error } = await sb.auth.signInWithPassword({ email:correo, password:pass });
   if(error){ err.textContent='Correo o contraseña incorrectos.'; err.style.display='block'; btn.disabled=false; btn.textContent='Entrar al panel'; return; }
-  const { data:doc } = await sb.from('docentes').select('*').eq('id', data.user.id).single();
-  if(!doc){
-    err.textContent='Esta cuenta no tiene permisos de docente. Solicita ser dado de alta en la tabla docentes.';
-    err.style.display='block'; await sb.auth.signOut(); btn.disabled=false; btn.textContent='Entrar al panel'; return;
+  const { data:doc, error:docErr } = await sb
+    .from('perfiles')
+    .select('*')
+    .eq('id', data.user.id)
+    .eq('rol', 'docente')
+    .maybeSingle();
+
+  if(docErr || !doc){
+    err.textContent='Esta cuenta no tiene permisos de docente. Verifica que exista en perfiles con rol=docente.';
+    err.style.display='block';
+    await sb.auth.signOut();
+    btn.disabled=false;
+    btn.textContent='Entrar al panel';
+    return;
   }
+
   document.getElementById('docNombre').textContent = doc.nombre || 'Docente';
   document.getElementById('docCorreo').textContent = correo;
   document.getElementById('gate').style.display='none';
@@ -365,7 +377,7 @@ async function cerrar(){ if(sb) await sb.auth.signOut(); location.reload(); }
 async function cargarTodo(){
   document.getElementById('tbody').innerHTML = '<tr><td colspan="9" class="empty">Cargando datos desde la nube…</td></tr>';
   const [perfiles, avances, entregas, envios] = await Promise.all([
-    sb.from('perfiles').select('*'),
+    sb.from('perfiles').select('*').neq('rol','docente'),
     sb.from('avances').select('*'),
     sb.from('entregas').select('*'),
     sb.from('envios').select('*')
@@ -608,7 +620,13 @@ function boletaPDF(uid, cuad){
   onCambioModulo();
   const { data:{ session } } = await sb.auth.getSession();
   if(session && session.user){
-    const { data:doc } = await sb.from('docentes').select('*').eq('id', session.user.id).single();
+    const { data:doc } = await sb
+      .from('perfiles')
+      .select('*')
+      .eq('id', session.user.id)
+      .eq('rol', 'docente')
+      .maybeSingle();
+
     if(doc){
       document.getElementById('docNombre').textContent = doc.nombre||'Docente';
       document.getElementById('docCorreo').textContent = session.user.email;
