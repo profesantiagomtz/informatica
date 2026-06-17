@@ -1,0 +1,1493 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MRDE · Evaluación Unidad 3 · Cuaderno de Cierre de Semestre</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root{
+  --verde:#0A7E45;--verde-osc:#054D2A;--verde-tinte:#E5F5ED;
+  --ink:#152230;--gris:#5A6B78;--bg:#F1F6F1;--surface:#FFFFFF;
+  --line:#C8DDD1;--code-bg:#0A2310;--code-ink:#D6F8E2;
+  --kw:#5BF59A;--str:#F0C674;--num:#8FE3AC;
+  --amber-bg:#FFF4E0;--amber:#8A5300;
+  --rojo:#A33B2E;--rojo-bg:#FBEAE7;--ok:#0B6B3A;
+  --azul:#1A6EBD;--azul-tinte:#E8F2FC;
+  --morado:#5B3FA0;--morado-tinte:#F0EBFA;
+  --radius:10px;
+  --sans:'IBM Plex Sans',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);font-size:16px;line-height:1.65}
+
+.app{display:grid;grid-template-columns:292px 1fr;min-height:100vh}
+.sidebar{background:var(--surface);border-right:1px solid var(--line);position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column}
+.main{padding:32px clamp(20px,5vw,64px) 96px;max-width:980px;width:100%}
+
+/* SIDEBAR */
+.brand{padding:20px 22px 16px;border-bottom:1px solid var(--line)}
+.brand .logo{display:flex;align-items:center;gap:10px}
+.logo-mark{width:40px;height:40px;border-radius:8px;background:var(--verde);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:-.5px;text-align:center;line-height:1.2}
+.brand h1{font-size:16px;font-weight:700;letter-spacing:-.2px}
+.brand .sub{font-size:11.5px;color:var(--gris);margin-top:2px}
+.brand .inst{margin-top:8px;font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--verde);font-weight:600}
+
+.student-chip{margin:12px 16px 0;padding:10px 12px;background:var(--verde-tinte);border:1px solid #B8DECA;border-radius:8px;font-size:13px;display:none}
+.student-chip strong{display:block;font-size:13px}
+.student-chip span{color:var(--gris);font-size:11.5px}
+.student-chip button{margin-top:5px;background:none;border:none;color:var(--verde);font-size:12px;font-weight:600;cursor:pointer;padding:0;font-family:var(--sans)}
+
+.progress-wrap{padding:14px 20px 6px}
+.progress-label{display:flex;justify-content:space-between;font-size:12px;color:var(--gris);margin-bottom:5px;font-weight:500}
+.progress-bar{height:7px;background:var(--line);border-radius:99px;overflow:hidden}
+.progress-fill{height:100%;width:0%;background:var(--verde);border-radius:99px;transition:width .4s ease}
+
+nav.toc{padding:10px 12px 20px;flex:1}
+.toc-group{font-size:10.5px;text-transform:uppercase;letter-spacing:1.1px;color:var(--gris);padding:12px 8px 5px;font-weight:600}
+.toc-ra{font-size:9.5px;text-transform:uppercase;letter-spacing:1px;color:var(--verde-osc);padding:8px 10px 3px;font-weight:700;border-left:2px solid var(--verde);margin:4px 0 0;background:var(--verde-tinte)}
+.toc a{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:7px;color:var(--ink);text-decoration:none;font-size:13.5px;cursor:pointer}
+.toc a:hover{background:var(--bg)}
+.toc a.active{background:var(--verde-tinte);color:var(--verde-osc);font-weight:600}
+.toc .dot{width:7px;height:7px;border-radius:50%;border:2px solid var(--line);flex-shrink:0;background:#fff}
+.toc a.done .dot{background:var(--verde);border-color:var(--verde)}
+.sidebar-foot{padding:12px 20px;border-top:1px solid var(--line);font-size:11px;color:var(--gris)}
+
+.topbar{display:none;position:sticky;top:0;z-index:50;background:var(--surface);border-bottom:1px solid var(--line);padding:12px 16px;align-items:center;gap:12px}
+.topbar button{background:none;border:1px solid var(--line);border-radius:7px;padding:7px 11px;font-size:18px;cursor:pointer}
+.topbar .t-title{font-weight:700;font-size:15px}
+
+section.page{display:none;animation:fadeIn .22s ease}
+section.page.visible{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+.eyebrow{font-size:11.5px;text-transform:uppercase;letter-spacing:1.4px;color:var(--verde);font-weight:600;margin-bottom:8px}
+h2.page-title{font-size:clamp(22px,3vw,30px);font-weight:700;letter-spacing:-.4px;line-height:1.2;margin-bottom:10px}
+.page-lead{font-size:16px;color:var(--gris);max-width:64ch;margin-bottom:24px}
+h3{font-size:19px;font-weight:700;margin:30px 0 10px}
+h4{font-size:15.5px;font-weight:600;margin:18px 0 7px}
+p{margin-bottom:13px;max-width:72ch}
+ul.list,ol.list{margin:0 0 14px 22px;max-width:70ch}
+ul.list li,ol.list li{margin-bottom:6px}
+
+/* RA header bands */
+.ra-header{border-radius:var(--radius);padding:18px 22px;margin-bottom:24px;border-left:4px solid}
+.ra-header.ra31{background:#E5F5ED;border-color:var(--verde)}
+.ra-header.ra32{background:var(--azul-tinte);border-color:var(--azul)}
+.ra-header.ra33{background:var(--morado-tinte);border-color:var(--morado)}
+.ra-header .ra-num{font-family:var(--mono);font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:4px}
+.ra-header.ra31 .ra-num{color:var(--verde)}
+.ra-header.ra32 .ra-num{color:var(--azul)}
+.ra-header.ra33 .ra-num{color:var(--morado)}
+.ra-header h3{margin:0 0 4px;font-size:17px}
+.ra-header p{margin:0;font-size:13.5px;color:var(--gris)}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px 24px;margin-bottom:16px}
+.card h4{margin-top:0}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+
+/* Escenario / diagrama de topología */
+.topologia{background:#0d1a2e;border-radius:var(--radius);padding:20px;margin-bottom:18px;font-family:var(--mono);font-size:13px;color:#c9d8ea;line-height:1.9}
+.topologia .dev{color:#5BF59A;font-weight:600}
+.topologia .vlan{color:#F0C674}
+.topologia .link{color:#8B9EBA}
+.topologia .ip{color:#8FE3AC}
+.topologia .err{color:#FF8C8C;font-weight:600}
+
+pre.cli{background:var(--code-bg);color:var(--code-ink);font-family:var(--mono);font-size:13.5px;line-height:1.7;padding:16px 18px;border-radius:var(--radius);overflow-x:auto;margin-bottom:16px}
+code.inline{font-family:var(--mono);font-size:.87em;background:var(--verde-tinte);color:var(--verde-osc);padding:2px 6px;border-radius:5px;font-weight:500}
+
+.callout{border-radius:var(--radius);padding:14px 17px 12px;margin-bottom:16px;border:1px solid;font-size:15px}
+.callout .c-title{font-weight:700;font-size:12.5px;text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px;display:flex;align-items:center;gap:7px}
+.callout.info{background:var(--verde-tinte);border-color:#B8DECA;color:var(--verde-osc)}
+.callout.warn{background:var(--amber-bg);border-color:#EDD9AE;color:var(--amber)}
+.callout.danger{background:var(--rojo-bg);border-color:#EFC9C2;color:var(--rojo)}
+.callout p{margin-bottom:5px;color:inherit}
+.callout p:last-child{margin-bottom:0}
+
+/* tabla de datos */
+.tbl-wrap{overflow-x:auto;margin-bottom:16px}
+table.data{border-collapse:collapse;width:100%;background:var(--surface);font-size:14px;border-radius:var(--radius);overflow:hidden;border:1px solid var(--line)}
+table.data th{background:#EDF7F1;font-family:var(--mono);font-size:12px;font-weight:600;text-align:left;padding:9px 13px;border-bottom:2px solid var(--line);color:var(--verde-osc)}
+table.data td{padding:9px 13px;border-bottom:1px solid var(--line)}
+table.data tr:last-child td{border-bottom:none}
+table.data tr.hl td{background:#F0FBF3}
+
+/* formularios */
+.field{margin-bottom:16px}
+.field label{display:block;font-weight:600;font-size:14px;margin-bottom:5px}
+.field .hint{font-weight:400;color:var(--gris);font-size:12.5px;display:block;margin-top:2px}
+input[type=text],input[type=email],select,textarea{width:100%;border:1px solid #B0CEC0;border-radius:8px;padding:10px 12px;font-size:15px;font-family:var(--sans);background:#fff;color:var(--ink)}
+textarea{min-height:100px;resize:vertical;line-height:1.6}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--verde);outline-offset:1px;border-color:var(--verde)}
+.radio-row{display:flex;flex-wrap:wrap;gap:9px}
+.radio-pill{display:flex;align-items:center;gap:7px;border:1px solid #B0CEC0;border-radius:8px;padding:8px 13px;cursor:pointer;background:#fff;font-size:14px}
+.radio-pill:has(input:checked){border-color:var(--verde);background:var(--verde-tinte);font-weight:600;color:var(--verde-osc)}
+.radio-pill input{accent-color:var(--verde)}
+textarea:disabled,input:disabled,select:disabled{background:#EDF2F6;color:#5A6B78;cursor:not-allowed}
+.radio-pill:has(input:disabled){opacity:.6;cursor:not-allowed}
+
+.btn{display:inline-flex;align-items:center;gap:7px;background:var(--verde);color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:14.5px;font-weight:600;font-family:var(--sans);cursor:pointer}
+.btn:hover{background:var(--verde-osc)}
+.btn.ghost{background:#fff;color:var(--verde-osc);border:1px solid #A0C8B0}
+.btn.ghost:hover{background:var(--verde-tinte)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.save-note{font-size:13px;color:var(--ok);margin-left:10px;opacity:0;transition:opacity .3s}
+.save-note.show{opacity:1}
+.cloud-status{margin:8px 20px 4px;padding:8px 10px;border-radius:8px;font-size:11.5px;border:1px solid var(--line);background:#fff;color:var(--gris);line-height:1.35}
+.cloud-status.ok{background:var(--verde-tinte);border-color:#B8DECA;color:var(--verde-osc);font-weight:600}
+.cloud-status.err{background:var(--rojo-bg);border-color:#EFC9C2;color:var(--rojo);font-weight:600}
+.checklist{list-style:none;margin:8px 0 0 0;padding:0;font-size:14px}.checklist li{margin:5px 0;padding-left:24px;position:relative}.checklist li::before{content:'✓';position:absolute;left:0;color:var(--verde);font-weight:700}
+
+/* puntaje de actividad */
+.act-meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.badge{font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:99px;background:var(--verde-tinte);color:var(--verde-osc);border:1px solid #B8DECA}
+
+/* feedback */
+.fb-panel{display:none;margin-top:16px;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.fb-panel.show{display:block;animation:fadeIn .22s ease}
+.fb-head{background:var(--verde-osc);color:#fff;padding:11px 16px;font-weight:600;display:flex;justify-content:space-between;align-items:center;font-size:14px;gap:10px;flex-wrap:wrap}
+.fb-body{background:var(--surface);padding:14px 16px}
+.fb-list{margin:0 0 0 16px;font-size:13.5px}
+.fb-list li.ok{color:var(--ok)}
+.fb-list li.miss{color:var(--rojo)}
+.solucion{margin-top:14px;border-top:1px dashed var(--line);padding-top:12px}
+.solucion h5{font-size:11.5px;text-transform:uppercase;letter-spacing:1px;color:var(--verde-osc);margin-bottom:8px}
+.fb-unlock{margin-top:12px;text-align:right}
+
+/* evaluación */
+.score-hero{background:var(--verde-osc);color:#fff;border-radius:var(--radius);padding:24px;display:flex;align-items:center;gap:24px;margin-bottom:20px;flex-wrap:wrap}
+.score-num{font-size:52px;font-weight:700;font-family:var(--mono);line-height:1}
+
+.pager{display:flex;justify-content:space-between;margin-top:36px;gap:12px}
+.pager span{display:inline-block}
+
+/* gate */
+.gate{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:18px;background:linear-gradient(150deg,#022E14 0%,#054D2A 55%,#0A7E45 100%)}
+.gate-card{position:relative;background:#fff;border-radius:16px;max-width:880px;width:100%;display:grid;grid-template-columns:1fr 1.1fr;overflow:hidden;box-shadow:0 30px 80px rgba(2,20,8,.5);max-height:94vh}
+.gate-brand{background:linear-gradient(165deg,#054D2A,#0A7E45);color:#fff;padding:36px 32px 28px;display:flex;flex-direction:column}
+.gate-brand .logo-mark{width:50px;height:50px;font-size:11px;border-radius:12px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35)}
+.gate-brand h2{font-size:24px;margin:14px 0 2px;letter-spacing:-.3px;line-height:1.15}
+.g-sub{font-size:13.5px;opacity:.85}
+.g-divider{height:1px;background:rgba(255,255,255,.28);margin:18px 0 14px}
+.g-mod{font-size:11px;text-transform:uppercase;letter-spacing:1.4px;font-weight:600;opacity:.92;margin-bottom:12px}
+.g-list{list-style:none;display:flex;flex-direction:column;gap:8px;font-size:13px}
+.g-list li{padding-left:22px;position:relative;opacity:.95}
+.g-list li::before{content:'✓';position:absolute;left:0;font-weight:700;color:#9FFFC6}
+.g-groups{margin-top:auto;padding-top:18px;font-family:var(--mono);font-size:12px;opacity:.8}
+.gate-form{padding:32px 36px 28px;overflow-y:auto}
+.gate-form h3{margin:0 0 4px;font-size:20px}
+.gate-form>p{color:var(--gris);font-size:13px;margin-bottom:18px}
+.err{color:var(--rojo);background:var(--rojo-bg);border:1px solid #EFC9C2;border-radius:8px;padding:8px 11px;font-size:13px;margin:0 0 10px;display:none}
+@media(max-width:680px){.gate-card{grid-template-columns:1fr;border-radius:0;max-height:100vh;overflow-y:auto}.gate-brand{padding:22px 22px 16px}.g-list{display:none}.gate-form{padding:22px 22px 26px}}
+
+@media(max-width:900px){.app{grid-template-columns:1fr}.sidebar{position:fixed;left:-300px;width:292px;z-index:60;transition:left .25s ease}.sidebar.open{left:0;box-shadow:0 0 40px rgba(0,0,0,.25)}.topbar{display:flex}.grid-2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- GATE -->
+<div class="gate" id="gate" style="display:none">
+  <div class="gate-card">
+    <aside class="gate-brand">
+      <div class="logo-mark">U3<br>MRDE</div>
+      <h2>Evaluación<br>Unidad 3</h2>
+      <div class="g-sub">Manejo de Redes · CONALEP</div>
+      <div class="g-divider"></div>
+      <div class="g-mod">Cierre de Semestre · Ciclo 2 · 2526</div>
+      <ul class="g-list">
+        <li>RA 3.1 · VLANs y troncales (25 pts)</li>
+        <li>RA 3.2 · Protocolo VTP (25 pts)</li>
+        <li>RA 3.3 · Enrutamiento inter-VLAN (25 pts)</li>
+        <li>Bitácora de reflexión (25 pts)</li>
+        <li>Esta evaluación = 100% de tu calificación final</li>
+      </ul>
+      <div class="g-groups">» Grupo 611</div>
+    </aside>
+    <div class="gate-form">
+      <h3 id="gateTitulo">Iniciar sesión</h3>
+      <p id="gateSub">Entra con tu correo institucional y tu matrícula.</p>
+      <div id="camposRegistro" style="display:none">
+        <div class="field"><label>Nombre completo</label><input type="text" id="r_nombre" placeholder="Nombre completo" autocomplete="name"></div>
+        <div class="grid-2">
+          <div class="field"><label>Grupo</label><select id="r_grupo"><option value="">Selecciona…</option><option>611</option></select></div>
+          <div class="field"><label>Turno</label><select id="r_turno"><option value="">Selecciona…</option><option>Matutino</option><option>Vespertino</option></select></div>
+        </div>
+      </div>
+      <div class="field"><label>Correo institucional</label><input type="email" id="r_correo" placeholder="nombre@tam.conalep.edu.mx" autocomplete="email"><span class="hint">Ejemplo válido: nombre.apellido@tam.conalep.edu.mx · No uses Gmail/Hotmail.</span></div>
+      <div class="field"><label>Matrícula <span class="hint" style="display:inline">(es tu contraseña)</span></label><input type="text" id="r_pass" placeholder="Ej. 23100245" autocomplete="off" inputmode="numeric"></div>
+      <p class="err" id="r_err"></p>
+      <button class="btn" id="btnEntrar" style="width:100%;justify-content:center" onclick="autenticar()">Entrar a mi cuaderno</button>
+      <p style="font-size:12px;color:var(--gris);text-align:center;margin-top:10px">¿Primera vez? <a id="toggleModo" style="color:var(--verde-osc);font-weight:600;cursor:pointer;text-decoration:underline">Crear mi cuenta</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- TOPBAR MÓVIL -->
+<div class="topbar">
+  <button onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+  <div class="t-title">MRDE · Unidad 3</div>
+</div>
+
+<div class="app">
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="brand">
+    <div class="logo">
+      <div class="logo-mark">U3<br>MRDE</div>
+      <div>
+        <h1>Evaluación Unidad 3</h1>
+        <div class="sub">Cierre de semestre · Grupo 611</div>
+      </div>
+    </div>
+    <div class="inst">CONALEP · Manejo de Redes</div>
+  </div>
+
+  <div class="student-chip" id="studentChip">
+    <strong id="sc_nombre"></strong>
+    <span id="sc_detalle"></span>
+    <button onclick="cerrarSesion()">Cerrar sesión</button>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-label"><span>Avance</span><span id="progPct">0%</span></div>
+    <div class="progress-bar"><div class="progress-fill" id="progFill"></div></div>
+    <div style="font-size:10px;color:var(--gris);margin-top:5px">Tus respuestas se guardan automáticamente.</div>
+  </div>
+  <div class="cloud-status" id="cloudStatus">⚪ Esperando conexión con la nube…</div>
+
+
+  <nav class="toc" id="toc">
+    <div class="toc-group">Inicio</div>
+    <a data-sec="intro" class="active"><span class="dot"></span>Instrucciones generales</a>
+
+    <div class="toc-ra">RA 3.1 · VLANs y troncales · 25 pts</div>
+    <a data-sec="ra31_teoria"><span class="dot"></span>Conceptos de VLAN</a>
+    <a data-sec="ra31_eval"><span class="dot"></span>Evaluación RA 3.1</a>
+
+    <div class="toc-ra">RA 3.2 · Protocolo VTP · 25 pts</div>
+    <a data-sec="ra32_teoria"><span class="dot"></span>Conceptos de VTP</a>
+    <a data-sec="ra32_eval"><span class="dot"></span>Evaluación RA 3.2</a>
+
+    <div class="toc-ra">RA 3.3 · Inter-VLAN Routing · 25 pts</div>
+    <a data-sec="ra33_teoria"><span class="dot"></span>Conceptos de enrutamiento</a>
+    <a data-sec="ra33_eval"><span class="dot"></span>Evaluación RA 3.3</a>
+
+    <div class="toc-group">Cierre</div>
+    <a data-sec="bitacora"><span class="dot"></span>Bitácora · 25 pts</a>
+    <a data-sec="evaluacion"><span class="dot"></span>Mi calificación final</a>
+  </nav>
+  <div class="sidebar-foot">Unidad 3 · MRDE-20 · 6° Semestre<br>Ing. Santiago Martínez González</div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+<!-- ══════════ INTRO ══════════ -->
+<section class="page visible" id="sec-intro">
+  <div class="eyebrow">Instrucciones generales</div>
+  <h2 class="page-title">Evaluación de Cierre · Unidad 3 completa</h2>
+  <p class="page-lead">Este cuaderno evalúa los tres Resultados de Aprendizaje de la Unidad 3. Léelo con calma y trabaja sección por sección.</p>
+
+  <div class="callout danger">
+    <div class="c-title">🔴 Antes de comenzar — léelo una sola vez</div>
+    <p><strong>Esta evaluación es de intento único.</strong> Si presionas Entregar en un RA, esa parte queda sellada.</p>
+    <ul class="checklist">
+      <li>No cierres la página mientras trabajas.</li>
+      <li>Usa tu correo institucional terminado en <strong>@tam.conalep.edu.mx</strong>.</li>
+      <li>Entrega RA 3.1, RA 3.2 y RA 3.3 por separado.</li>
+      <li>Después guarda la bitácora y envía la evaluación final al docente.</li>
+      <li>Si aparece un aviso rojo de guardado, no cierres la página.</li>
+    </ul>
+    <label class="radio-pill" style="margin-top:12px"><input type="checkbox" id="chkInicio" onchange="document.getElementById('btnComenzar').disabled=!this.checked"> Ya leí y entiendo las instrucciones.</label>
+  </div>
+
+  <div class="card">
+    <h4>📋 Estructura de tu evaluación</h4>
+    <div class="tbl-wrap">
+      <table class="data">
+        <tr><th>Resultado de Aprendizaje</th><th>Tema</th><th>Preguntas</th><th>Puntos</th></tr>
+        <tr><td><strong>RA 3.1</strong></td><td>VLANs y enlaces troncales</td><td>5 preguntas</td><td>25 pts</td></tr>
+        <tr><td><strong>RA 3.2</strong></td><td>Protocolo VTP</td><td>5 preguntas</td><td>25 pts</td></tr>
+        <tr><td><strong>RA 3.3</strong></td><td>Enrutamiento inter-VLAN</td><td>5 preguntas</td><td>25 pts</td></tr>
+        <tr><td><strong>Bitácora</strong></td><td>Reflexión de la Unidad 3</td><td>3 preguntas</td><td>25 pts</td></tr>
+        <tr class="hl"><td colspan="3"><strong>TOTAL</strong></td><td><strong>100 pts</strong></td></tr>
+      </table>
+    </div>
+    <div class="callout info" style="margin-bottom:0">
+      <div class="c-title">📌 Calificación del módulo</div>
+      <p style="margin-bottom:0">Esta evaluación constituye el <strong>100% de tu calificación final del módulo MRDE-20</strong> para el ciclo 2-2526. No habrá otros criterios de evaluación (cuaderno, asistencia, etc.) debido a las condiciones extraordinarias del semestre.</p>
+    </div>
+  </div>
+
+  <div class="callout info">
+    <div class="c-title">💡 Cómo responder bien</div>
+    <p>Cada sección tiene primero un <strong>resumen de conceptos clave</strong> — léelo antes de responder. No es copia del internet: son los conceptos del programa MRDE-20 explicados en lenguaje sencillo.</p>
+    <p>Las respuestas de texto deben ser <strong>con tus propias palabras</strong>. Dos o tres oraciones bien escritas valen más que un párrafo copiado.</p>
+    <p style="margin-bottom:0"><strong>Ruta:</strong> Conceptos RA 3.1 → Evaluación RA 3.1 → Conceptos RA 3.2 → Evaluación RA 3.2 → Conceptos RA 3.3 → Evaluación RA 3.3 → Bitácora → Calificación final.</p>
+  </div>
+
+  <div class="pager"><span></span><button class="btn" id="btnComenzar" onclick="go('ra31_teoria')" disabled>Comenzar: RA 3.1 →</button></div>
+</section>
+
+<!-- ══════════ RA 3.1 TEORÍA ══════════ -->
+<section class="page" id="sec-ra31_teoria">
+  <div class="eyebrow">RA 3.1 · Conceptos clave — lee esto antes de responder</div>
+  <div class="ra-header ra31">
+    <div class="ra-num">Resultado de Aprendizaje 3.1 · VLANs y enlaces troncales</div>
+    <h3>¿Qué es una VLAN y para qué sirve?</h3>
+    <p>Antes de responder las preguntas, lee esta sección completa. Contiene todo lo que necesitas saber.</p>
+  </div>
+  <div class="callout info"><div class="c-title">🟢 Mínimo indispensable</div><p>Si vas rápido, quédate con esto: <strong>Access</strong> conecta PCs a una sola VLAN; <strong>Trunk</strong> conecta switches y transporta varias VLANs; la <strong>VLAN nativa</strong> debe coincidir en ambos extremos.</p></div>
+
+  <h3>El problema que resuelven las VLANs</h3>
+  <div class="card">
+    <h4>🏫 Imagina la red del plantel sin VLANs</h4>
+    <p>Tienes un switch con 24 puertos. A él están conectadas las PCs de los alumnos, la computadora de la directora, la del prefecto y la impresora de la biblioteca. Sin ninguna configuración especial, <strong>todos están en la misma red</strong>. Eso significa:</p>
+    <ul class="list">
+      <li>Un alumno curioso podría intentar acceder a la carpeta de la directora</li>
+      <li>Si alguien conecta un dispositivo con virus, infecta a TODOS en la misma red</li>
+      <li>Todo el tráfico de todos los dispositivos se mezcla — la red se vuelve lenta</li>
+    </ul>
+    <p style="margin-bottom:0">La solución es crear <strong>VLANs</strong> — redes separadas dentro del mismo switch, sin necesidad de comprar más equipo.</p>
+  </div>
+
+  <div class="card">
+    <h4>🏢 Analogía: el edificio de departamentos</h4>
+    <p>Piensa en el switch como un <strong>edificio</strong>. Sin VLANs, todos viven en un salón gigante sin paredes. Con VLANs, divides el edificio en departamentos:</p>
+    <ul class="list">
+      <li><strong>Departamento 10</strong> = Laboratorio (alumnos)</li>
+      <li><strong>Departamento 20</strong> = Dirección (directora y prefecto)</li>
+      <li><strong>Departamento 99</strong> = Gestión (solo el técnico de redes)</li>
+    </ul>
+    <p style="margin-bottom:0">Los vecinos del mismo departamento se comunican entre ellos. Para visitar otro departamento necesitas pasar por la administración del edificio — que en redes sería el <strong>router</strong>.</p>
+  </div>
+
+  <h3>¿Qué es una VLAN exactamente?</h3>
+  <div class="card">
+    <p><strong>VLAN</strong> significa <em>Virtual Local Area Network</em> (Red de Área Local Virtual). Es una red lógica creada dentro de un switch. Los dispositivos en la misma VLAN se comportan como si estuvieran en la misma red física, aunque el switch sea uno solo.</p>
+    <p>Cada VLAN se identifica con un número llamado <strong>VLAN ID</strong>. En Packet Tracer puedes usar números del 2 al 1005. También se le puede dar un nombre para identificarla fácilmente.</p>
+    <div class="tbl-wrap">
+      <table class="data">
+        <tr><th>Tipo de VLAN</th><th>¿Para qué sirve?</th><th>Ejemplo</th></tr>
+        <tr><td><strong>VLAN de datos</strong></td><td>Para las PCs y dispositivos de usuarios</td><td>VLAN 10 = Laboratorio de alumnos</td></tr>
+        <tr><td><strong>VLAN predeterminada</strong></td><td>Es la VLAN 1. Viene activa en todos los puertos de fábrica. <strong>No se recomienda para usuarios</strong></td><td>VLAN 1 (existe sola, sin configurarla)</td></tr>
+        <tr><td><strong>VLAN nativa</strong></td><td>Especial para el cable que conecta switches — lo verás más adelante</td><td>Generalmente VLAN 99</td></tr>
+        <tr><td><strong>VLAN de administración</strong></td><td>Solo para que el técnico configure el switch por red</td><td>VLAN 99 = solo el técnico</td></tr>
+        <tr><td><strong>VLAN de voz</strong></td><td>Para teléfonos IP — necesita prioridad para que la voz no se corte</td><td>VLAN 150 = teléfonos</td></tr>
+      </table>
+    </div>
+    <div class="callout warn" style="margin-bottom:0">
+      <div class="c-title">⚠ Regla importante sobre la VLAN 1</div>
+      <p style="margin-bottom:0">La VLAN 1 ya existe en el switch desde fábrica y no se puede borrar. Es insegura porque todos los switches del mundo la tienen activa por defecto — cualquier persona con acceso a la red podría usarla para saltarse las demás VLANs. <strong>Nunca pongas dispositivos de usuarios en la VLAN 1.</strong></p>
+    </div>
+  </div>
+
+  <h3>¿Cómo se crean las VLANs? — Los comandos</h3>
+  <div class="card">
+    <p>Para crear una VLAN en un switch Cisco se usan estos comandos. Los verás en las preguntas de evaluación:</p>
+    <pre class="cli"><span style="color:#8FE3AC">! Paso 1: entrar al modo de configuración del switch</span>
+Switch> enable
+Switch# configure terminal
+
+<span style="color:#8FE3AC">! Paso 2: crear la VLAN 10 y ponerle nombre</span>
+Switch(config)# vlan 10
+Switch(config-vlan)# name LAB
+Switch(config-vlan)# exit
+
+<span style="color:#8FE3AC">! Paso 3: verificar que la VLAN fue creada</span>
+Switch# show vlan brief</pre>
+    <p style="margin-bottom:0">Con <code class="inline">show vlan brief</code> verás la lista de todas las VLANs existentes y qué puertos tienen asignados.</p>
+  </div>
+
+  <h3>Puertos de acceso — para conectar PCs</h3>
+  <div class="card">
+    <h4>¿Qué es un puerto de acceso?</h4>
+    <p>Un <strong>puerto de acceso</strong> es un puerto del switch que pertenece a <strong>una sola VLAN</strong>. Se usa para conectar dispositivos finales: PCs, impresoras, teléfonos. La PC conectada no sabe que existe la VLAN — eso es asunto del switch.</p>
+    <p>Para configurar un puerto como acceso se necesitan <strong>dos comandos en orden</strong>. Si los escribes al revés, puede no funcionar:</p>
+    <pre class="cli"><span style="color:#8FE3AC">! Entrar al puerto donde está conectada la PC</span>
+Switch(config)# interface FastEthernet0/1
+
+<span style="color:#8FE3AC">! PRIMERO: declarar que es puerto de acceso (para un dispositivo final)</span>
+Switch(config-if)# switchport mode access
+
+<span style="color:#8FE3AC">! SEGUNDO: asignar ese puerto a la VLAN 10</span>
+Switch(config-if)# switchport access vlan 10
+Switch(config-if)# exit
+
+<span style="color:#8FE3AC">! Si tienes varios puertos seguidos, puedes configurarlos juntos:</span>
+Switch(config)# interface range FastEthernet0/1 - 8
+Switch(config-if-range)# switchport mode access
+Switch(config-if-range)# switchport access vlan 10</pre>
+    <div class="callout info" style="margin-bottom:0">
+      <div class="c-title">💡 ¿Por qué dos comandos y no uno?</div>
+      <p style="margin-bottom:0">El primero (<code class="inline">switchport mode access</code>) le dice al switch "este puerto es para un dispositivo final, no para otro switch". El segundo (<code class="inline">switchport access vlan 10</code>) le dice a cuál VLAN pertenece. Si solo escribes el segundo sin el primero, el puerto puede quedar en "modo automático" y comportarse de forma inesperada.</p>
+    </div>
+  </div>
+
+  <h3>Puertos trunk — para conectar switches entre sí</h3>
+  <div class="card">
+    <h4>El problema: ¿cómo llegan las VLANs al otro switch?</h4>
+    <p>Imagina que tienes SW1 en el piso 1 con la VLAN 10 (alumnos) y la VLAN 20 (dirección). En el piso 2 tienes SW2 con las mismas VLANs. ¿Cómo hace para que las PCs de alumnos del piso 1 hablen con las del piso 2, sin mezclarlas con las de dirección?</p>
+    <p>Con un cable normal solo pasaría una VLAN. La solución es un <strong>puerto trunk</strong>: un puerto especial que lleva <strong>todas las VLANs al mismo tiempo</strong> por un solo cable.</p>
+
+    <h4>¿Cómo sabe el switch a qué VLAN pertenece cada paquete?</h4>
+    <p>Usa <strong>etiquetas 802.1Q</strong>. Cuando un paquete entra al trunk, el switch le pone una etiqueta con el número de su VLAN (como una pulsera de color en una fiesta). Al llegar al otro switch, se lee la etiqueta y el paquete se entrega a la VLAN correcta.</p>
+
+    <pre class="cli"><span style="color:#8FE3AC">! Configurar el puerto Gi0/1 como trunk (enlace entre switches)</span>
+Switch(config)# interface GigabitEthernet0/1
+
+<span style="color:#8FE3AC">! Declarar que es trunk</span>
+Switch(config-if)# switchport mode trunk
+
+<span style="color:#8FE3AC">! Decirle qué VLANs puede pasar por este cable</span>
+Switch(config-if)# switchport trunk allowed vlan 10,20,99
+
+<span style="color:#8FE3AC">! Definir la VLAN nativa (explicación abajo)</span>
+Switch(config-if)# switchport trunk native vlan 99
+
+<span style="color:#8FE3AC">! Verificar el trunk</span>
+Switch# show interfaces trunk</pre>
+  </div>
+
+  <div class="card">
+    <h4>¿Qué es la VLAN nativa?</h4>
+    <p>En el trunk, la VLAN nativa es la única que <strong>NO lleva etiqueta</strong>. Es como un pasajero que sube al autobús sin pulsera de color — el chofer tiene que adivinar a qué grupo pertenece. Si los dos switches no coinciden en cuál es la VLAN nativa, hay un error llamado <strong>native VLAN mismatch</strong>.</p>
+    <div class="callout danger" style="margin-bottom:0">
+      <div class="c-title">🔴 Error frecuente: Native VLAN mismatch</div>
+      <p style="margin-bottom:0">Si SW1 tiene <code class="inline">native vlan 99</code> y SW2 tiene <code class="inline">native vlan 1</code>, los paquetes sin etiqueta llegan al lugar equivocado. Los switches muestran una alerta de CDP. <strong>La VLAN nativa debe ser la misma en ambos extremos del trunk.</strong></p>
+    </div>
+  </div>
+
+  <div class="topologia">
+    <span class="dev">PC-Alumno</span> <span class="link">──Fa0/1 (access VLAN 10)──</span> <span class="dev">SW1</span><br>
+    <span class="dev">PC-Admin</span>  <span class="link">──Fa0/11 (access VLAN 20)─</span> <span class="dev">SW1</span><br>
+    <span class="link">                                              </span><span class="dev">SW1</span><span class="link"> ═══ Gi0/1 TRUNK (VLAN 10,20,99) ═══ </span><span class="dev">SW2</span><br>
+    <span class="vlan">                               VLAN 10=LAB · VLAN 20=ADMIN · VLAN 99=GESTION (nativa en trunk)</span>
+  </div>
+
+  <h3>Resumen rápido antes de la evaluación</h3>
+  <div class="tbl-wrap">
+    <table class="data">
+      <tr><th>Concepto</th><th>¿Qué hace?</th><th>Comando clave</th></tr>
+      <tr><td>Crear VLAN</td><td>Registra la VLAN en el switch</td><td><code class="inline">vlan 10</code> → <code class="inline">name LAB</code></td></tr>
+      <tr><td>Puerto de acceso</td><td>Conecta una PC a una VLAN</td><td><code class="inline">switchport mode access</code> → <code class="inline">switchport access vlan 10</code></td></tr>
+      <tr><td>Puerto trunk</td><td>Conecta switches — pasa varias VLANs</td><td><code class="inline">switchport mode trunk</code></td></tr>
+      <tr><td>VLANs en el trunk</td><td>Dice cuáles VLANs pueden cruzar</td><td><code class="inline">switchport trunk allowed vlan 10,20,99</code></td></tr>
+      <tr><td>VLAN nativa</td><td>La que no lleva etiqueta — igual en ambos lados</td><td><code class="inline">switchport trunk native vlan 99</code></td></tr>
+      <tr><td>Verificar</td><td>Ver VLANs y puertos asignados</td><td><code class="inline">show vlan brief</code></td></tr>
+    </table>
+  </div>
+
+  <div class="pager"><button class="btn ghost" onclick="go('intro')">← Instrucciones</button><button class="btn" onclick="go('ra31_eval')">Ya entendí — ir a la evaluación →</button></div>
+</section>
+
+<!-- ══════════ RA 3.1 EVALUACIÓN ══════════ -->
+<section class="page" id="sec-ra31_eval">
+  <div class="eyebrow">RA 3.1 · Actividad de evaluación</div>
+  <h2 class="page-title">Evaluación RA 3.1 · VLANs y troncales</h2>
+  <div class="act-meta">
+    <span class="badge">RA 3.1 · Actividad 3.1.1</span>
+    <span class="badge">25 puntos</span>
+    <span class="badge">Intento único</span>
+  </div>
+  <div class="callout warn">
+    <div class="c-title">⚠ Intento único</div>
+    <p>Al presionar "Entregar", tus respuestas quedan selladas. Revisa la sección de conceptos antes de responder.</p>
+  </div>
+
+  <!-- Escenario -->
+  <div class="card">
+    <h4>📋 Escenario: Red del Plantel CONALEP</h4>
+    <p>El plantel tiene dos switches (SW1 y SW2) conectados entre sí. Se requiere separar la red en tres zonas:</p>
+    <div class="topologia">
+      <span class="dev">SW1</span><br>
+      <span class="link">  Fa0/1–Fa0/8  </span><span class="vlan">→ VLAN 10 (LAB)</span> — PCs de alumnos<br>
+      <span class="link">  Fa0/9–Fa0/14 </span><span class="vlan">→ VLAN 20 (ADMIN)</span> — PCs de dirección<br>
+      <span class="link">  Fa0/15       </span><span class="vlan">→ VLAN 99 (GESTION)</span> — administración del switch<br>
+      <span class="link">  Gi0/1        </span><span class="vlan">→ trunk a SW2</span><br><br>
+      <span class="dev">SW2</span> — configuración idéntica a SW1
+    </div>
+  </div>
+
+  <!-- P1 -->
+  <div class="field">
+    <label>1. ¿Qué tipo de puerto se debe configurar en Fa0/1 de SW1 (donde se conecta una PC de alumno)? ¿Y en Gi0/1 (donde se conecta SW2)?
+      <span class="hint">Menciona el tipo de puerto y explica brevemente por qué en cada caso.</span>
+    </label>
+    <textarea data-key="r31_p1" id="r31_p1" placeholder="Fa0/1 debe ser un puerto de... porque...&#10;Gi0/1 debe ser un puerto... porque..."></textarea>
+  </div>
+
+  <!-- P2 opción múltiple -->
+  <div class="field">
+    <label>2. Un alumno conectado a Fa0/3 (VLAN 10) intenta hacer ping a la PC de la directora en Fa0/9 (VLAN 20). ¿Qué resultado obtendrá y por qué?</label>
+    <div class="radio-row" id="r31_p2_wrap">
+      <label class="radio-pill"><input type="radio" name="r31_p2" value="a"> El ping funciona porque están en el mismo switch</label>
+      <label class="radio-pill"><input type="radio" name="r31_p2" value="b"> El ping falla porque son VLANs distintas y necesitarían un router para comunicarse</label>
+      <label class="radio-pill"><input type="radio" name="r31_p2" value="c"> El ping funciona solo si ambos switches están encendidos</label>
+      <label class="radio-pill"><input type="radio" name="r31_p2" value="d"> El ping falla porque Fa0/9 no tiene IP asignada</label>
+    </div>
+  </div>
+
+  <!-- P3 -->
+  <div class="field">
+    <label>3. Lee esta configuración de trunk y encuentra el error:</label>
+    <pre class="cli">SW1(config)# interface GigabitEthernet0/1
+SW1(config-if)# switchport mode trunk
+SW1(config-if)# switchport trunk native vlan 99
+
+SW2(config)# interface GigabitEthernet0/1
+SW2(config-if)# switchport mode trunk
+SW2(config-if)# switchport trunk native vlan 1</pre>
+    <label style="margin-top:8px;display:block">¿Cuál es el error y qué consecuencias tiene? ¿Cómo lo corriges?
+      <span class="hint">Pista: compara la VLAN nativa en SW1 y en SW2.</span>
+    </label>
+    <textarea data-key="r31_p3" id="r31_p3" placeholder="El error es que... Esto causa que... Para corregirlo debo..."></textarea>
+  </div>
+
+  <!-- P4 opción múltiple -->
+  <div class="field">
+    <label>4. Agreas una nueva VLAN 30 (BIBLIOTECA) en ambos switches y asignas puertos. Pero las PCs de VLAN 30 en SW1 NO pueden comunicarse con las de VLAN 30 en SW2. ¿Cuál es la causa más probable?</label>
+    <div class="radio-row" id="r31_p4_wrap">
+      <label class="radio-pill"><input type="radio" name="r31_p4" value="a"> Las PCs no tienen dirección IP configurada</label>
+      <label class="radio-pill"><input type="radio" name="r31_p4" value="b"> La VLAN 30 no está en la lista de VLANs permitidas del trunk</label>
+      <label class="radio-pill"><input type="radio" name="r31_p4" value="c"> El cable entre SW1 y SW2 está desconectado</label>
+      <label class="radio-pill"><input type="radio" name="r31_p4" value="d"> La VLAN 30 no existe en ninguno de los dos switches</label>
+    </div>
+  </div>
+
+  <!-- P5 -->
+  <div class="field">
+    <label>5. Escribe los comandos IOS necesarios para crear la VLAN 10 con nombre LAB y asignar el puerto Fa0/1 a esa VLAN en SW1.
+      <span class="hint">Empieza desde el modo de configuración global. Recuerda el orden correcto de los comandos.</span>
+    </label>
+    <textarea data-key="r31_p5" id="r31_p5" placeholder="SW1(config)# ...&#10;..."></textarea>
+  </div>
+
+  <div style="margin-top:20px;display:flex;align-items:center;flex-wrap:wrap;gap:10px">
+    <button class="btn" id="btn-ra31" onclick="entregar('ra31')">Entregar evaluación RA 3.1</button>
+    <span class="save-note" id="sn-ra31"></span>
+  </div>
+  <div class="fb-panel" id="fb-ra31"></div>
+
+  <div class="pager"><button class="btn ghost" onclick="go('ra31_teoria')">← Conceptos RA 3.1</button><button class="btn" onclick="go('ra32_teoria')">Continuar: RA 3.2 →</button></div>
+</section>
+
+<!-- ══════════ RA 3.2 TEORÍA ══════════ -->
+<section class="page" id="sec-ra32_teoria">
+  <div class="eyebrow">RA 3.2 · Conceptos clave — lee esto antes de responder</div>
+  <div class="ra-header ra32">
+    <div class="ra-num">Resultado de Aprendizaje 3.2 · Protocolo VTP</div>
+    <h3>¿Qué es VTP y por qué existe?</h3>
+    <p>Antes de responder las preguntas, lee esta sección completa.</p>
+  </div>
+  <div class="callout info"><div class="c-title">🟢 Mínimo indispensable</div><p>VTP sirve para distribuir VLANs entre switches. <strong>Servidor</strong> crea/cambia VLANs, <strong>cliente</strong> recibe cambios y <strong>transparente</strong> conserva su propia configuración.</p></div>
+
+  <h3>El problema que resuelve VTP</h3>
+  <div class="card">
+    <h4>🏫 Imagina una red grande sin VTP</h4>
+    <p>Supón que el plantel tiene <strong>20 switches</strong> repartidos en distintos edificios, todos conectados entre sí. Tienes la VLAN 10 (Laboratorio) y la VLAN 20 (Dirección) configuradas en todos.</p>
+    <p>Un día el director pide que se cree la <strong>VLAN 30</strong> (Biblioteca). Sin VTP, el técnico tendría que ir <strong>switch por switch</strong> — los 20 — y escribir los mismos comandos en cada uno. Si se equivoca en uno, esa parte de la red falla.</p>
+    <p style="margin-bottom:0"><strong>VTP</strong> (VLAN Trunking Protocol) resuelve esto: el técnico crea la VLAN 30 en <strong>un solo switch</strong> y VTP la distribuye automáticamente a todos los demás. Un solo cambio, toda la red actualizada.</p>
+  </div>
+
+  <div class="card">
+    <h4>📡 Analogía: el director de escuela</h4>
+    <p>VTP funciona como el sistema de <strong>comunicados del director</strong>. El director (servidor VTP) emite un comunicado nuevo (nueva VLAN). El comunicado llega a todos los maestros (switches clientes) automáticamente. Los maestros no pueden inventar sus propios comunicados — solo reciben y aplican los del director.</p>
+    <p style="margin-bottom:0">Un maestro sustituto (switch transparente) recibe el comunicado y lo pasa al siguiente maestro, pero no lo aplica en su salón — mantiene sus propias reglas.</p>
+  </div>
+
+  <h3>Los tres modos de VTP</h3>
+  <div class="card">
+    <p>Cada switch en la red VTP opera en uno de estos tres modos. <strong>Es muy importante entender la diferencia:</strong></p>
+    <div class="tbl-wrap">
+      <table class="data">
+        <tr><th>Modo</th><th>¿Puede crear VLANs?</th><th>¿Recibe actualizaciones?</th><th>¿Reenvía actualizaciones?</th></tr>
+        <tr><td><strong>Servidor</strong></td><td>✅ Sí — es el jefe</td><td>✅ Sí</td><td>✅ Sí</td></tr>
+        <tr><td><strong>Cliente</strong></td><td>❌ No</td><td>✅ Sí</td><td>✅ Sí</td></tr>
+        <tr><td><strong>Transparente</strong></td><td>✅ Solo localmente</td><td>❌ No las aplica</td><td>✅ Las pasa al siguiente</td></tr>
+      </table>
+    </div>
+    <div class="grid-2">
+      <div class="callout info" style="margin-bottom:0">
+        <div class="c-title">🖥️ Modo Servidor</div>
+        <p style="margin-bottom:0">Es el switch "jefe". Aquí se crean, modifican y eliminan las VLANs. Guarda la lista de VLANs en su memoria flash. Generalmente solo hay <strong>uno o dos servidores VTP</strong> en toda la red.</p>
+      </div>
+      <div class="callout info" style="margin-bottom:0">
+        <div class="c-title">💻 Modo Cliente</div>
+        <p style="margin-bottom:0">Recibe las VLANs del servidor automáticamente. Si intentas crear una VLAN en un switch cliente, el switch te dará un <strong>error</strong> — no lo permite. La mayoría de los switches de la red operan en este modo.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>Configurar VTP — los comandos</h3>
+  <div class="card">
+    <pre class="cli"><span style="color:#8FE3AC">! ── En el switch SERVIDOR ──</span>
+SW-Servidor(config)# vtp mode server
+SW-Servidor(config)# vtp domain CONALEP
+SW-Servidor(config)# vtp password cisco2526
+
+<span style="color:#8FE3AC">! ── En los switches CLIENTES ──</span>
+SW-Cliente(config)# vtp mode client
+SW-Cliente(config)# vtp domain CONALEP
+SW-Cliente(config)# vtp password cisco2526
+
+<span style="color:#8FE3AC">! ── Para verificar el estado VTP en cualquier switch ──</span>
+Switch# show vtp status</pre>
+    <div class="callout warn" style="margin-bottom:0">
+      <div class="c-title">⚠ El dominio y la contraseña deben ser IDÉNTICOS</div>
+      <p style="margin-bottom:0">Si el servidor tiene dominio <code class="inline">CONALEP</code> y un cliente tiene <code class="inline">conalep</code> (minúsculas), <strong>no funcionará</strong> — VTP distingue mayúsculas y minúsculas en el nombre del dominio. Lo mismo con la contraseña.</p>
+    </div>
+  </div>
+
+  <h3>El número de revisión VTP — el dato más peligroso</h3>
+  <div class="card">
+    <h4>¿Qué es el número de revisión?</h4>
+    <p>Cada vez que el servidor VTP hace un cambio en la lista de VLANs (crea una nueva, borra una, cambia nombre), el <strong>número de revisión sube en 1</strong>. Los switches clientes siempre obedecen al switch que tiene el número de revisión <strong>más alto</strong>.</p>
+    <p>Ejemplo: el servidor tiene revisión 8. El cliente tiene revisión 5. Cuando se conectan, el cliente actualiza su lista con la del servidor (revisión 8). ✅ Correcto.</p>
+
+    <h4>🔴 El peligro: el switch de bodega</h4>
+    <p>Aquí viene el problema más común y más peligroso de VTP:</p>
+    <ul class="list" style="margin-bottom:14px">
+      <li>Tu red tiene el servidor VTP con 15 VLANs configuradas. Su número de revisión es <strong>8</strong>.</li>
+      <li>El técnico saca de la bodega un switch viejo que fue servidor VTP de otra red. Tiene un número de revisión de <strong>25</strong> (porque en su vida pasada hubo 25 cambios).</li>
+      <li>Al conectarlo a la red, los demás switches ven que tiene revisión 25 — más alta que 8 — y <strong>obedecen al switch de bodega</strong>.</li>
+      <li>El switch de bodega tiene su propia lista de VLANs (distinta). Todos los switches reemplazan sus VLANs con las del switch de bodega.</li>
+      <li>Resultado: las 15 VLANs configuradas <strong>desaparecen</strong>. La red deja de funcionar.</li>
+    </ul>
+    <div class="callout danger" style="margin-bottom:0">
+      <div class="c-title">🔴 ¿Cómo evitar este desastre?</div>
+      <p style="margin-bottom:0">Antes de conectar un switch usado a la red, <strong>reinicia su número de revisión</strong>. Para hacerlo: ponlo en modo transparente (<code class="inline">vtp mode transparent</code>) y luego vuelve a ponerlo en el modo que necesitas. Esto resetea el número de revisión a 0.</p>
+    </div>
+  </div>
+
+  <h3>¿Qué muestra el comando show vtp status?</h3>
+  <div class="card">
+    <p>Este comando te muestra toda la información VTP del switch. Aquí un ejemplo con explicación de cada campo:</p>
+    <pre class="cli">Switch# show vtp status
+
+VTP Version capable        : 1 to 3
+VTP version running        : 1
+VTP Domain Name            : CONALEP     <span style="color:#F0C674">← nombre del dominio (debe ser igual en todos)</span>
+VTP Pruning Mode           : Disabled
+VTP Traps Generation       : Disabled
+Device ID                  : ...
+Configuration last modified: ...
+Local updater ID           : ...
+
+Feature VLAN:
+-----------
+VTP Operating Mode         : Server      <span style="color:#F0C674">← modo actual (Server / Client / Transparent)</span>
+Maximum VLANs supported    : 255
+Number of existing VLANs   : 18
+Configuration Revision     : 8           <span style="color:#F0C674">← número de revisión (el más alto manda)</span>
+MD5 digest                 : ...         <span style="color:#F0C674">← contraseña encriptada</span></pre>
+    <p style="margin-bottom:0">Los campos más importantes para las preguntas son: <strong>VTP Domain Name</strong>, <strong>VTP Operating Mode</strong> y <strong>Configuration Revision</strong>.</p>
+  </div>
+
+  <h3>Resumen rápido antes de la evaluación</h3>
+  <div class="tbl-wrap">
+    <table class="data">
+      <tr><th>Concepto</th><th>Lo esencial</th></tr>
+      <tr><td><strong>VTP</strong></td><td>Distribuye VLANs automáticamente entre switches del mismo dominio</td></tr>
+      <tr><td><strong>Servidor VTP</strong></td><td>Crea y distribuye VLANs — el "jefe"</td></tr>
+      <tr><td><strong>Cliente VTP</strong></td><td>Solo recibe VLANs — no puede crear ninguna</td></tr>
+      <tr><td><strong>Transparente</strong></td><td>Pasa los mensajes VTP pero no los aplica — sus VLANs son propias</td></tr>
+      <tr><td><strong>Número de revisión</strong></td><td>El más alto gana — peligroso con switches viejos</td></tr>
+      <tr><td><strong>Dominio y contraseña</strong></td><td>Deben ser idénticos (mayúsculas/minúsculas cuentan) en todos los switches</td></tr>
+    </table>
+  </div>
+
+  <div class="pager"><button class="btn ghost" onclick="go('ra31_eval')">← Evaluación RA 3.1</button><button class="btn" onclick="go('ra32_eval')">Ya entendí — ir a la evaluación →</button></div>
+</section>
+
+<!-- ══════════ RA 3.2 EVALUACIÓN ══════════ -->
+<section class="page" id="sec-ra32_eval">
+  <div class="eyebrow">RA 3.2 · Actividad de evaluación</div>
+  <h2 class="page-title">Evaluación RA 3.2 · Protocolo VTP</h2>
+  <div class="act-meta">
+    <span class="badge">RA 3.2 · Actividad 3.2.1</span>
+    <span class="badge">25 puntos</span>
+    <span class="badge">Intento único</span>
+  </div>
+  <div class="callout warn">
+    <div class="c-title">⚠ Intento único — Lee los conceptos antes de responder</div>
+  </div>
+
+  <!-- P1 -->
+  <div class="field">
+    <label>1. ¿Cuál es la principal ventaja del protocolo VTP en una red con muchos switches?
+      <span class="hint">Piensa: ¿qué problema resuelve VTP que sin él tendría que hacerse manualmente?</span>
+    </label>
+    <div class="radio-row" id="r32_p1_wrap">
+      <label class="radio-pill"><input type="radio" name="r32_p1" value="a"> Permite conectar switches de diferentes marcas automáticamente</label>
+      <label class="radio-pill"><input type="radio" name="r32_p1" value="b"> Distribuye automáticamente la base de datos de VLANs a todos los switches del dominio</label>
+      <label class="radio-pill"><input type="radio" name="r32_p1" value="c"> Aumenta la velocidad de las conexiones trunk entre switches</label>
+      <label class="radio-pill"><input type="radio" name="r32_p1" value="d"> Asigna direcciones IP automáticamente a los dispositivos de la red</label>
+    </div>
+  </div>
+
+  <!-- P2 -->
+  <div class="field">
+    <label>2. El técnico conecta un switch "de bodega" (usado, sin configurar) a la red del plantel que ya tiene VTP funcionando con 15 VLANs. Al conectarlo, todas las VLANs de la red desaparecen. ¿Qué pasó?
+      <span class="hint">Relaciona con el "número de revisión VTP" explicado en la sección de conceptos.</span>
+    </label>
+    <textarea data-key="r32_p2" id="r32_p2" placeholder="Lo que pasó fue que... porque el switch de bodega..."></textarea>
+  </div>
+
+  <!-- P3 opción múltiple -->
+  <div class="field">
+    <label>3. Un switch en modo <strong>cliente VTP</strong> intenta crear una VLAN localmente con el comando <code class="inline">vlan 50</code>. ¿Qué ocurre?</label>
+    <div class="radio-row" id="r32_p3_wrap">
+      <label class="radio-pill"><input type="radio" name="r32_p3" value="a"> La VLAN 50 se crea normalmente y se distribuye a todos los switches</label>
+      <label class="radio-pill"><input type="radio" name="r32_p3" value="b"> El switch muestra un error: no se pueden crear VLANs en modo cliente VTP</label>
+      <label class="radio-pill"><input type="radio" name="r32_p3" value="c"> La VLAN 50 se crea solo en ese switch sin distribuirse</label>
+      <label class="radio-pill"><input type="radio" name="r32_p3" value="d"> El switch cambia automáticamente a modo servidor para poder crear la VLAN</label>
+    </div>
+  </div>
+
+  <!-- P4 -->
+  <div class="field">
+    <label>4. Lee el siguiente resultado de <code class="inline">show vtp status</code> en dos switches y explica si hay problema:</label>
+    <pre class="cli"><span style="color:#5BF59A">SW1:</span>
+VTP Domain Name    : CONALEP
+VTP Mode           : Server
+VTP Password       : cisco123
+Configuration Revision: 8
+
+<span style="color:#FF8C8C">SW2:</span>
+VTP Domain Name    : conalep
+VTP Mode           : Client
+VTP Password       : cisco123
+Configuration Revision: 3</pre>
+    <label style="margin-top:6px;display:block">¿Hay algún problema? ¿Cuál es y cómo se corrige?
+      <span class="hint">Compara cuidadosamente TODOS los campos entre SW1 y SW2.</span>
+    </label>
+    <textarea data-key="r32_p4" id="r32_p4" placeholder="Sí/No hay problema porque... El campo que está diferente es... Para corregirlo..."></textarea>
+  </div>
+
+  <!-- P5 -->
+  <div class="field">
+    <label>5. ¿Para qué sirve el modo VTP Transparente? ¿En qué situación usarías ese modo en lugar de Cliente o Servidor?
+      <span class="hint">Recuerda: transparente no participa en VTP pero sí reenvía actualizaciones.</span>
+    </label>
+    <textarea data-key="r32_p5" id="r32_p5" placeholder="El modo transparente sirve para... Lo usaría cuando..."></textarea>
+  </div>
+
+  <div style="margin-top:20px;display:flex;align-items:center;flex-wrap:wrap;gap:10px">
+    <button class="btn" id="btn-ra32" onclick="entregar('ra32')">Entregar evaluación RA 3.2</button>
+    <span class="save-note" id="sn-ra32"></span>
+  </div>
+  <div class="fb-panel" id="fb-ra32"></div>
+
+  <div class="pager"><button class="btn ghost" onclick="go('ra32_teoria')">← Conceptos RA 3.2</button><button class="btn" onclick="go('ra33_teoria')">Continuar: RA 3.3 →</button></div>
+</section>
+
+<!-- ══════════ RA 3.3 TEORÍA ══════════ -->
+<section class="page" id="sec-ra33_teoria">
+  <div class="eyebrow">RA 3.3 · Conceptos clave — lee esto antes de responder</div>
+  <div class="ra-header ra33">
+    <div class="ra-num">Resultado de Aprendizaje 3.3 · Enrutamiento inter-VLAN</div>
+    <h3>¿Cómo se comunican dos VLANs distintas?</h3>
+    <p>Antes de responder las preguntas, lee esta sección completa.</p>
+  </div>
+  <div class="callout info"><div class="c-title">🟢 Mínimo indispensable</div><p>Dos VLANs distintas no se comunican solas. Necesitan un dispositivo de capa 3: router con subinterfaces o switch capa 3. Cada VLAN usa su propio gateway.</p></div>
+
+  <h3>El problema: VLANs separadas no se hablan</h3>
+  <div class="card">
+    <h4>Recordemos por qué existen las VLANs</h4>
+    <p>En el RA 3.1 aprendiste que las VLANs separan la red. Eso es bueno — los alumnos no pueden ver la red de la dirección. Pero a veces <strong>sí necesitas que se comuniquen</strong>:</p>
+    <ul class="list">
+      <li>Los alumnos (VLAN 10) necesitan imprimir en la impresora de la biblioteca (VLAN 30)</li>
+      <li>La dirección (VLAN 20) necesita acceder al servidor de calificaciones (VLAN 30)</li>
+      <li>Cualquier VLAN necesita salir a Internet (que está "afuera" de todas las VLANs)</li>
+    </ul>
+    <p style="margin-bottom:0">El problema: las VLANs por sí solas <strong>no pueden comunicarse entre ellas</strong>. Necesitan un intermediario de capa 3 — un <strong>router</strong>.</p>
+  </div>
+
+  <div class="card">
+    <h4>🏢 Analogía: los departamentos y el conserje</h4>
+    <p>Recuerda la analogía del edificio. Los vecinos del departamento 10 (alumnos) y los del departamento 20 (dirección) tienen sus puertas cerradas. Para que un alumno le entregue un documento a la directora, tiene que pasar el documento por el <strong>conserje del edificio</strong>, quien lo lleva al departamento correcto.</p>
+    <p style="margin-bottom:0">En redes, ese "conserje" es el <strong>router</strong>. El alumno le manda el paquete al router (su gateway), el router decide a dónde va y lo entrega en la VLAN correcta.</p>
+  </div>
+
+  <h3>La solución: Router-on-a-Stick</h3>
+  <div class="card">
+    <h4>¿Qué es Router-on-a-Stick?</h4>
+    <p>Es la técnica más usada para hacer enrutamiento inter-VLAN. Se llama así porque el router se conecta al switch con <strong>un solo cable</strong> (como un "palo" — stick). Por ese cable pasan todas las VLANs juntas (en trunk), y el router las separa internamente.</p>
+    <p>Lo especial del Router-on-a-Stick es que dentro del router se crean <strong>subinterfaces</strong> — interfaces virtuales. Cada subinterfaz atiende a una VLAN diferente y tiene su propia dirección IP. Esa IP es el <strong>gateway</strong> (puerta de enlace) de esa VLAN.</p>
+
+    <div class="topologia">
+      <span class="dev">Router R1</span>  <span class="link">←━━━ un solo cable trunk ━━━→</span>  <span class="dev">SW1 (puerto Fa0/0 del router)</span><br><br>
+      <span class="link">Subinterfaces del router:</span><br>
+      <span class="link">  Fa0/0.10 </span><span class="ip">→ IP: 192.168.10.1 </span><span class="vlan">→ es el gateway de la VLAN 10</span><br>
+      <span class="link">  Fa0/0.20 </span><span class="ip">→ IP: 192.168.20.1 </span><span class="vlan">→ es el gateway de la VLAN 20</span><br>
+      <span class="link">  Fa0/0.30 </span><span class="ip">→ IP: 192.168.30.1 </span><span class="vlan">→ es el gateway de la VLAN 30</span><br><br>
+      <span class="dev">SW1</span><br>
+      <span class="link">  Fa0/1  </span><span class="vlan">VLAN 10</span><span class="link"> ──→ </span><span class="dev">PC-Alumno</span><span class="ip"> IP: 192.168.10.50   Gateway: 192.168.10.1</span><br>
+      <span class="link">  Fa0/11 </span><span class="vlan">VLAN 20</span><span class="link"> ──→ </span><span class="dev">PC-Docente</span><span class="ip"> IP: 192.168.20.50  Gateway: 192.168.20.1</span><br>
+      <span class="link">  Fa0/20 </span><span class="vlan">VLAN 30</span><span class="link"> ──→ </span><span class="dev">Impresora</span><span class="ip">  IP: 192.168.30.50  Gateway: 192.168.30.1</span>
+    </div>
+  </div>
+
+  <h3>¿Qué es una subinterfaz y cómo se configura?</h3>
+  <div class="card">
+    <h4>La subinterfaz — una interfaz virtual dentro del router</h4>
+    <p>Normalmente, un router tiene interfaces físicas (Fa0/0, Fa0/1, etc.). Una <strong>subinterfaz</strong> es una interfaz lógica (virtual) creada dentro de una interfaz física. Se escribe como <code class="inline">Fa0/0.10</code> — la parte después del punto es el número de la subinterfaz (normalmente se pone igual al número de la VLAN para facilitar identificarla).</p>
+    <p>Cada subinterfaz necesita dos configuraciones:</p>
+    <ol class="list">
+      <li><strong>Encapsulación dot1Q</strong>: le dice al router "esta subinterfaz pertenece a la VLAN X y usa etiquetado 802.1Q". Sin esto, el router no sabe de qué VLAN viene el tráfico.</li>
+      <li><strong>Dirección IP</strong>: la IP del gateway de esa VLAN. Las PCs de esa VLAN ponen esta IP como su "puerta de salida".</li>
+    </ol>
+
+    <pre class="cli"><span style="color:#8FE3AC">! ── Configuración completa del Router-on-a-Stick ──</span>
+
+<span style="color:#8FE3AC">! Entrar a la interfaz física que se conecta al switch</span>
+Router(config)# interface FastEthernet0/0
+Router(config-if)# no shutdown
+<span style="color:#8FE3AC">! (la interfaz física no necesita IP — solo encenderla)</span>
+
+<span style="color:#8FE3AC">! Crear subinterfaz para VLAN 10</span>
+Router(config)# interface FastEthernet0/0.10
+Router(config-subif)# encapsulation dot1Q 10
+<span style="color:#F0C674">!  ↑ "dot1Q 10" significa: esta subinterfaz maneja la VLAN 10 con etiquetado 802.1Q</span>
+Router(config-subif)# ip address 192.168.10.1 255.255.255.0
+<span style="color:#F0C674">!  ↑ esta IP será el gateway de todas las PCs de la VLAN 10</span>
+
+<span style="color:#8FE3AC">! Crear subinterfaz para VLAN 20</span>
+Router(config)# interface FastEthernet0/0.20
+Router(config-subif)# encapsulation dot1Q 20
+Router(config-subif)# ip address 192.168.20.1 255.255.255.0
+
+<span style="color:#8FE3AC">! Verificar que las subinterfaces quedaron bien</span>
+Router# show ip interface brief</pre>
+  </div>
+
+  <h3>¿Cómo viaja un paquete de una VLAN a otra? — Paso a paso</h3>
+  <div class="card">
+    <p>Escenario: PC-Alumno (192.168.10.50, VLAN 10) quiere imprimir en Impresora (192.168.30.50, VLAN 30).</p>
+    <ol class="list" style="margin-bottom:0">
+      <li>PC-Alumno detecta que 192.168.30.50 es de una red distinta (su red es 192.168.10.x). Necesita un router.</li>
+      <li>PC-Alumno envía el paquete a su <strong>gateway: 192.168.10.1</strong> (la subinterfaz Fa0/0.10 del router).</li>
+      <li>El paquete sube por el trunk hasta el router. El router lo recibe en Fa0/0.10.</li>
+      <li>El router consulta su <strong>tabla de enrutamiento</strong> — ve que 192.168.30.0/24 está en Fa0/0.30.</li>
+      <li>El router reenvía el paquete por Fa0/0.30, etiquetado como VLAN 30.</li>
+      <li>El paquete baja por el trunk al switch → el switch lo entrega a la impresora (VLAN 30). ✅</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h4>⚠ Configuración importante en las PCs</h4>
+    <p>Para que todo funcione, <strong>cada PC debe tener configurado su gateway correctamente</strong>. El gateway es la IP de la subinterfaz del router que corresponde a su VLAN:</p>
+    <div class="tbl-wrap" style="margin-bottom:0">
+      <table class="data">
+        <tr><th>PC</th><th>VLAN</th><th>IP de la PC</th><th>Gateway (obligatorio)</th></tr>
+        <tr><td>PC-Alumno</td><td>10</td><td>192.168.10.50</td><td><strong>192.168.10.1</strong></td></tr>
+        <tr><td>PC-Docente</td><td>20</td><td>192.168.20.50</td><td><strong>192.168.20.1</strong></td></tr>
+        <tr><td>Impresora</td><td>30</td><td>192.168.30.50</td><td><strong>192.168.30.1</strong></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <h3>Resumen rápido antes de la evaluación</h3>
+  <div class="tbl-wrap">
+    <table class="data">
+      <tr><th>Concepto</th><th>Lo esencial</th></tr>
+      <tr><td><strong>Inter-VLAN routing</strong></td><td>Permite comunicación entre VLANs distintas usando un router</td></tr>
+      <tr><td><strong>Router-on-a-Stick</strong></td><td>Router conectado con un solo cable trunk al switch — lo más común</td></tr>
+      <tr><td><strong>Subinterfaz</strong></td><td>Interfaz virtual dentro del router — una por cada VLAN</td></tr>
+      <tr><td><strong>encapsulation dot1Q 10</strong></td><td>Le dice al router a qué VLAN pertenece esa subinterfaz</td></tr>
+      <tr><td><strong>Gateway de la PC</strong></td><td>La IP de la subinterfaz del router — sin esto, la PC no puede salir de su VLAN</td></tr>
+      <tr><td><strong>show ip interface brief</strong></td><td>Verifica que las subinterfaces tienen IP y están activas</td></tr>
+    </table>
+  </div>
+
+  <div class="pager"><button class="btn ghost" onclick="go('ra32_eval')">← Evaluación RA 3.2</button><button class="btn" onclick="go('ra33_eval')">Ya entendí — ir a la evaluación →</button></div>
+</section>
+
+<!-- ══════════ RA 3.3 EVALUACIÓN ══════════ -->
+<section class="page" id="sec-ra33_eval">
+  <div class="eyebrow">RA 3.3 · Actividad de evaluación</div>
+  <h2 class="page-title">Evaluación RA 3.3 · Enrutamiento inter-VLAN</h2>
+  <div class="act-meta">
+    <span class="badge">RA 3.3 · Actividad 3.3.1</span>
+    <span class="badge">25 puntos</span>
+    <span class="badge">Intento único</span>
+  </div>
+  <div class="callout warn">
+    <div class="c-title">⚠ Intento único — Lee los conceptos antes de responder</div>
+  </div>
+
+  <!-- Topología del escenario -->
+  <div class="card">
+    <h4>📋 Topología de referencia para esta evaluación</h4>
+    <div class="topologia">
+      <span class="dev">Router R1 (Fa0/0 → trunk a SW1)</span><br>
+      <span class="link">  Subinterfaz Fa0/0.10 </span><span class="ip">→ 192.168.10.1/24 </span><span class="vlan">dot1Q 10</span><br>
+      <span class="link">  Subinterfaz Fa0/0.20 </span><span class="ip">→ 192.168.20.1/24 </span><span class="vlan">dot1Q 20</span><br>
+      <span class="link">  Subinterfaz Fa0/0.30 </span><span class="ip">→ 192.168.30.1/24 </span><span class="vlan">dot1Q 30</span><br><br>
+      <span class="dev">SW1</span><br>
+      <span class="link">  Fa0/1  </span><span class="vlan">VLAN 10 </span><span class="link">── </span><span class="dev">PC-Alumno </span><span class="ip">192.168.10.50 GW:192.168.10.1</span><br>
+      <span class="link">  Fa0/11 </span><span class="vlan">VLAN 20 </span><span class="link">── </span><span class="dev">PC-Docente </span><span class="ip">192.168.20.50 GW:192.168.20.1</span><br>
+      <span class="link">  Fa0/20 </span><span class="vlan">VLAN 30 </span><span class="link">── </span><span class="dev">Impresora  </span><span class="ip">192.168.30.50 GW:192.168.30.1</span>
+    </div>
+  </div>
+
+  <!-- P1 opción múltiple -->
+  <div class="field">
+    <label>1. PC-Alumno (192.168.10.50) quiere imprimir en la Impresora (192.168.30.50). Sin el router R1 configurado, ¿puede hacerlo?</label>
+    <div class="radio-row" id="r33_p1_wrap">
+      <label class="radio-pill"><input type="radio" name="r33_p1" value="a"> Sí, porque están en el mismo switch físico</label>
+      <label class="radio-pill"><input type="radio" name="r33_p1" value="b"> No, porque son VLANs distintas y sin router no hay enrutamiento inter-VLAN</label>
+      <label class="radio-pill"><input type="radio" name="r33_p1" value="c"> Sí, si el trunk está bien configurado los paquetes pasan solos</label>
+      <label class="radio-pill"><input type="radio" name="r33_p1" value="d"> No, porque la impresora no tiene dirección IP</label>
+    </div>
+  </div>
+
+  <!-- P2 -->
+  <div class="field">
+    <label>2. Explica con tus palabras qué es una <strong>subinterfaz</strong> en el router y por qué se necesita una por cada VLAN.
+      <span class="hint">Usa la topología de arriba como referencia. ¿Qué hace la subinterfaz Fa0/0.10? ¿Por qué no basta con una sola interfaz Fa0/0?</span>
+    </label>
+    <textarea data-key="r33_p2" id="r33_p2" placeholder="Una subinterfaz es... Se necesita una por cada VLAN porque..."></textarea>
+  </div>
+
+  <!-- P3 opción múltiple -->
+  <div class="field">
+    <label>3. ¿Qué comando se usa en el router para indicar que la subinterfaz Fa0/0.20 pertenece a la VLAN 20 y usa etiquetado 802.1Q?</label>
+    <div class="radio-row" id="r33_p3_wrap">
+      <label class="radio-pill"><input type="radio" name="r33_p3" value="a"> <code class="inline">switchport access vlan 20</code></label>
+      <label class="radio-pill"><input type="radio" name="r33_p3" value="b"> <code class="inline">encapsulation dot1Q 20</code></label>
+      <label class="radio-pill"><input type="radio" name="r33_p3" value="c"> <code class="inline">vlan 20</code></label>
+      <label class="radio-pill"><input type="radio" name="r33_p3" value="d"> <code class="inline">switchport mode trunk vlan 20</code></label>
+    </div>
+  </div>
+
+  <!-- P4 -->
+  <div class="field">
+    <label>4. PC-Docente (192.168.20.50) tiene configurado el gateway 192.168.10.1 por error (en lugar de 192.168.20.1). ¿Qué pasará cuando intente salir de su VLAN?
+      <span class="hint">Piensa: ¿a qué subinterfaz enviará sus paquetes? ¿Esa subinterfaz pertenece a su misma red?</span>
+    </label>
+    <textarea data-key="r33_p4" id="r33_p4" placeholder="Lo que pasará es que... porque el gateway 192.168.10.1 pertenece a la VLAN..."></textarea>
+  </div>
+
+  <!-- P5 -->
+  <div class="field">
+    <label>5. ¿Qué diferencia hay entre el enrutamiento inter-VLAN con un router físico (router-on-a-stick) y hacerlo con un switch de capa 3?
+      <span class="hint">No necesitas haber configurado un switch L3 — razona desde los conceptos. ¿Cuál crees que es más eficiente y por qué?</span>
+    </label>
+    <textarea data-key="r33_p5" id="r33_p5" placeholder="Con un router físico (router-on-a-stick)... Con un switch de capa 3... La diferencia principal es..."></textarea>
+  </div>
+
+  <div style="margin-top:20px;display:flex;align-items:center;flex-wrap:wrap;gap:10px">
+    <button class="btn" id="btn-ra33" onclick="entregar('ra33')">Entregar evaluación RA 3.3</button>
+    <span class="save-note" id="sn-ra33"></span>
+  </div>
+  <div class="fb-panel" id="fb-ra33"></div>
+
+  <div class="pager"><button class="btn ghost" onclick="go('ra33_teoria')">← Conceptos RA 3.3</button><button class="btn" onclick="go('bitacora')">Continuar: Bitácora →</button></div>
+</section>
+
+<!-- ══════════ BITÁCORA ══════════ -->
+<section class="page" id="sec-bitacora">
+  <div class="eyebrow">Cierre · Bitácora</div>
+  <h2 class="page-title">Bitácora de la Unidad 3</h2>
+  <p class="page-lead">Reflexión personal de cierre de semestre. No hay respuestas "correctas" — escribe con honestidad y con tus propias palabras.</p>
+  <div class="act-meta"><span class="badge">25 puntos</span></div>
+
+  <div class="field">
+    <label for="bit1">1. De todo lo que viste en la Unidad 3 (VLANs, VTP, enrutamiento inter-VLAN), ¿qué fue lo más útil o interesante para ti? Explica por qué.
+      <span class="hint">Mínimo 3 oraciones con tus propias palabras.</span>
+    </label>
+    <textarea id="bit1" data-key="bit1" placeholder="Lo que más me pareció útil/interesante fue... porque... En mi vida o trabajo futuro esto serviría para..."></textarea>
+  </div>
+
+  <div class="field">
+    <label for="bit2">2. ¿Cuál fue el concepto más difícil de entender durante este semestre? ¿Cómo intentaste comprenderlo?
+      <span class="hint">Sé honesto — reconocer lo que fue difícil es parte del aprendizaje.</span>
+    </label>
+    <textarea id="bit2" data-key="bit2" placeholder="Lo más difícil fue... porque... Intenté entenderlo..."></textarea>
+  </div>
+
+  <div class="field">
+    <label for="bit3">3. Imagina que te contratan como técnico de redes en una empresa, hospital o escuela. Describe brevemente cómo aplicarías al menos DOS de los temas de la Unidad 3 en ese trabajo real.
+      <span class="hint">Sé específico — menciona qué harías exactamente con VLANs, VTP o inter-VLAN routing en ese contexto.</span>
+    </label>
+    <textarea id="bit3" data-key="bit3" placeholder="Si trabajara en [empresa/hospital/escuela], usaría VLANs para... y también configuraría... porque..."></textarea>
+  </div>
+
+  <button class="btn ghost" id="btn-bitacora" onclick="guardarBitacora()">Guardar bitácora</button>
+  <span class="save-note" id="sn-bitacora"></span>
+
+  <div class="pager"><button class="btn ghost" onclick="go('ra33_eval')">← Evaluación RA 3.3</button><button class="btn" onclick="go('evaluacion')">Ver mi calificación →</button></div>
+</section>
+
+<!-- ══════════ EVALUACIÓN FINAL ══════════ -->
+<section class="page" id="sec-evaluacion">
+  <div class="eyebrow">Calificación final</div>
+  <h2 class="page-title">Mi resultado · Unidad 3 completa</h2>
+
+  <div id="resultados" style="display:none">
+    <div class="score-hero">
+      <div class="score-num" id="scoreTotal">—</div>
+      <div id="scoreDetalle" style="font-size:14px;line-height:1.7;opacity:.92"></div>
+    </div>
+    <div class="tbl-wrap"><table class="data" id="tablaRubrica"></table></div>
+    <div class="callout info" id="envio_ok" style="display:none"></div>
+  </div>
+
+  <div id="evaluacion_acciones">
+    <button class="btn" onclick="calificarTodo()" style="margin-bottom:12px">Calcular mi calificación</button>
+    <div style="margin-top:14px;display:flex;flex-wrap:wrap;gap:10px">
+      <button class="btn" id="btnEnviar" onclick="enviarReporte()">📤 Enviar calificación al docente</button>
+      <button class="btn ghost" onclick="descargarPDF()">⬇ Descargar boleta PDF</button>
+    </div>
+    <p id="envio_status" style="margin-top:10px;font-size:13px;color:var(--gris)"></p>
+  </div>
+
+  <div class="pager"><button class="btn ghost" onclick="go('bitacora')">← Bitácora</button></div>
+</section>
+
+</main>
+</div>
+
+<script>
+/* ═══════════════════════════════════════
+   MRDE · Evaluación Unidad 3 Completa
+   Supabase Edition
+   Ing. Santiago Martínez González
+═══════════════════════════════════════ */
+const CUADERNO      = 'mrde_u3_eval';
+const CLAVE_DOCENTE = 'MRED2526INDEX';
+const SB_URL        = 'https://cmhnuuxgwrpkhutylnzs.supabase.co';
+const SB_KEY        = 'sb_publishable_8A2VQZa5N2NBP1li532sJQ_AACo-3_v';
+
+let sb = null, currentUser = null, perfil = null;
+let state = { respuestas:{}, entregas:{}, guardadas:{}, visitadas:{intro:true}, evaluacion:null, enviado:null };
+
+function initSB(){ if(sb) return sb; sb=window.supabase.createClient(SB_URL,SB_KEY); return sb; }
+function setCloudStatus(tipo,msg){ const el=document.getElementById('cloudStatus'); if(!el) return; el.className='cloud-status '+(tipo||''); el.textContent=msg; }
+
+/* ─── SUPABASE PERSIST ─── */
+let _pt=null;
+function pd(){ clearTimeout(_pt); _pt=setTimeout(persist,1200); }
+
+async function persist(){
+  if(!currentUser) return;
+  try{
+    const { error } = await sb.from('avances').upsert({ user_id:currentUser.id, cuaderno:CUADERNO,
+      estado:{ respuestas:state.respuestas, guardadas:state.guardadas, visitadas:state.visitadas, evaluacion:state.evaluacion, enviado:state.enviado }
+    },{ onConflict:'user_id,cuaderno' });
+    if(error) throw error;
+    setCloudStatus('ok','🟢 Guardado correctamente en la nube · '+new Date().toLocaleTimeString('es-MX'));
+  }catch(e){
+    setCloudStatus('err','🔴 No se pudo guardar. Revisa internet y NO cierres la página.');
+    throw e;
+  }
+}
+
+async function persistEntrega(act, datos){
+  if(!currentUser) return;
+  const { error } = await sb.from('entregas').upsert({ user_id:currentUser.id, cuaderno:CUADERNO, actividad:act,
+    pts:datos.pts, max:datos.max, fb:datos.fb, fecha:datos.fecha, respuestas:datos.respuestas||{}
+  },{ onConflict:'user_id,cuaderno,actividad' });
+  if(error) throw error;
+}
+
+
+async function persistEnvio(folio,total){
+  if(!currentUser) return;
+  const { error } = await sb.from('envios').upsert({ user_id:currentUser.id, cuaderno:CUADERNO,
+    folio, total, fecha:new Date().toISOString()
+  },{ onConflict:'user_id,cuaderno' });
+  if(error) throw error;
+}
+
+async function cargarDesdeNube(){
+  if(!currentUser) return;
+  const [av,ent,env]=await Promise.all([
+    sb.from('avances').select('estado').eq('user_id',currentUser.id).eq('cuaderno',CUADERNO).single(),
+    sb.from('entregas').select('*').eq('user_id',currentUser.id).eq('cuaderno',CUADERNO),
+    sb.from('envios').select('*').eq('user_id',currentUser.id).eq('cuaderno',CUADERNO).maybeSingle()
+  ]);
+  if(av.data?.estado){ const e=av.data.estado; state.respuestas=e.respuestas||{}; state.guardadas=e.guardadas||{}; state.visitadas=e.visitadas||{intro:true}; state.evaluacion=e.evaluacion||null; state.enviado=e.enviado||null; }
+  state.entregas={};
+  (ent.data||[]).forEach(e=>{ state.entregas[e.actividad]={ pts:e.pts,max:e.max,fb:e.fb,fecha:e.fecha,respuestas:e.respuestas||{} }; });
+  if(env.data) state.enviado={ folio:env.data.folio, fecha:new Date(env.data.fecha).toLocaleString('es-MX'), total:env.data.total };
+}
+
+/* ─── AUTH ─── */
+let modoReg=false;
+function toggleModoUI(){
+  modoReg=!modoReg;
+  document.getElementById('camposRegistro').style.display=modoReg?'':'none';
+  document.getElementById('gateTitulo').textContent=modoReg?'Crear mi cuenta':'Iniciar sesión';
+  document.getElementById('gateSub').textContent=modoReg?'Llena tus datos y crea tu cuenta.':'Entra con tu correo y matrícula.';
+  document.getElementById('toggleModo').textContent=modoReg?'Ya tengo cuenta':'Crear mi cuenta';
+}
+
+async function autenticar(){
+  const err=document.getElementById('r_err'), btn=document.getElementById('btnEntrar');
+  err.style.display='none';
+  const correo=(document.getElementById('r_correo').value||'').trim().toLowerCase();
+  const pass=(document.getElementById('r_pass').value||'').trim();
+  if(!correo.endsWith('@tam.conalep.edu.mx')){ err.textContent='El correo debe terminar en @tam.conalep.edu.mx.'; err.style.display='block'; return; }
+  if(pass.length<4){ err.textContent='Escribe tu matrícula.'; err.style.display='block'; return; }
+  btn.disabled=true; btn.textContent='Conectando…'; initSB();
+  if(modoReg){
+    const nombre=(document.getElementById('r_nombre').value||'').trim();
+    const grupo=document.getElementById('r_grupo').value;
+    const turno=document.getElementById('r_turno').value;
+    if(!nombre||!grupo||!turno){ err.textContent='Completa todos los campos.'; err.style.display='block'; btn.disabled=false; btn.textContent='Entrar a mi cuaderno'; return; }
+    await sb.auth.signUp({ email:correo, password:pass });
+    const { data:ld, error:le }=await sb.auth.signInWithPassword({ email:correo, password:pass });
+    if(le){ err.textContent='Error al crear cuenta: '+le.message; err.style.display='block'; btn.disabled=false; btn.textContent='Entrar a mi cuaderno'; return; }
+    currentUser=ld.user;
+    const mat=pass.slice(0,4)+'*'.repeat(Math.max(0,pass.length-4));
+    await sb.from('perfiles').upsert({ id:currentUser.id, correo, nombre, grupo, turno, matricula:mat },{ onConflict:'id' });
+    perfil={ nombre, grupo, turno, correo, matricula:mat };
+  } else {
+    const { data:ld, error:le }=await sb.auth.signInWithPassword({ email:correo, password:pass });
+    if(le){ err.textContent='Correo o matrícula incorrectos.'; err.style.display='block'; btn.disabled=false; btn.textContent='Entrar a mi cuaderno'; return; }
+    currentUser=ld.user;
+    const { data:p }=await sb.from('perfiles').select('*').eq('id',currentUser.id).single();
+    if(!p){ err.textContent='Perfil no encontrado. Usa "Crear mi cuenta".'; err.style.display='block'; await sb.auth.signOut(); btn.disabled=false; btn.textContent='Entrar a mi cuaderno'; return; }
+    perfil=p;
+  }
+  btn.disabled=false; btn.textContent='Entrar a mi cuaderno';
+  await cargarDesdeNube(); entrarApp();
+}
+
+async function cerrarSesion(){ if(!confirm('¿Cerrar sesión?')) return; await sb.auth.signOut(); currentUser=null; perfil=null; state={respuestas:{},entregas:{},guardadas:{},visitadas:{intro:true},evaluacion:null,enviado:null}; document.getElementById('gate').style.display='flex'; document.getElementById('studentChip').style.display='none'; }
+
+/* ─── APP ─── */
+function entrarApp(){
+  document.getElementById('gate').style.display='none';
+  const chip=document.getElementById('studentChip'); chip.style.display='block';
+  document.getElementById('sc_nombre').textContent=perfil.nombre;
+  document.getElementById('sc_detalle').textContent='Grupo '+perfil.grupo+' · '+perfil.turno;
+  restaurarCampos(); restaurarEntregas(); actualizarProgreso(); marcarTOC();
+  if(state.enviado) sellarCuaderno();
+}
+
+/* ─── NAV ─── */
+const SECCIONES=['intro','ra31_teoria','ra31_eval','ra32_teoria','ra32_eval','ra33_teoria','ra33_eval','bitacora','evaluacion'];
+function go(id){
+  document.querySelectorAll('section.page').forEach(s=>s.classList.remove('visible'));
+  document.getElementById('sec-'+id).classList.add('visible');
+  document.querySelectorAll('.toc a').forEach(a=>a.classList.toggle('active',a.dataset.sec===id));
+  window.scrollTo({top:0,behavior:'smooth'});
+  document.querySelector('.sidebar').classList.remove('open');
+  state.visitadas = state.visitadas || {}; state.visitadas[id]=true; pd();
+  marcarTOC();
+}
+document.querySelectorAll('.toc a[data-sec]').forEach(a=>a.addEventListener('click',()=>go(a.dataset.sec)));
+
+/* ─── CAMPOS ─── */
+function bindCampos(){
+  document.querySelectorAll('[data-key]').forEach(el=>el.addEventListener('input',()=>{ state.respuestas[el.dataset.key]=el.value; pd(); }));
+  document.querySelectorAll('input[type=radio][name]').forEach(el=>el.addEventListener('change',()=>{ state.respuestas[el.name]=el.value; pd(); }));
+}
+function restaurarCampos(){
+  document.querySelectorAll('[data-key]').forEach(el=>{ if(state.respuestas[el.dataset.key]!==undefined) el.value=state.respuestas[el.dataset.key]; });
+  document.querySelectorAll('input[type=radio][name]').forEach(el=>{ if(state.respuestas[el.name]===el.value) el.checked=true; });
+}
+function restaurarEntregas(){ Object.keys(state.entregas).forEach(a=>{ bloquearAct(a); mostrarFB(a); }); if(state.guardadas.bitacora) bloquearBit(); }
+
+/* ─── PROGRESO ─── */
+const ACTS=['ra31','ra32','ra33'];
+function actualizarProgreso(){
+  let d=0;
+  ACTS.forEach(a=>{ if(state.entregas[a]) d++; });
+  if(state.guardadas.bitacora) d++;
+  const pct=Math.round((d/4)*100);
+  document.getElementById('progFill').style.width=pct+'%';
+  document.getElementById('progPct').textContent=pct+'%';
+}
+function marcarTOC(){
+  const ds=new Set();
+  ACTS.forEach(a=>{ if(state.entregas[a]) ds.add(a+'_eval'); });
+  if(state.guardadas.bitacora) ds.add('bitacora');
+  document.querySelectorAll('.toc a[data-sec]').forEach(a=>a.classList.toggle('done',ds.has(a.dataset.sec)));
+}
+
+/* ─── BITÁCORA ─── */
+async function guardarBitacora(){
+  const ok=['bit1','bit2','bit3'].every(k=>(state.respuestas[k]||'').trim().length>=30);
+  if(!ok){ alert('Completa las tres preguntas (mínimo 30 caracteres cada una).'); return; }
+  state.guardadas.bitacora=true;
+  try{ await persist(); }catch(e){ state.guardadas.bitacora=false; alert('No se pudo guardar la bitácora en la nube. Revisa tu internet e inténtalo otra vez.'); return; }
+  const btn=document.getElementById('btn-bitacora'); if(btn){ btn.textContent='✓ Bitácora guardada'; btn.disabled=true; }
+  actualizarProgreso(); marcarTOC();
+}
+function bloquearBit(){
+  ['bit1','bit2','bit3'].forEach(id=>{ const el=document.getElementById(id); if(el) el.disabled=true; });
+  const btn=document.getElementById('btn-bitacora'); if(btn){ btn.disabled=true; btn.textContent='✓ Bitácora guardada'; }
+}
+
+/* ─── CALIFICADORES ─── */
+function lenOK(s,min){ return s&&s.trim().length>=min; }
+
+const SOLUCIONES={
+ra31:`<p><strong>1.</strong> Fa0/1 = puerto de acceso (conecta una PC, solo pertenece a una VLAN). Gi0/1 = puerto trunk (conecta otro switch, debe transportar múltiples VLANs).</p>
+<p><strong>2. Respuesta b:</strong> el ping falla porque son VLANs distintas. Las VLANs crean dominios separados — sin router de por medio no hay comunicación entre ellas.</p>
+<p><strong>3.</strong> El error es que SW1 tiene VLAN nativa 99 y SW2 tiene VLAN nativa 1 — son distintas (native VLAN mismatch). Consecuencia: pérdida de tráfico sin etiquetar y advertencias CDP. Corrección: en SW2 ejecutar <code>switchport trunk native vlan 99</code>.</p>
+<p><strong>4. Respuesta b:</strong> la VLAN 30 no está en la lista de VLANs permitidas del trunk (<code>allowed vlan</code>). Solución: <code>switchport trunk allowed vlan add 30</code> en ambos switches.</p>
+<p><strong>5.</strong> SW1(config)# vlan 10 → SW1(config-vlan)# name LAB → exit → interface Fa0/1 → switchport mode access → switchport access vlan 10</p>`,
+
+ra32:`<p><strong>1. Respuesta b:</strong> VTP distribuye automáticamente la base de datos de VLANs a todos los switches del dominio, evitando configurarlas manualmente en cada switch.</p>
+<p><strong>2.</strong> El switch de bodega tenía un número de revisión VTP más alto que el servidor actual. Los clientes VTP siempre aceptan la actualización con mayor número de revisión — por eso la base de datos del switch viejo sobreescribió la de la red, borrando las 15 VLANs. Solución previa: siempre cambiar a modo transparente y de regreso antes de conectar un switch usado.</p>
+<p><strong>3. Respuesta b:</strong> un switch en modo cliente VTP no puede crear VLANs — solo el servidor puede. El switch mostrará un error al intentar ejecutar <code>vlan 50</code>.</p>
+<p><strong>4.</strong> Sí hay problema: el nombre del dominio es diferente — SW1 tiene "CONALEP" (mayúsculas) y SW2 tiene "conalep" (minúsculas). VTP es sensible a mayúsculas en el nombre de dominio. Corrección en SW2: <code>vtp domain CONALEP</code>.</p>
+<p><strong>5.</strong> El modo transparente es útil cuando un switch necesita reenviar actualizaciones VTP a otros switches pero quiere mantener su propia base de datos independiente. Se usa cuando ese switch tiene VLANs especiales que no deben sincronizarse con el resto de la red.</p>`,
+
+ra33:`<p><strong>1. Respuesta b:</strong> sin el router no hay enrutamiento inter-VLAN. Las VLANs están separadas lógicamente y solo un dispositivo de capa 3 (router o switch L3) puede encaminar tráfico entre ellas.</p>
+<p><strong>2.</strong> Una subinterfaz es una interfaz lógica creada dentro de una interfaz física del router. Se necesita una por cada VLAN porque cada VLAN tiene su propia red IP y necesita su propio gateway. Una sola interfaz Fa0/0 no puede ser gateway de múltiples redes sin las subinterfaces.</p>
+<p><strong>3. Respuesta b:</strong> <code>encapsulation dot1Q 20</code> — este comando le dice al router que esa subinterfaz pertenece a la VLAN 20 y usará etiquetado 802.1Q.</p>
+<p><strong>4.</strong> PC-Docente enviará sus paquetes al gateway 192.168.10.1 (que pertenece a la VLAN 10, no a la suya). El router los recibirá en la subinterfaz de VLAN 10, pero no podrá enrutarlos correctamente de regreso a PC-Docente porque la dirección origen (192.168.20.50) y el gateway (192.168.10.1) están en redes distintas. El resultado es pérdida de conectividad.</p>
+<p><strong>5.</strong> Con router-on-a-stick: el tráfico inter-VLAN pasa por el router físico (cuello de botella en redes grandes). Con switch L3: el enrutamiento ocurre dentro del propio switch a velocidad de hardware — más rápido y sin depender de un router externo. El switch L3 es más eficiente en redes con mucho tráfico inter-VLAN.</p>`
+};
+
+const GRADERS={
+ra31(){
+  const R=state.respuestas; let p=0; const fb=[];
+  const p1ok=lenOK(R.r31_p1,30)&&/(acceso|access)/i.test(R.r31_p1)&&/(trunk|troncal)/i.test(R.r31_p1);
+  p+=p1ok?5:0; fb.push({ok:p1ok,label:'P1: identifica correctamente puerto acceso y trunk con justificación',pts:5});
+  const p2ok=R.r31_p2==='b';
+  p+=p2ok?5:0; fb.push({ok:p2ok,label:'P2: el ping falla porque las VLANs son distintas y necesitan router',pts:5});
+  const p3ok=lenOK(R.r31_p3,30)&&/(nativa|native|99|1|mismatch|distint|diferent)/i.test(R.r31_p3);
+  p+=p3ok?5:0; fb.push({ok:p3ok,label:'P3: identifica el native VLAN mismatch y propone corrección',pts:5});
+  const p4ok=R.r31_p4==='b';
+  p+=p4ok?5:0; fb.push({ok:p4ok,label:'P4: la VLAN 30 no está en la lista de VLANs permitidas del trunk',pts:5});
+  const p5ok=lenOK(R.r31_p5,30)&&/(vlan\s*10|name\s+lab|mode access|access vlan)/i.test(R.r31_p5);
+  p+=p5ok?5:0; fb.push({ok:p5ok,label:'P5: escribe comandos correctos para crear VLAN y asignar puerto',pts:5});
+  return {pts:p,max:25,fb};
+},
+ra32(){
+  const R=state.respuestas; let p=0; const fb=[];
+  const p1ok=R.r32_p1==='b';
+  p+=p1ok?5:0; fb.push({ok:p1ok,label:'P1: VTP distribuye automáticamente la base de datos de VLANs',pts:5});
+  const p2ok=lenOK(R.r32_p2,40)&&/(revisión|revision|número|numero|alto|mayor|sobreescrib|reemplaz)/i.test(R.r32_p2);
+  p+=p2ok?5:0; fb.push({ok:p2ok,label:'P2: explica el peligro del número de revisión VTP alto',pts:5});
+  const p3ok=R.r32_p3==='b';
+  p+=p3ok?5:0; fb.push({ok:p3ok,label:'P3: un switch cliente no puede crear VLANs localmente',pts:5});
+  const p4ok=lenOK(R.r32_p4,25)&&/(dominio|domain|mayúscula|minúscula|nombre|CONALEP|conalep)/i.test(R.r32_p4);
+  p+=p4ok?5:0; fb.push({ok:p4ok,label:'P4: identifica la diferencia en mayúsculas/minúsculas del dominio VTP',pts:5});
+  const p5ok=lenOK(R.r32_p5,30)&&/(independ|propia|reenvía|forward|especial|propio)/i.test(R.r32_p5);
+  p+=p5ok?5:0; fb.push({ok:p5ok,label:'P5: explica el modo transparente y su caso de uso',pts:5});
+  return {pts:p,max:25,fb};
+},
+ra33(){
+  const R=state.respuestas; let p=0; const fb=[];
+  const p1ok=R.r33_p1==='b';
+  p+=p1ok?5:0; fb.push({ok:p1ok,label:'P1: sin router no hay comunicación inter-VLAN',pts:5});
+  const p2ok=lenOK(R.r33_p2,40)&&/(subinterfaz|lógica|gateway|puerta|vlan|red)/i.test(R.r33_p2);
+  p+=p2ok?5:0; fb.push({ok:p2ok,label:'P2: explica qué es una subinterfaz y por qué se necesita una por VLAN',pts:5});
+  const p3ok=R.r33_p3==='b';
+  p+=p3ok?5:0; fb.push({ok:p3ok,label:'P3: el comando correcto es encapsulation dot1Q',pts:5});
+  const p4ok=lenOK(R.r33_p4,30)&&/(10|distint|wrong|incorrecta|error|no puede|falla|pierde)/i.test(R.r33_p4);
+  p+=p4ok?5:0; fb.push({ok:p4ok,label:'P4: explica por qué el gateway incorrecto causa falla de conectividad',pts:5});
+  const p5ok=lenOK(R.r33_p5,40)&&/(capa 3|L3|hardware|eficiente|rápido|router|cuello|externo)/i.test(R.r33_p5);
+  p+=p5ok?5:0; fb.push({ok:p5ok,label:'P5: compara router-on-a-stick vs switch L3 con razonamiento válido',pts:5});
+  return {pts:p,max:25,fb};
+}
+};
+
+const ACTS_META=[['ra31','Evaluación RA 3.1 · VLANs y troncales',25],['ra32','Evaluación RA 3.2 · Protocolo VTP',25],['ra33','Evaluación RA 3.3 · Enrutamiento inter-VLAN',25]];
+
+async function entregar(act){
+  if(state.entregas[act]){ alert('Esta evaluación ya fue entregada.'); return; }
+  document.querySelectorAll('input[type=radio]:checked').forEach(el=>{ state.respuestas[el.name]=el.value; });
+  document.querySelectorAll('[data-key]').forEach(el=>{ state.respuestas[el.dataset.key]=el.value; });
+  const lbl={ra31:'RA 3.1',ra32:'RA 3.2',ra33:'RA 3.3'};
+  if(!confirm('Vas a entregar la evaluación '+lbl[act]+'.\n\nEsta es tu ÚNICA oportunidad. ¿Confirmas?')) return;
+  const ev=GRADERS[act]();
+  const reg={...ev, fecha:new Date().toLocaleString('es-MX'), respuestas:{...state.respuestas}};
+  state.entregas[act]=reg;
+  const btn=document.getElementById('btn-'+act); if(btn){ btn.disabled=true; btn.textContent='Guardando…'; }
+  try{
+    await persistEntrega(act,reg); await persist();
+    bloquearAct(act); mostrarFB(act); actualizarProgreso(); marcarTOC();
+  }catch(e){
+    delete state.entregas[act];
+    if(btn){ btn.disabled=false; btn.textContent='Entregar evaluación '+lbl[act]; }
+    alert('No se pudo guardar la entrega en la nube. Revisa tu internet y vuelve a presionar Entregar.');
+  }
+}
+
+function bloquearAct(act){
+  document.querySelectorAll('#sec-'+act+'_eval [data-key]').forEach(el=>el.disabled=true);
+  document.querySelectorAll('#sec-'+act+'_eval input[type=radio]').forEach(el=>el.disabled=true);
+  const lbl={ra31:'RA 3.1',ra32:'RA 3.2',ra33:'RA 3.3'};
+  const btn=document.getElementById('btn-'+act); if(btn){ btn.disabled=true; btn.textContent='✓ Evaluación '+lbl[act]+' entregada'; }
+}
+
+function mostrarFB(act){
+  const e=state.entregas[act]; if(!e) return;
+  const panel=document.getElementById('fb-'+act); if(!panel) return;
+  const lista=e.fb.map(x=>'<li class="'+(x.ok?'ok':'miss')+'">'+(x.ok?'✓ ':'✗ ')+x.label+' ('+x.pts+' pts)</li>').join('');
+  panel.innerHTML=
+    '<div class="fb-head"><span>Resultado</span><span>'+e.pts+' / '+e.max+' pts · '+e.fecha+'</span></div>'+
+    '<div class="fb-body"><ul class="fb-list">'+lista+'</ul>'+
+    '<div class="solucion"><h5>Solución correcta</h5>'+SOLUCIONES[act]+'</div>'+
+    '<div class="fb-unlock"><button class="btn ghost" style="padding:5px 11px;font-size:12px" onclick="desbloquear(\''+act+'\')">Docente: liberar intento</button></div></div>';
+  panel.classList.add('show');
+}
+
+async function desbloquear(act){
+  const c=prompt('Clave del docente:'); if(!c) return;
+  if(c.trim()!==CLAVE_DOCENTE){ alert('Clave incorrecta.'); return; }
+  if(currentUser) await sb.from('entregas').delete().eq('user_id',currentUser.id).eq('cuaderno',CUADERNO).eq('actividad',act);
+  delete state.entregas[act]; state.guardadas[act]=false; await persist();
+  document.querySelectorAll('#sec-'+act+'_eval [data-key]').forEach(el=>el.disabled=false);
+  document.querySelectorAll('#sec-'+act+'_eval input[type=radio]').forEach(el=>el.disabled=false);
+  const lbl={ra31:'RA 3.1',ra32:'RA 3.2',ra33:'RA 3.3'};
+  const btn=document.getElementById('btn-'+act); if(btn){ btn.disabled=false; btn.textContent='Entregar evaluación '+lbl[act]; }
+  const p=document.getElementById('fb-'+act); if(p){ p.classList.remove('show'); p.innerHTML=''; }
+  actualizarProgreso(); marcarTOC();
+}
+
+/* ─── CALIFICACIÓN FINAL ─── */
+function calificarTodo(){
+  const R=state.respuestas; const filas=[]; let total=0;
+  ACTS_META.forEach(([a,nom,mx])=>{
+    const e=state.entregas[a];
+    if(e){ filas.push({nombre:nom+' ('+e.fecha+')',pts:e.pts,max:mx,fb:e.fb}); total+=e.pts; }
+    else{ filas.push({nombre:nom,pts:0,max:mx,fb:[{ok:false,label:'Sin entregar',pts:mx}]}); }
+  });
+  let b=0,bfb=[];
+  [['bit1','Reflexión sobre aprendizaje',9],['bit2','Dificultades del semestre',8],['bit3','Aplicación real',8]].forEach(([k,l,p])=>{
+    const ok=lenOK(R[k],30); b+=ok?p:0; bfb.push({ok,label:l+' (mín. 30 caracteres)',pts:p});
+  });
+  filas.push({nombre:'Bitácora de cierre',pts:b,max:25,fb:bfb}); total+=b;
+  state.evaluacion={total,filas,fecha:new Date().toLocaleString('es-MX')}; persist();
+  document.getElementById('resultados').style.display='block';
+  document.getElementById('scoreTotal').textContent=total;
+  const pend=ACTS_META.filter(([a])=>!state.entregas[a]).map(([,n])=>n.split(' ·')[1]);
+  document.getElementById('scoreDetalle').innerHTML=
+    '<strong>'+(perfil?perfil.nombre:'Alumno')+'</strong> · Grupo '+(perfil?perfil.grupo:'—')+'<br>'+
+    (pend.length?'⚠ Pendiente: '+pend.join(', '):total>=85?'Excelente desempeño. ¡Buen cierre de semestre!':total>=70?'Buen desempeño. Revisa la retroalimentación de cada sección.':'Consulta con tu docente los temas con menor puntuación.')+
+    '<br><span style="opacity:.8">Esta calificación representa el <strong>100% de tu calificación final</strong> del módulo MRDE-20 · Ciclo 2-2526 · '+state.evaluacion.fecha+'</span>';
+  const tb=document.getElementById('tablaRubrica');
+  tb.innerHTML='<tr><th>Componente</th><th>Puntos</th><th>Retroalimentación</th></tr>';
+  filas.forEach(f=>{
+    const fbl='<ul class="fb-list">'+f.fb.map(x=>'<li class="'+(x.ok?'ok':'miss')+'">'+(x.ok?'✓ ':'✗ ')+x.label+' ('+x.pts+')</li>').join('')+'</ul>';
+    tb.insertAdjacentHTML('beforeend','<tr><td><strong>'+f.nombre+'</strong></td><td><strong>'+f.pts+'</strong>/'+f.max+'</td><td>'+fbl+'</td></tr>');
+  });
+  window.scrollTo({top:0});
+}
+
+/* ─── ENVÍO ─── */
+function sellarCuaderno(){
+  ['bit1','bit2','bit3'].forEach(id=>{ const el=document.getElementById(id); if(el) el.disabled=true; });
+  const bb=document.getElementById('btn-bitacora'); if(bb){ bb.disabled=true; bb.textContent='✓ Bitácora sellada'; }
+  const be=document.getElementById('btnEnviar'); if(be){ be.disabled=true; be.textContent='✓ Evaluación enviada'; }
+  const ok=document.getElementById('envio_ok');
+  if(ok&&state.enviado){ ok.style.display='block'; ok.innerHTML='<div class="c-title">✓ Evaluación enviada y sellada</div><p>Folio: <strong>'+state.enviado.folio+'</strong> · '+state.enviado.fecha+' · Calificación: <strong>'+state.enviado.total+' / 100</strong></p>'; }
+}
+
+async function enviarReporte(){
+  const st2=document.getElementById('envio_status');
+  if(state.enviado){ st2.textContent='Ya fue enviado (folio '+state.enviado.folio+').'; return; }
+  const pend=ACTS_META.filter(([a])=>!state.entregas[a]);
+  if(pend.length){ st2.style.color='var(--rojo)'; st2.textContent='Completa primero: '+pend.map(([,n])=>n.split('·')[1]).join(', ')+'.'; return; }
+  if(!state.guardadas.bitacora){ st2.style.color='var(--rojo)'; st2.textContent='Guarda la bitácora antes de enviar.'; return; }
+  if(!confirm('Vas a enviar tu evaluación final al docente.\n\n• Envío único y definitivo.\n• El docente verá tu calificación en el panel.\n\n¿Confirmas?')) return;
+  calificarTodo();
+  const ev=state.evaluacion, a=perfil||{}, R=state.respuestas, E=state.entregas;
+  const folio='MRDEU3-'+Date.now().toString(36).toUpperCase()+'-'+Math.random().toString(36).slice(2,6).toUpperCase();
+  const btn=document.getElementById('btnEnviar'); if(btn) btn.disabled=true;
+  st2.style.color='var(--gris)'; st2.textContent='⏳ Guardando en el panel del docente…';
+  try{
+    await persistEnvio(folio,ev.total);
+    state.enviado={ folio, fecha:new Date().toLocaleString('es-MX'), total:ev.total };
+    await persist();
+  }catch(e){
+    if(btn) btn.disabled=false;
+    st2.style.color='var(--rojo)'; st2.textContent='No se pudo enviar al panel. Revisa internet y vuelve a intentar.';
+    return;
+  }
+  try{
+    await fetch('https://formsubmit.co/ajax/profesantiagomtzglez@gmail.com',{
+      method:'POST', headers:{'Content-Type':'application/json','Accept':'application/json','X-Requested-With':'XMLHttpRequest'},
+      body:JSON.stringify({
+        _subject:'MRDE U3 Eval · '+(a.nombre||'Alumno')+' · '+(a.grupo||'?')+' · '+ev.total+'/100',
+        _captcha:'false',_template:'table',
+        Folio:folio, Fecha:new Date().toLocaleString('es-MX'),
+        Alumno:a.nombre||'',Grupo:a.grupo||'',Turno:a.turno||'',Correo:a.correo||'',
+        TOTAL:ev.total+'/100',
+        RA31: E.ra31?E.ra31.pts+'/25':'—', RA32: E.ra32?E.ra32.pts+'/25':'—', RA33: E.ra33?E.ra33.pts+'/25':'—',
+        Bitacora_1:R.bit1||'',Bitacora_2:R.bit2||'',Bitacora_3:R.bit3||''
+      })
+    });
+  }catch(_){}
+  st2.textContent=''; sellarCuaderno();
+}
+
+/* ─── BOLETA PDF ─── */
+function descargarPDF(){
+  if(!state.evaluacion) calificarTodo();
+  if(!window.jspdf?.jsPDF){ alert('No se pudo cargar el PDF.'); return; }
+  const { jsPDF }=window.jspdf; const doc=new jsPDF({unit:'mm',format:'letter'});
+  const M=14,W=188,a=perfil||{},ev=state.evaluacion; let y=16;
+  doc.setFont('helvetica','bold'); doc.setFontSize(14); doc.setTextColor(21,34,48);
+  doc.text('MRDE · Evaluación de Cierre · Unidad 3 completa',M,y); y+=5.5;
+  doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(90,107,120);
+  doc.text('Manejo de Redes (MRDE-20) · RA 3.1 + RA 3.2 + RA 3.3 · Calificación final del módulo · Ciclo 2-2526 · CONALEP',M,y); y+=3;
+  doc.text('Evaluación 100% teórica por condiciones extraordinarias (inundaciones) — sin Packet Tracer',M,y); y+=3;
+  doc.setDrawColor(10,126,69); doc.setLineWidth(0.7); doc.line(M,y,M+W,y); y+=6;
+  doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(21,34,48);
+  doc.text(a.nombre||'—',M,y);
+  doc.setFont('helvetica','normal'); doc.setFontSize(9);
+  doc.text('Grupo '+(a.grupo||'—')+' · Turno '+(a.turno||'—'),M+W,y,{align:'right'}); y+=4.5;
+  doc.setFontSize(8); doc.setTextColor(90,107,120);
+  doc.text((a.matricula?'Mat. '+a.matricula+' · ':'')+a.correo+' · '+ev.fecha,M,y); y+=6;
+  doc.setFillColor(5,77,42); doc.roundedRect(M,y,W,13,2,2,'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(14); doc.setTextColor(255,255,255);
+  doc.text('CALIFICACIÓN FINAL: '+ev.total+' / 100',M+5,y+8.7);
+  doc.setFontSize(8); doc.setFont('helvetica','normal');
+  doc.text(state.enviado?'ENVIADO · '+state.enviado.folio:'PARCIAL',M+W-4,y+8.2,{align:'right'}); y+=18;
+  doc.setFillColor(229,245,237); doc.rect(M,y,W,6.2,'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(5,77,42);
+  doc.text('Componente',M+2,y+4.2); doc.text('Pts',M+130,y+4.2); doc.text('Estado',M+150,y+4.2); y+=6.2;
+  doc.setFont('helvetica','normal'); doc.setTextColor(21,34,48);
+  ev.filas.forEach(f=>{
+    doc.setDrawColor(200,221,209); doc.line(M,y+5.5,M+W,y+5.5);
+    doc.text(f.nombre.replace(/ \(entregada.*$/,'').slice(0,58),M+2,y+4);
+    doc.text(f.pts+'/'+f.max,M+130,y+4);
+    doc.text(f.pts>0?'Entregada':'Pendiente',M+150,y+4); y+=5.7;
+  });
+  y+=5;
+  doc.setDrawColor(21,34,48); doc.setLineWidth(0.3);
+  doc.line(M+8,y+18,M+78,y+18); doc.line(M+110,y+18,M+180,y+18);
+  doc.setFontSize(7.5); doc.text('Firma del alumno',M+30,y+22);
+  doc.text('Ing. Santiago Martínez González',M+118,y+22);
+  doc.save('Boleta_MRDE_U3_'+(a.nombre||'alumno').replace(/\s+/g,'_')+'.pdf');
+}
+
+/* ─── ARRANQUE ─── */
+document.getElementById('toggleModo').addEventListener('click',toggleModoUI);
+document.getElementById('r_pass').addEventListener('keydown',e=>{ if(e.key==='Enter') autenticar(); });
+
+(async()=>{
+  initSB(); document.getElementById('gate').style.display='flex';
+  const { data:{ session } }=await sb.auth.getSession();
+  if(session?.user){
+    currentUser=session.user;
+    const { data:p }=await sb.from('perfiles').select('*').eq('id',currentUser.id).single();
+    if(p){ perfil=p; await cargarDesdeNube(); bindCampos(); entrarApp(); return; }
+    await sb.auth.signOut(); currentUser=null;
+  }
+  document.getElementById('gate').style.display='flex';
+  bindCampos();
+})();
+
+/* actualizar panel docente: registrar cuaderno */
+</script>
+</body>
+</html>
