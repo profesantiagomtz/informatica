@@ -103,22 +103,27 @@ body.mod-mrde31 .logo-mark { background:#0A7E45; }
 body.mod-mrde31 .btn { background:#0A7E45; }
 body.mod-mrde31 .btn:hover { background:#054D2A; }
 body.mod-mrde31 .btn.ghost { color:#054D2A; }
-body.mod-proo21 { --azul:#6B2FA0; --azul-osc:#4A1D72; --azul-tinte:#F0E8FA; }
-body.mod-proo21 .logo-mark { background:#6B2FA0; }
-body.mod-proo21 .btn { background:#6B2FA0; }
-body.mod-proo21 .btn:hover { background:#4A1D72; }
-body.mod-proo21 .btn.ghost { color:#4A1D72; }
+body.mod-proo21, body.mod-proo22 { --azul:#7C3AED; --azul-osc:#5B21B6; --azul-tinte:#F5F0FF; }
+body.mod-proo21 .logo-mark, body.mod-proo22 .logo-mark { background:linear-gradient(135deg,#6D28D9,#A855F7); }
+body.mod-proo21 .btn, body.mod-proo22 .btn { background:#7C3AED; }
+body.mod-proo21 .btn:hover, body.mod-proo22 .btn:hover { background:#5B21B6; }
+body.mod-proo21 .btn.ghost, body.mod-proo22 .btn.ghost { color:#5B21B6; }
 body.mod-ra21, body.mod-ra22 { --azul:#0E86C4; --azul-osc:#084F75; --azul-tinte:#E5F3FB; }
 
 /* badge de módulo activo */
 .mod-badge { display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:99px;margin-left:10px;vertical-align:middle }
 .mod-badge.cobd { background:#E5F3FB;color:#084F75;border:1px solid #C3DFF0 }
 .mod-badge.mrde { background:#E5F5ED;color:#054D2A;border:1px solid #B8DECA }
-.mod-badge.proo { background:#F0E8FA;color:#4A1D72;border:1px solid #D6B8F0 }
+.mod-badge.proo { background:#F5F0FF;color:#5B21B6;border:1px solid #DDD5FF }
 
 /* aviso de cuaderno sin Supabase */
 .aviso-local { background:#FFF4E0;border:1px solid #EDD9AE;color:#8A5300;border-radius:9px;padding:12px 16px;font-size:13.5px;margin-bottom:18px;display:none }
 .aviso-local strong { display:block;margin-bottom:3px }
+
+/* ===== PREMIUM DOCENTE PORTAL ===== */
+body::before{content:'';position:fixed;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#7C3AED,#A855F7,#6366F1,#7C3AED);background-size:200%;animation:gradbar 4s linear infinite;z-index:200}
+@keyframes gradbar{0%{background-position:0%}100%{background-position:200%}}
+
 </style>
 </head>
 <body>
@@ -161,7 +166,8 @@ body.mod-ra21, body.mod-ra22 { --azul:#0E86C4; --azul-osc:#084F75; --azul-tinte:
           <option value="mrde_u3_eval">MRDE · Evaluación Unidad 3 completa (cierre)</option>
         </optgroup>
         <optgroup label="PROO · Programación Orientada a Objetos">
-          <option value="proo21">PROO · RA 2.1 · Sobrecarga y polimorfismo</option>
+          <option value="proo21">PROO · RA 2.1 · Herencia y polimorfismo</option>
+          <option value="proo22">PROO · RA 2.2 · Patrones de diseño</option>
         </optgroup>
       </select>
     </div>
@@ -237,7 +243,8 @@ const ACTS = {
   ra22:   [['act1','Act. 1 · Vistas (CREATE VIEW)',35],['act2','Act. 2 · Formularios',25],['act3','Act. 3 · Reportes',30]],
   mrde31: [['act1','Act. 1 · Identificar elementos VLAN',20],['act2','Act. 2 · Configurar VLANs en Packet Tracer',40],['act3','Act. 3 · Troncal y resolución de problemas',30]],
   mrde_u3_eval: [['ra31','Evaluación RA 3.1 · VLANs y troncales',25],['ra32','Evaluación RA 3.2 · Protocolo VTP',25],['ra33','Evaluación RA 3.3 · Enrutamiento inter-VLAN',25]],
-  proo21: [['act1','Act. 1 · Sobrecarga de operadores',25],['act2','Act. 2 · Polimorfismo',25],['act3','Act. 3 · Clases abstractas',30],['act4','Act. 4 · Proyecto integrador',10]]
+  proo21: [['act1','Act. 1 · Herencia',30],['act2','Act. 2 · Sobrecarga de operadores',30],['act3','Act. 3 · Polimorfismo',30]],
+  proo22: [['act1','Act. 1 · Singleton',30],['act2','Act. 2 · Factory Method',30],['act3','Act. 3 · Excepciones',30]]
 };
 
 const SECCIONES = {
@@ -245,7 +252,8 @@ const SECCIONES = {
   ra22:   ['intro','ddl','conceptos','ejemplo','act1','act2','act3','simulador','bitacora','evaluacion'],
   mrde31: ['intro','conceptos','troncales','ejemplo','act1','act2','act3','bitacora','evaluacion'],
   mrde_u3_eval: ['intro','ra31_teoria','ra31_eval','ra32_teoria','ra32_eval','ra33_teoria','ra33_eval','bitacora','evaluacion'],
-  proo21: ['intro','conceptos','ejemplo','act1','act2','act3','act4','bitacora','evaluacion']
+  proo21: ['intro','repaso','herencia','tiposher','sobrecarga','polimorfismo','ejemplo','act1','act2','act3','editor','bitacora','evaluacion'],
+  proo22: ['intro','quees','singleton','factory','otrospatrones','seguridad','excepciones','ejemplo','act1','act2','act3','editor','bitacora','evaluacion']
 };
 
 const RESP_KEYS = {
@@ -257,12 +265,19 @@ const RESP_KEYS = {
     ra32:['r32_p1','r32_p2','r32_p3','r32_p4','r32_p5'],
     ra33:['r33_p1','r33_p2','r33_p3','r33_p4','r33_p5']
   },
-  proo21: { act1:['a1_concepto','a1_codigo','a1_just'], act2:['a2_tipo','a2_codigo','a2_just'], act3:['a3_clase','a3_codigo','a3_just'], act4:['a4_diseno','a4_codigo'] }
+  proo21: { act1:['a1_acc','a1_sint','a1_code','a1_expl'], act2:['a2_tipo','a2_nom','a2_code','a2_expl'], act3:['a3_vir','a3_over','a3_code','a3_expl'] },
+  proo22: { act1:['a1_tipo','a1_priv','a1_code','a1_expl'], act2:['a2_sep','a2_ptr','a2_code','a2_expl'], act3:['a3_try','a3_throw','a3_code','a3_expl'] }
 };
 
 const RESP_ETIQ = {
   // COBD RA2.1
   a1_tabla:'Tabla identificada', a1_join:'¿Requiere JOIN?', a1_sql:'Consulta SQL', a1_just:'Justificación',
+  a1_acc:'Nivel de acceso correcto', a1_sint:'Sintaxis de herencia', a1_code:'Código C++', a1_expl:'Explicación',
+  a2_tipo:'Tipo de operador', a2_nom:'Nombre del método', a2_code:'Código C++', a2_expl:'Explicación',
+  a3_vir:'Palabra clave virtual', a3_over:'Concepto override', a3_code:'Código C++', a3_expl:'Explicación',
+  a1_tipo:'Beneficio de Singleton', a1_priv:'Constructor private', a1_code:'Código C++', a1_expl:'Explicación',
+  a2_sep:'Separación de responsabilidades', a2_ptr:'Puntero a clase base', a2_code:'Código C++', a2_expl:'Explicación',
+  a3_try:'Sintaxis try/catch', a3_throw:'Cuándo usar throw', a3_code:'Código C++', a3_expl:'Explicación',
   a2_sqlI:'INSERT', a2_sqlU:'UPDATE', a2_sqlD:'DELETE', a2_reflex:'Reflexión',
   a3_tablas:'Núm. de tablas', a3_llave:'Llave', a3_sql:'Consulta SQL', a3_just:'Justificación',
   a4_momento:'Momento', a4_evento:'Evento', a4_sql:'CREATE TRIGGER', a4_expl:'Explicación',
@@ -315,7 +330,8 @@ const MOD_LABELS = {
   ra22:   { txt:'COBD',  cls:'cobd', logo:'SQL', sinSupa:false },
   mrde31: { txt:'MRDE',  cls:'mrde', logo:'NET', sinSupa:true  },
   mrde_u3_eval: { txt:'MRDE', cls:'mrde', logo:'U3', sinSupa:false },
-  proo21: { txt:'PROO',  cls:'proo', logo:'C++', sinSupa:true  }
+  proo21: { txt:'PROO',  cls:'proo', logo:'C++', sinSupa:false },
+  proo22: { txt:'PROO',  cls:'proo', logo:'C++', sinSupa:false }
 };
 function onCambioModulo(){
   const cuad = document.getElementById('fCuaderno').value;
