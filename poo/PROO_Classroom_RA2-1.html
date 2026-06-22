@@ -8,27 +8,31 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --azul:#6D28D9;
-  --azul-osc:#4C1D95;
-  --azul-tinte:#EDE7FB;
-  --ink:#152230;
-  --gris:#5A6B78;
-  --bg:#F1F6F9;
+  --azul:#7C3AED;
+  --azul-osc:#5B21B6;
+  --azul-tinte:#F5F0FF;
+  --ink:#0F172A;
+  --gris:#475569;
+  --bg:#F8F7FF;
   --surface:#FFFFFF;
-  --line:#D8E5EE;
-  --code-bg:#0A2233;
-  --code-ink:#D6ECF8;
-  --kw:#5BC8F5;
-  --str:#F0C674;
-  --num:#8FE3AC;
-  --amber-bg:#FFF4E0;
-  --amber:#8A5300;
-  --rojo:#A33B2E;
-  --rojo-bg:#FBEAE7;
-  --ok:#0B6B3A;
-  --radius:10px;
+  --line:#E2D9F3;
+  --code-bg:#0D1117;
+  --code-ink:#CDD9E5;
+  --kw:#79C0FF;
+  --str:#FFD700;
+  --num:#7EE787;
+  --cm:#8B949E;
+  --amber-bg:#FFF8E1;
+  --amber:#92400E;
+  --rojo:#B91C1C;
+  --rojo-bg:#FEF2F2;
+  --ok:#065F46;
+  --radius:12px;
   --sans:'IBM Plex Sans',system-ui,sans-serif;
   --mono:'IBM Plex Mono',monospace;
+  --shadow-sm:0 1px 3px rgba(91,33,182,.08),0 1px 2px rgba(91,33,182,.04);
+  --shadow-md:0 4px 16px rgba(91,33,182,.10),0 2px 6px rgba(91,33,182,.06);
+  --shadow-lg:0 10px 40px rgba(91,33,182,.15),0 4px 12px rgba(91,33,182,.08);
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -241,6 +245,100 @@ textarea:disabled,input:disabled,select:disabled{background:#EDF2F6;color:#5A6B7
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 @media print{.sidebar,.topbar,.pager,.btn{display:none!important}.app{display:block}}
+
+/* ===== PREMIUM ENHANCEMENTS ===== */
+/* Animated gradient accent bar at top */
+body::before{content:'';position:fixed;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#7C3AED,#A855F7,#6366F1,#7C3AED);background-size:200% 100%;animation:gradbar 4s linear infinite;z-index:200}
+@keyframes gradbar{0%{background-position:0% 0%}100%{background-position:200% 0%}}
+
+/* Enhanced cards with subtle shadow */
+.card{box-shadow:var(--shadow-sm);transition:box-shadow .2s ease}
+.card:hover{box-shadow:var(--shadow-md)}
+
+/* Progress bar animated fill */
+.progress-fill{background:linear-gradient(90deg,#7C3AED,#A855F7);transition:width .6s cubic-bezier(.4,0,.2,1)}
+
+/* Enhanced TOC active state */
+.toc a.active{background:linear-gradient(135deg,var(--azul-tinte),#EEE8FF);color:var(--azul-osc);font-weight:600;border-right:3px solid var(--azul)}
+.toc a.done .dot{background:linear-gradient(135deg,var(--azul),#A855F7);border-color:var(--azul);box-shadow:0 0 6px rgba(124,58,237,.4)}
+
+/* Enhanced badges */
+.badge{font-size:12px;font-weight:700;padding:5px 12px;border-radius:99px;background:var(--azul-tinte);color:var(--azul-osc);border:1px solid var(--line);letter-spacing:.2px}
+.badge.pts{background:linear-gradient(135deg,#1E1B4B,#312E81);color:#fff;border:none}
+
+/* Code editor glow */
+.editor-wrap{box-shadow:var(--shadow-md);border-color:#2D3748}
+textarea.code-edit{font-size:13.5px;line-height:1.7}
+
+/* Enhanced enunciado */
+.enunciado{background:linear-gradient(135deg,#F5F0FF 0%,#FAF7FF 60%,#fff 100%);border-left:4px solid var(--azul);box-shadow:var(--shadow-sm)}
+
+/* Callout icons */
+.callout.info .c-title::before{content:'💡 '}
+.callout.warn .c-title::before{content:'⚠️ '}
+.callout.danger .c-title::before{content:'🚨 '}
+
+/* Score hero gradient */
+.score-hero{background:linear-gradient(135deg,#4C1D95,#6D28D9,#7C3AED)}
+
+/* Method cards hover */
+.metodo .paso{transition:transform .15s ease,box-shadow .15s ease}
+.metodo .paso:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+
+/* Run output improved */
+.run-out{border:1px solid #1E2D3D;background:#0D1117;color:#CDD9E5;border-radius:var(--radius);padding:14px 16px;font-family:var(--mono);font-size:13px;line-height:1.65;white-space:pre-wrap;min-height:48px;margin-top:12px}
+.run-out .ok-line{color:#7EE787}.run-out .err-line{color:#FF7B72}.run-out .muted{color:#8B949E}
+
+/* Data table upgrade */
+table.data th{background:linear-gradient(180deg,#F8F5FF,#F0E9FF);color:var(--azul-osc);font-weight:700;letter-spacing:.3px}
+table.data tr:hover td{background:#FDFAFF}
+
+/* Gate premium upgrade */
+.gate-brand{background:linear-gradient(160deg,#3B0764,#6D28D9,#7C3AED)}
+.gate-card{box-shadow:0 40px 100px rgba(91,33,182,.35)}
+
+/* Btn micro-interaction */
+.btn{transition:all .15s ease;letter-spacing:.2px}
+.btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 4px 12px rgba(124,58,237,.35)}
+.btn:active:not(:disabled){transform:none}
+
+/* page titles with accent */
+h2.page-title{background:linear-gradient(135deg,#3B0764,#7C3AED);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+/* Sidebar brand premium */
+.brand{background:linear-gradient(180deg,#fff 0%,#FDFBFF 100%)}
+.logo-mark{background:linear-gradient(135deg,#6D28D9,#A855F7)!important;box-shadow:0 2px 8px rgba(124,58,237,.3)}
+
+/* Section eyebrow pill */
+.eyebrow{display:inline-block;background:var(--azul-tinte);padding:4px 12px;border-radius:99px;border:1px solid var(--line)}
+
+/* Concept highlight boxes */
+.concept-box{border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px;margin-bottom:14px;background:linear-gradient(135deg,#FDFBFF,#fff);box-shadow:var(--shadow-sm)}
+.concept-box .cb-label{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--azul);font-weight:700;margin-bottom:6px}
+.concept-box .cb-title{font-size:18px;font-weight:700;color:var(--ink);margin-bottom:6px}
+.concept-box .cb-body{font-size:14.5px;color:var(--gris);line-height:1.65}
+
+/* Syntax comparison table */
+.syntax-compare{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
+.syntax-compare .sc-col{border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm)}
+.syntax-compare .sc-head{padding:9px 14px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.8px}
+.syntax-compare .sc-head.good{background:#065F46;color:#D1FAE5}
+.syntax-compare .sc-head.bad{background:#7F1D1D;color:#FEE2E2}
+.syntax-compare pre{margin:0;border-radius:0;font-size:12.5px}
+
+/* Animated checkmark on submit */
+@keyframes pop{0%{transform:scale(0)}60%{transform:scale(1.2)}100%{transform:scale(1)}}
+.save-note.show{animation:pop .3s ease}
+
+/* Flow diagram box */
+.flow{display:flex;align-items:center;gap:0;margin:16px 0 24px;flex-wrap:wrap}
+.flow-step{background:var(--azul-tinte);border:2px solid var(--azul);border-radius:10px;padding:12px 16px;text-align:center;min-width:110px;font-size:13px;font-weight:600;color:var(--azul-osc)}
+.flow-arrow{font-size:22px;color:var(--azul);padding:0 6px;font-weight:300}
+
+/* Knowledge check widget */
+.kcheck{background:linear-gradient(135deg,var(--amber-bg),#FFFBF0);border:1px solid #FDE68A;border-left:4px solid #F59E0B;border-radius:var(--radius);padding:16px 18px;margin:18px 0}
+.kcheck .kc-head{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#92400E;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+
 </style>
 </head>
 <body>
@@ -249,16 +347,17 @@ textarea:disabled,input:disabled,select:disabled{background:#EDF2F6;color:#5A6B7
 <div class="gate" id="gate" style="display:none">
   <div class="gate-card">
     <aside class="gate-brand">
-      <div class="logo-mark">SQL</div>
+      <div class="logo-mark">C++</div>
       <h2>POO Classroom</h2>
       <div class="g-sub">Cuaderno Digital de Aprendizaje</div>
       <div class="g-divider"></div>
       <div class="g-mod">Programación Orientada a Objetos · CONALEP</div>
       <ul class="g-list">
-        <li>Unidad 2 · RA 2.1 · Evidencia 2.1.1 (35% del módulo)</li>
-        <li>Proyecto integrador: <strong>Sistema de Administración Estudiantil</strong></li>
-        <li>3 actividades prácticas con código C++ real</li>
-        <li>Bitácora de aprendizaje y reporte descargable para tu docente</li>
+        <li>Unidad 2 · RA 2.1 · Evidencia 2.1.1 — vale el <strong>35% del módulo</strong></li>
+        <li>Proyecto integrador: Cajero Automático en <strong>C++ real</strong></li>
+        <li>3 actividades evaluadas con retroalimentación inmediata y solución</li>
+        <li>Código que <strong>compila y se ejecuta</strong> en el navegador, sin instalar nada</li>
+        <li>Tu avance se guarda en la nube ☁ — trabaja desde cualquier equipo</li>
       </ul>
       <div class="g-groups">&raquo; Grupos 410 &middot; 411</div>
     </aside>
@@ -314,7 +413,7 @@ textarea:disabled,input:disabled,select:disabled{background:#EDF2F6;color:#5A6B7
 <aside class="sidebar">
   <div class="brand">
     <div class="logo">
-      <div class="logo-mark">SQL</div>
+      <div class="logo-mark">C++</div>
       <div>
         <h1>POO Classroom</h1>
         <div class="sub">Cuaderno Digital de Aprendizaje</div>
@@ -331,7 +430,7 @@ textarea:disabled,input:disabled,select:disabled{background:#EDF2F6;color:#5A6B7
   </div>
 
   <div class="progress-wrap">
-    <div class="progress-label"><span>Avance del cuaderno</span><span id="progPct">0%</span></div>
+    <div class="progress-label"><span>Mi progreso</span><span id="progPct">0%</span></div>
     <div class="progress-bar"><div class="progress-fill" id="progFill"></div></div>
     <div style="display:flex;gap:8px;margin-top:10px">
       <button class="btn ghost" style="padding:5px 10px;font-size:11.5px;flex:1;justify-content:center" onclick="exportarAvance()" title="Descarga tu avance para llevarlo a otra computadora">⬇ Respaldo</button>
@@ -342,28 +441,26 @@ textarea:disabled,input:disabled,select:disabled{background:#EDF2F6;color:#5A6B7
   </div>
 
   <nav class="toc" id="toc">
-    <div class="toc-group">Inicio</div>
-    <a data-sec="intro" class="active"><span class="dot"></span>1 · Introducción</a>
-    <div class="toc-group">Repaso</div>
-    <a data-sec="repaso"><span class="dot"></span>2 · Clases (lo que ya dominas)</a>
-    <div class="toc-group">Herencia</div>
+    <div class="toc-group">🚀 Inicio</div>
+    <a data-sec="intro" class="active"><span class="dot"></span>1 · Presentación del RA</a>
+    <div class="toc-group">📚 Teoría (lee primero)</div>
+    <a data-sec="repaso"><span class="dot"></span>2 · Clases — lo que ya dominas</a>
     <a data-sec="herencia"><span class="dot"></span>3 · Herencia y reutilización</a>
-    <a data-sec="tiposher"><span class="dot"></span>4 · Tipos de herencia</a>
-    <div class="toc-group">Polimorfismo</div>
+    <a data-sec="tiposher"><span class="dot"></span>4 · Simple, múltiple y ambigüedad</a>
     <a data-sec="sobrecarga"><span class="dot"></span>5 · Sobrecarga de operadores</a>
     <a data-sec="polimorfismo"><span class="dot"></span>6 · Polimorfismo y virtuales</a>
-    <a data-sec="ejemplo"><span class="dot"></span>7 · Ejemplo guiado</a>
-    <div class="toc-group">Actividades prácticas</div>
-    <a data-sec="act1"><span class="dot"></span>8 · Herencia</a>
-    <a data-sec="act2"><span class="dot"></span>9 · Sobrecarga de operadores</a>
-    <a data-sec="act3"><span class="dot"></span>10 · Polimorfismo</a>
-    <div class="toc-group">Práctica libre</div>
+    <a data-sec="ejemplo"><span class="dot"></span>7 · Ejemplo guiado completo</a>
+    <div class="toc-group">✏️ Actividades (35% del módulo)</div>
+    <a data-sec="act1"><span class="dot"></span>8 · Act. 1 · Herencia</a>
+    <a data-sec="act2"><span class="dot"></span>9 · Act. 2 · Sobrecarga</a>
+    <a data-sec="act3"><span class="dot"></span>10 · Act. 3 · Polimorfismo</a>
+    <div class="toc-group">💻 Laboratorio libre</div>
     <a data-sec="editor"><span class="dot"></span>11 · Editor C++ libre</a>
-    <div class="toc-group">Cierre</div>
+    <div class="toc-group">📋 Cierre</div>
     <a data-sec="bitacora"><span class="dot"></span>12 · Bitácora del alumno</a>
-    <a data-sec="evaluacion"><span class="dot"></span>13 · Evaluación</a>
+    <a data-sec="evaluacion"><span class="dot"></span>13 · Evaluación final</a>
   </nav>
-  <div class="sidebar-foot">Unidad 2 · Desarrollo de aplicaciones orientadas a objetos<br>RA 2.1 · 60 horas · Evidencia 2.1.1 (35%)</div>
+  <div class="sidebar-foot" style="font-size:11.5px">📌 Unidad 2 · RA 2.1<br><span style="color:var(--azul);font-weight:600">Herencia y Polimorfismo · C++</span><br>Evidencia 2.1.1 · <strong>35%</strong> del módulo</div>
 </aside>
 
 <!-- ===== MAIN ===== -->
@@ -375,14 +472,25 @@ textarea:disabled,input:disabled,select:disabled{background:#EDF2F6;color:#5A6B7
   <h2 class="page-title">Herencia, sobrecarga y polimorfismo</h2>
   <p class="page-lead">En el R.A. 1.2 aprendiste a crear clases y objetos. Ahora subimos de nivel: harás que unas clases <strong>hereden</strong> de otras (reutilizando código), que tus objetos respondan diferente al mismo mensaje (<strong>polimorfismo</strong>), y que los operadores como <code class="inline">+</code> funcionen con tus propios objetos (<strong>sobrecarga</strong>).</p>
 
-  <div class="card">
-    <h4>Los tres grandes temas de este RA</h4>
-    <ul class="list" style="margin-bottom:0">
-      <li><strong>Herencia:</strong> una clase "hija" reutiliza y extiende lo de una clase "padre". Una <code class="inline">CuentaAhorro</code> es una <code class="inline">Cuenta</code> que además gana intereses.</li>
-      <li><strong>Sobrecarga de operadores:</strong> darle significado a <code class="inline">+</code>, <code class="inline">==</code>, etc. para tus objetos. Sumar dos cuentas con <code class="inline">c1 + c2</code>.</li>
-      <li><strong>Polimorfismo:</strong> el mismo método (<code class="inline">mostrarTipo()</code>) se comporta distinto según el tipo real del objeto.</li>
-    </ul>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px">
+    <div class="concept-box" style="border-top:4px solid #7C3AED">
+      <div class="cb-label">Concepto 1</div>
+      <div class="cb-title">🧬 Herencia</div>
+      <div class="cb-body">Una clase <em>hija</em> reutiliza y extiende a una clase <em>padre</em>. <code class="inline">CuentaAhorro</code> <strong>ES UNA</strong> <code class="inline">Cuenta</code> que además gana intereses. Escribe el código una vez, úsalo en todas las hijas.</div>
+    </div>
+    <div class="concept-box" style="border-top:4px solid #0891B2">
+      <div class="cb-label">Concepto 2</div>
+      <div class="cb-title">⚙️ Sobrecarga</div>
+      <div class="cb-body">Darle nuevo significado a operadores como <code class="inline">+</code> o <code class="inline">==</code> para tus objetos. Así puedes escribir <code class="inline">c1 + c2</code> para sumar dos cuentas, de forma natural.</div>
+    </div>
+    <div class="concept-box" style="border-top:4px solid #059669">
+      <div class="cb-label">Concepto 3</div>
+      <div class="cb-title">🦎 Polimorfismo</div>
+      <div class="cb-body">El mismo método (<code class="inline">mostrarTipo()</code>) produce resultados distintos según el tipo real del objeto. Una sola llamada, muchos comportamientos posibles.</div>
+    </div>
   </div>
+
+  <div class="callout info"><div class="c-title">Cómo usar este cuaderno</div><p><strong>Primero lee toda la teoría</strong> (Secciones 2 al 7) en orden. Después, cuando llegues a las actividades, el código ya te resultará familiar. Cada actividad tiene un recuadro amarillo que te dice exactamente qué secciones necesitas dominar.</p></div>
 
   <h3>Seguimos con el Cajero Automático 🏧</h3>
   <p>Nuestro cajero crece: ahora maneja <strong>distintos tipos de cuenta</strong> (ahorro, crédito, nómina). Aquí es donde la herencia y el polimorfismo brillan — en lugar de copiar y pegar código para cada tipo, defines una vez lo común y cada tipo agrega solo lo suyo.</p>
@@ -805,6 +913,12 @@ int main() {
   <h2 class="page-title">Herencia · La CuentaAhorro</h2>
   <div class="act-meta"><span class="badge">herencia</span><span class="badge">: public</span><span class="badge">protected</span><span class="badge pts">30 puntos</span></div>
 
+
+  <div class="kcheck">
+    <div class="kc-head">🎯 Verifica antes de empezar</div>
+    <p style="margin:0;font-size:14.5px;color:var(--amber)">Para esta actividad necesitas saber: <strong>(1)</strong> declarar <code class="inline">protected</code> en el padre, <strong>(2)</strong> escribir <code class="inline">class Hija : public Padre</code>, <strong>(3)</strong> llamar al constructor del padre con <code class="inline">: Padre(...)</code>. Si no lo tienes claro, regresa a la <strong>Sección 3 · Herencia</strong> antes de continuar.</p>
+  </div>
+
   <div class="enunciado">
     <div class="et">🏧 Problema a resolver</div>
     <p class="prob">Crea una clase base <code>Cuenta</code> con un atributo <code>saldo</code> (protected) y un método <code>mostrar()</code>. Luego crea una clase <code>CuentaAhorro</code> que <strong>herede</strong> de <code>Cuenta</code> y le agregue un método <code>aplicarInteres()</code> que sume el 10% al saldo. En el <code>main</code>, crea una CuentaAhorro con $1000, aplica el interés y muestra el saldo.</p>
@@ -884,6 +998,12 @@ int main() {
   <h2 class="page-title">Sobrecarga de operadores · Sumar cuentas</h2>
   <div class="act-meta"><span class="badge">operator+</span><span class="badge">binario</span><span class="badge pts">30 puntos</span></div>
 
+
+  <div class="kcheck">
+    <div class="kc-head">🎯 Verifica antes de empezar</div>
+    <p style="margin:0;font-size:14.5px;color:var(--amber)">Para esta actividad necesitas saber: <strong>(1)</strong> qué es un operador binario vs unario, <strong>(2)</strong> escribir <code class="inline">Tipo operator+(Tipo otro)</code>, <strong>(3)</strong> devolver un nuevo objeto con el resultado. Si no lo tienes claro, regresa a la <strong>Sección 5 · Sobrecarga</strong>.</p>
+  </div>
+
   <div class="enunciado">
     <div class="et">🏧 Problema a resolver</div>
     <p class="prob">A la clase <code>Cuenta</code> (con <code>saldo</code> público) agrégale la <strong>sobrecarga del operador <code>+</code></strong>, de modo que al escribir <code>c1 + c2</code> se obtenga una nueva cuenta cuyo saldo sea la suma de ambos. En el <code>main</code>, suma una cuenta de $1000 con otra de $500 y muestra el saldo del resultado.</p>
@@ -959,6 +1079,18 @@ int main() {
   <div class="eyebrow">Sección 10 · Actividad práctica 3</div>
   <h2 class="page-title">Polimorfismo · Tipos de cuenta</h2>
   <div class="act-meta"><span class="badge">virtual</span><span class="badge">override</span><span class="badge">polimorfismo</span><span class="badge pts">30 puntos</span></div>
+
+
+  <div class="kcheck">
+    <div class="kc-head">🎯 Verifica antes de empezar</div>
+    <p style="margin:0;font-size:14.5px;color:var(--amber)">Para esta actividad necesitas saber: <strong>(1)</strong> declarar <code class="inline">protected</code> en el padre, <strong>(2)</strong> escribir <code class="inline">class Hija : public Padre</code>, <strong>(3)</strong> llamar al constructor del padre con <code class="inline">: Padre(...)</code>. Si no lo tienes claro, regresa a la <strong>Sección 3 · Herencia</strong> antes de continuar.</p>
+  </div>
+
+
+  <div class="kcheck">
+    <div class="kc-head">🎯 Verifica antes de empezar</div>
+    <p style="margin:0;font-size:14.5px;color:var(--amber)">Para esta actividad necesitas saber: <strong>(1)</strong> escribir <code class="inline">virtual</code> en el método del padre, <strong>(2)</strong> usar <code class="inline">override</code> en la hija, <strong>(3)</strong> declarar un arreglo de punteros <code class="inline">Padre*</code>. Si no lo tienes claro, regresa a la <strong>Sección 6 · Polimorfismo</strong>.</p>
+  </div>
 
   <div class="enunciado">
     <div class="et">🏧 Problema a resolver</div>
@@ -1091,7 +1223,7 @@ int main() {
 
 <!-- 8. BITÁCORA -->
 <section class="page" id="sec-bitacora">
-  <div class="eyebrow">Sección 10 · Bitácora del alumno</div>
+  <div class="eyebrow">Sección 12 · Bitácora del alumno</div>
   <h2 class="page-title">Reflexiona sobre tu aprendizaje</h2>
   <p class="page-lead">La bitácora es tu espacio de metacognición: escribir lo que aprendiste consolida el conocimiento. Responde con honestidad y con tus propias palabras; forma parte de tu evaluación (10 puntos).</p>
 
@@ -1106,17 +1238,17 @@ int main() {
     </div>
     <div class="field" style="margin-bottom:0">
       <label for="bit3">3. ¿Cómo aplicarías la Programación Orientada a Objetos en un proyecto real?</label>
-      <textarea id="bit3" data-key="bit3" placeholder="En un sistema escolar real, SQL serviría para…"></textarea>
+      <textarea id="bit3" data-key="bit3" placeholder="La herencia y el polimorfismo me servirían para…"></textarea>
     </div>
   </div>
   <button class="btn" id="btn-bitacora" onclick="guardar('bitacora')">Guardar bitácora</button><span class="save-note" id="save-bitacora">✓ Avance guardado</span>
 
-  <div class="pager"><button class="btn ghost" onclick="go('simulador')">← Simulador SQL</button><button class="btn" onclick="go('evaluacion')">Ir a Evaluación →</button></div>
+  <div class="pager"><button class="btn ghost" onclick="go('editor')">← Editor C++</button><button class="btn" onclick="go('evaluacion')">Ir a Evaluación →</button></div>
 </section>
 
 <!-- 8. EVALUACIÓN -->
 <section class="page" id="sec-evaluacion">
-  <div class="eyebrow">Sección 11 · Evaluación</div>
+  <div class="eyebrow">Sección 13 · Evaluación</div>
   <h2 class="page-title">Resultados de tu cuaderno</h2>
   <p class="page-lead">Cada actividad se califica en el momento en que la entregas (intento único) y ahí mismo ves tu retroalimentación y la solución. Esta pantalla reúne los resultados de tus entregas, suma tu bitácora y genera el reporte final para tu docente.</p>
 
@@ -1139,7 +1271,7 @@ int main() {
     </div>
 
     <h3>Entrega tu reporte</h3>
-    <p>Cuando estés conforme con tu resultado, envíalo a tu docente con el botón azul. El envío es <strong>único y definitivo</strong>: tu calificación llega directamente al correo del docente con fecha, hora y folio, y el cuaderno queda <strong>sellado</strong> — las actividades y la bitácora pasan a solo lectura. Los apuntes, las instrucciones de cada práctica y el simulador <strong>seguirán disponibles para consulta</strong>.</p>
+    <p>Cuando estés conforme con tu resultado, envíalo a tu docente con el botón azul. El envío es <strong>único y definitivo</strong>: tu calificación llega directamente al correo del docente con fecha, hora y folio, y el cuaderno queda <strong>sellado</strong> — las actividades y la bitácora pasan a solo lectura. Los apuntes, las instrucciones de cada práctica y el editor de C++ <strong>seguirán disponibles para consulta</strong>.</p>
     <div class="callout warn">
       <div class="c-title">Antes de enviar, verifica</div>
       <p>Que tus 4 actividades estén entregadas y tu bitácora guardada. Después del envío ya no podrás modificar nada que genere calificación. Tu docente recibe cada envío con folio y hora: los envíos duplicados desde otro equipo se detectan y <strong>solo cuenta el primero</strong>.</p>
@@ -1399,6 +1531,7 @@ function lenOK(txt, min){ return (txt||'').trim().length >= min; }
 
 /* ---------- Editor C++ (compila vía proxy Supabase → Wandbox) ---------- */
 // URL de la Edge Function "compilar". Se completa tras desplegar el proxy.
+const CLAVE_DOCENTE = 'PROO2526';
 const EDGE_COMPILAR_URL = 'https://cmhnuuxgwrpkhutylnzs.supabase.co/functions/v1/compilar';
 
 const PLANTILLA_CPP = `#include <iostream>

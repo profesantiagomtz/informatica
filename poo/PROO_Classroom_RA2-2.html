@@ -8,27 +8,31 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --azul:#6D28D9;
-  --azul-osc:#4C1D95;
-  --azul-tinte:#EDE7FB;
-  --ink:#152230;
-  --gris:#5A6B78;
-  --bg:#F1F6F9;
+  --azul:#7C3AED;
+  --azul-osc:#5B21B6;
+  --azul-tinte:#F5F0FF;
+  --ink:#0F172A;
+  --gris:#475569;
+  --bg:#F8F7FF;
   --surface:#FFFFFF;
-  --line:#D8E5EE;
-  --code-bg:#0A2233;
-  --code-ink:#D6ECF8;
-  --kw:#5BC8F5;
-  --str:#F0C674;
-  --num:#8FE3AC;
-  --amber-bg:#FFF4E0;
-  --amber:#8A5300;
-  --rojo:#A33B2E;
-  --rojo-bg:#FBEAE7;
-  --ok:#0B6B3A;
-  --radius:10px;
+  --line:#E2D9F3;
+  --code-bg:#0D1117;
+  --code-ink:#CDD9E5;
+  --kw:#79C0FF;
+  --str:#FFD700;
+  --num:#7EE787;
+  --cm:#8B949E;
+  --amber-bg:#FFF8E1;
+  --amber:#92400E;
+  --rojo:#B91C1C;
+  --rojo-bg:#FEF2F2;
+  --ok:#065F46;
+  --radius:12px;
   --sans:'IBM Plex Sans',system-ui,sans-serif;
   --mono:'IBM Plex Mono',monospace;
+  --shadow-sm:0 1px 3px rgba(91,33,182,.08),0 1px 2px rgba(91,33,182,.04);
+  --shadow-md:0 4px 16px rgba(91,33,182,.10),0 2px 6px rgba(91,33,182,.06);
+  --shadow-lg:0 10px 40px rgba(91,33,182,.15),0 4px 12px rgba(91,33,182,.08);
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -241,6 +245,44 @@ textarea:disabled,input:disabled,select:disabled{background:#EDF2F6;color:#5A6B7
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 @media print{.sidebar,.topbar,.pager,.btn{display:none!important}.app{display:block}}
+
+/* ===== PREMIUM RA 2.2 ===== */
+body::before{content:'';position:fixed;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#7C3AED,#A855F7,#6366F1,#7C3AED);background-size:200%;animation:gradbar 4s linear infinite;z-index:200}
+@keyframes gradbar{0%{background-position:0%}100%{background-position:200%}}
+.card{box-shadow:var(--shadow-sm);transition:box-shadow .2s}
+.card:hover{box-shadow:var(--shadow-md)}
+.progress-fill{background:linear-gradient(90deg,#7C3AED,#A855F7);transition:width .6s cubic-bezier(.4,0,.2,1)}
+.toc a.active{background:linear-gradient(135deg,var(--azul-tinte),#EEE8FF);color:var(--azul-osc);font-weight:600;border-right:3px solid var(--azul)}
+.toc a.done .dot{background:linear-gradient(135deg,var(--azul),#A855F7);border-color:var(--azul);box-shadow:0 0 6px rgba(124,58,237,.4)}
+.badge{font-weight:700;letter-spacing:.2px}
+.badge.pts{background:linear-gradient(135deg,#1E1B4B,#312E81);color:#fff;border:none}
+.editor-wrap{box-shadow:var(--shadow-md);border-color:#2D3748}
+.enunciado{background:linear-gradient(135deg,#F5F0FF 0%,#FAF7FF 60%,#fff 100%);border-left:4px solid var(--azul);box-shadow:var(--shadow-sm)}
+.callout.info .c-title::before{content:'💡 '}
+.callout.warn .c-title::before{content:'⚠️ '}
+.score-hero{background:linear-gradient(135deg,#4C1D95,#6D28D9,#7C3AED)}
+.metodo .paso{transition:transform .15s ease,box-shadow .15s ease}
+.metodo .paso:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.run-out{border:1px solid #1E2D3D;background:#0D1117;color:#CDD9E5;border-radius:var(--radius);padding:14px 16px;font-family:var(--mono);font-size:13px;line-height:1.65;white-space:pre-wrap;min-height:48px;margin-top:12px}
+.run-out .ok-line{color:#7EE787}.run-out .err-line{color:#FF7B72}.run-out .muted{color:#8B949E}
+table.data th{background:linear-gradient(180deg,#F8F5FF,#F0E9FF);color:var(--azul-osc);font-weight:700;letter-spacing:.3px}
+table.data tr:hover td{background:#FDFAFF}
+.gate-brand{background:linear-gradient(160deg,#3B0764,#6D28D9,#7C3AED)}
+.gate-card{box-shadow:0 40px 100px rgba(91,33,182,.35)}
+.btn{transition:all .15s ease;letter-spacing:.2px}
+.btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 4px 12px rgba(124,58,237,.35)}
+.btn:active:not(:disabled){transform:none}
+h2.page-title{background:linear-gradient(135deg,#3B0764,#7C3AED);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.brand{background:linear-gradient(180deg,#fff 0%,#FDFBFF 100%)}
+.logo-mark{background:linear-gradient(135deg,#6D28D9,#A855F7)!important;box-shadow:0 2px 8px rgba(124,58,237,.3)}
+.eyebrow{display:inline-block;background:var(--azul-tinte);padding:4px 12px;border-radius:99px;border:1px solid var(--line)}
+.concept-box{border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px;margin-bottom:14px;background:linear-gradient(135deg,#FDFBFF,#fff);box-shadow:var(--shadow-sm)}
+.concept-box .cb-label{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--azul);font-weight:700;margin-bottom:6px}
+.concept-box .cb-title{font-size:18px;font-weight:700;color:var(--ink);margin-bottom:6px}
+.concept-box .cb-body{font-size:14.5px;color:var(--gris);line-height:1.65}
+.kcheck{background:linear-gradient(135deg,var(--amber-bg),#FFFBF0);border:1px solid #FDE68A;border-left:4px solid #F59E0B;border-radius:var(--radius);padding:16px 18px;margin:18px 0}
+.kcheck .kc-head{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#92400E;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+
 </style>
 </head>
 <body>
@@ -249,16 +291,17 @@ textarea:disabled,input:disabled,select:disabled{background:#EDF2F6;color:#5A6B7
 <div class="gate" id="gate" style="display:none">
   <div class="gate-card">
     <aside class="gate-brand">
-      <div class="logo-mark">SQL</div>
+      <div class="logo-mark">C++</div>
       <h2>POO Classroom</h2>
       <div class="g-sub">Cuaderno Digital de Aprendizaje</div>
       <div class="g-divider"></div>
       <div class="g-mod">Programación Orientada a Objetos · CONALEP</div>
       <ul class="g-list">
-        <li>Unidad 2 · RA 2.2 · Evidencia 2.2.1 (15% del módulo)</li>
-        <li>Proyecto integrador: <strong>Sistema de Administración Estudiantil</strong></li>
-        <li>3 actividades prácticas con código C++ real</li>
-        <li>Bitácora de aprendizaje y reporte descargable para tu docente</li>
+        <li>Unidad 2 · RA 2.2 · Evidencia 2.2.1 — vale el <strong>15%</strong> del módulo</li>
+        <li>Patrones de diseño: Singleton, Factory, Abstract Factory, Prototype</li>
+        <li>Cifrado de datos, manejo de excepciones y ciclo de vida de objetos</li>
+        <li>Código <strong>C++ real</strong> que compila en el navegador, sin instalar nada</li>
+        <li>Tu avance se guarda en la nube ☁ — trabaja desde cualquier equipo</li>
       </ul>
       <div class="g-groups">&raquo; Grupos 410 &middot; 411</div>
     </aside>
@@ -314,7 +357,7 @@ textarea:disabled,input:disabled,select:disabled{background:#EDF2F6;color:#5A6B7
 <aside class="sidebar">
   <div class="brand">
     <div class="logo">
-      <div class="logo-mark">SQL</div>
+      <div class="logo-mark">C++</div>
       <div>
         <h1>POO Classroom</h1>
         <div class="sub">Cuaderno Digital de Aprendizaje</div>
@@ -331,7 +374,7 @@ textarea:disabled,input:disabled,select:disabled{background:#EDF2F6;color:#5A6B7
   </div>
 
   <div class="progress-wrap">
-    <div class="progress-label"><span>Avance del cuaderno</span><span id="progPct">0%</span></div>
+    <div class="progress-label"><span>Mi progreso</span><span id="progPct">0%</span></div>
     <div class="progress-bar"><div class="progress-fill" id="progFill"></div></div>
     <div style="display:flex;gap:8px;margin-top:10px">
       <button class="btn ghost" style="padding:5px 10px;font-size:11.5px;flex:1;justify-content:center" onclick="exportarAvance()" title="Descarga tu avance para llevarlo a otra computadora">⬇ Respaldo</button>
@@ -363,7 +406,7 @@ textarea:disabled,input:disabled,select:disabled{background:#EDF2F6;color:#5A6B7
     <a data-sec="bitacora"><span class="dot"></span>13 · Bitácora del alumno</a>
     <a data-sec="evaluacion"><span class="dot"></span>14 · Evaluación</a>
   </nav>
-  <div class="sidebar-foot">Unidad 2 · Desarrollo de aplicaciones orientadas a objetos<br>RA 2.2 · 24 horas · Evidencia 2.2.1 (15%)</div>
+  <div class="sidebar-foot" style="font-size:11.5px">📌 Unidad 2 · RA 2.2<br><span style="color:var(--azul);font-weight:600">Patrones de Diseño · C++</span><br>Evidencia 2.2.1 · <strong>15%</strong> del módulo</div>
 </aside>
 
 <!-- ===== MAIN ===== -->
@@ -385,6 +428,19 @@ textarea:disabled,input:disabled,select:disabled{background:#EDF2F6;color:#5A6B7
 
   <h3>Seguimos con el Cajero Automático 🏧</h3>
   <p>Un cajero real debe ser <strong>seguro y confiable</strong>: solo debe existir UN sistema de autenticación (Singleton), debe crear distintos tipos de cuenta de forma ordenada (Factory), cifrar el NIP del usuario, y no caerse si algo sale mal (excepciones). Justo lo que pide este RA.</p>
+
+  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:24px">
+    <div class="concept-box" style="border-top:4px solid #7C3AED">
+      <div class="cb-label">Grupo A · Patrones de diseño</div>
+      <div class="cb-title">🏗️ Estructurar bien la creación</div>
+      <div class="cb-body"><strong>Singleton</strong> — solo una instancia. <strong>Factory Method</strong> — delega la creación. <strong>Abstract Factory</strong> — familias de objetos. <strong>Prototype</strong> — clonar objetos existentes.</div>
+    </div>
+    <div class="concept-box" style="border-top:4px solid #0891B2">
+      <div class="cb-label">Grupo B · Seguridad y robustez</div>
+      <div class="cb-title">🔒 Proteger los datos y el flujo</div>
+      <div class="cb-body"><strong>Cifrado de datos</strong>, manejo del <strong>ciclo de vida</strong> de los objetos (init/destrucción) y control de errores con <strong>excepciones</strong>. El programa no debe romperse ante entradas inválidas.</div>
+    </div>
+  </div>
 
   <div class="callout info">
     <div class="c-title">Contexto del Resultado de Aprendizaje</div>
@@ -689,7 +745,7 @@ int main() {
 
 <!-- 7. EXCEPCIONES -->
 <section class="page" id="sec-excepciones">
-  <div class="eyebrow">Sección 7 · Operación continua</div>
+  <div class="eyebrow">Sección 7 · Manejo de excepciones</div>
   <h2 class="page-title">Manejo de excepciones</h2>
   <p class="page-lead">Una <strong>excepción</strong> es un error que ocurre durante la ejecución (retirar más de lo que hay, dividir entre cero, datos inválidos). El manejo de excepciones permite <strong>atrapar</strong> esos errores y responder con elegancia, en lugar de que el programa se caiga.</p>
   <button class="btn ghost" onclick="descargarApuntes()" style="margin-bottom:22px">⬇ Descargar apuntes para imprimir (PDF compacto)</button>
@@ -829,6 +885,11 @@ int main() {
 <section class="page" id="sec-act1">
   <div class="eyebrow">Sección 9 · Actividad práctica 1</div>
   <h2 class="page-title">Patrón Singleton · Gestor único</h2>
+  <div class="kcheck">
+    <div class="kc-head">🎯 Verifica antes de empezar</div>
+    <p style="margin:0;font-size:14.5px;color:var(--amber)">Para esta actividad necesitas saber: <strong>(1)</strong> por qué usamos Singleton (una sola instancia), <strong>(2)</strong> cómo hacer el constructor <code class="inline">private</code>, <strong>(3)</strong> el método estático <code class="inline">getInstance()</code>. Si no lo tienes claro, regresa a la <strong>Sección 3 · Singleton</strong>.</p>
+  </div>
+
   <div class="act-meta"><span class="badge">Singleton</span><span class="badge">static</span><span class="badge">constructor privado</span><span class="badge pts">30 puntos</span></div>
 
   <div class="enunciado">
@@ -909,6 +970,11 @@ int main() {
 <section class="page" id="sec-act2">
   <div class="eyebrow">Sección 10 · Actividad práctica 2</div>
   <h2 class="page-title">Factory Method · Fábrica de cuentas</h2>
+  <div class="kcheck">
+    <div class="kc-head">🎯 Verifica antes de empezar</div>
+    <p style="margin:0;font-size:14.5px;color:var(--amber)">Para esta actividad necesitas saber: <strong>(1)</strong> la estructura de una clase fábrica, <strong>(2)</strong> cómo devolver un puntero al objeto creado, <strong>(3)</strong> por qué Factory desacopla la creación del uso. Si no lo tienes claro, regresa a la <strong>Sección 4 · Factory Method</strong>.</p>
+  </div>
+
   <div class="act-meta"><span class="badge">Factory</span><span class="badge">polimorfismo</span><span class="badge pts">30 puntos</span></div>
 
   <div class="enunciado">
@@ -987,6 +1053,11 @@ int main() {
 <section class="page" id="sec-act3">
   <div class="eyebrow">Sección 11 · Actividad práctica 3</div>
   <h2 class="page-title">Manejo de excepciones · Retiro seguro</h2>
+  <div class="kcheck">
+    <div class="kc-head">🎯 Verifica antes de empezar</div>
+    <p style="margin:0;font-size:14.5px;color:var(--amber)">Para esta actividad necesitas saber: <strong>(1)</strong> escribir <code class="inline">try { } catch(exception& e) { }</code>, <strong>(2)</strong> lanzar excepciones con <code class="inline">throw</code>, <strong>(3)</strong> cuándo usar excepciones vs. validación simple. Si no lo tienes claro, regresa a la <strong>Sección 7 · Excepciones</strong>.</p>
+  </div>
+
   <div class="act-meta"><span class="badge">try / catch</span><span class="badge">throw</span><span class="badge pts">30 puntos</span></div>
 
   <div class="enunciado">
@@ -1064,7 +1135,7 @@ int main() {
 
 <!-- EDITOR C++ LIBRE -->
 <section class="page" id="sec-editor">
-  <div class="eyebrow">Sección 11 · Práctica libre</div>
+  <div class="eyebrow">Sección 12 · Práctica libre</div>
   <h2 class="page-title">Editor de C++ — compila y ejecuta de verdad</h2>
   <p class="page-lead">Aquí escribes C++ real y lo ejecutas en un servidor, sin instalar nada. Experimenta libremente: <strong>no cuenta para tu calificación</strong>. Prueba los ejemplos del cuaderno, modifícalos, rómpelos y arréglalos — así se aprende a programar.</p>
 
@@ -1119,7 +1190,7 @@ int main() {
 
 <!-- 8. BITÁCORA -->
 <section class="page" id="sec-bitacora">
-  <div class="eyebrow">Sección 10 · Bitácora del alumno</div>
+  <div class="eyebrow">Sección 13 · Bitácora del alumno</div>
   <h2 class="page-title">Reflexiona sobre tu aprendizaje</h2>
   <p class="page-lead">La bitácora es tu espacio de metacognición: escribir lo que aprendiste consolida el conocimiento. Responde con honestidad y con tus propias palabras; forma parte de tu evaluación (10 puntos).</p>
 
@@ -1134,17 +1205,17 @@ int main() {
     </div>
     <div class="field" style="margin-bottom:0">
       <label for="bit3">3. ¿Cómo aplicarías la Programación Orientada a Objetos en un proyecto real?</label>
-      <textarea id="bit3" data-key="bit3" placeholder="En un sistema escolar real, SQL serviría para…"></textarea>
+      <textarea id="bit3" data-key="bit3" placeholder="Los patrones de diseño y la seguridad de objetos me servirían para…"></textarea>
     </div>
   </div>
   <button class="btn" id="btn-bitacora" onclick="guardar('bitacora')">Guardar bitácora</button><span class="save-note" id="save-bitacora">✓ Avance guardado</span>
 
-  <div class="pager"><button class="btn ghost" onclick="go('simulador')">← Simulador SQL</button><button class="btn" onclick="go('evaluacion')">Ir a Evaluación →</button></div>
+  <div class="pager"><button class="btn ghost" onclick="go('editor')">← Editor C++</button><button class="btn" onclick="go('evaluacion')">Ir a Evaluación →</button></div>
 </section>
 
 <!-- 8. EVALUACIÓN -->
 <section class="page" id="sec-evaluacion">
-  <div class="eyebrow">Sección 11 · Evaluación</div>
+  <div class="eyebrow">Sección 14 · Evaluación</div>
   <h2 class="page-title">Resultados de tu cuaderno</h2>
   <p class="page-lead">Cada actividad se califica en el momento en que la entregas (intento único) y ahí mismo ves tu retroalimentación y la solución. Esta pantalla reúne los resultados de tus entregas, suma tu bitácora y genera el reporte final para tu docente.</p>
 
@@ -1167,7 +1238,7 @@ int main() {
     </div>
 
     <h3>Entrega tu reporte</h3>
-    <p>Cuando estés conforme con tu resultado, envíalo a tu docente con el botón azul. El envío es <strong>único y definitivo</strong>: tu calificación llega directamente al correo del docente con fecha, hora y folio, y el cuaderno queda <strong>sellado</strong> — las actividades y la bitácora pasan a solo lectura. Los apuntes, las instrucciones de cada práctica y el simulador <strong>seguirán disponibles para consulta</strong>.</p>
+    <p>Cuando estés conforme con tu resultado, envíalo a tu docente con el botón azul. El envío es <strong>único y definitivo</strong>: tu calificación llega directamente al correo del docente con fecha, hora y folio, y el cuaderno queda <strong>sellado</strong> — las actividades y la bitácora pasan a solo lectura. Los apuntes, las instrucciones de cada práctica y el editor de C++ <strong>seguirán disponibles para consulta</strong>.</p>
     <div class="callout warn">
       <div class="c-title">Antes de enviar, verifica</div>
       <p>Que tus 4 actividades estén entregadas y tu bitácora guardada. Después del envío ya no podrás modificar nada que genere calificación. Tu docente recibe cada envío con folio y hora: los envíos duplicados desde otro equipo se detectan y <strong>solo cuenta el primero</strong>.</p>
@@ -1427,6 +1498,7 @@ function lenOK(txt, min){ return (txt||'').trim().length >= min; }
 
 /* ---------- Editor C++ (compila vía proxy Supabase → Wandbox) ---------- */
 // URL de la Edge Function "compilar". Se completa tras desplegar el proxy.
+const CLAVE_DOCENTE = 'PROO2526';
 const EDGE_COMPILAR_URL = 'https://cmhnuuxgwrpkhutylnzs.supabase.co/functions/v1/compilar';
 
 const PLANTILLA_CPP = `#include <iostream>
